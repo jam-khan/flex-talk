@@ -340,3 +340,61 @@
     </div>
   </div>
 </section>
+
+<!-- Three frontends, one backend. The Lean badge established on the Flex box
+     is the marker for "foundational": Imp and λ_RK carry it, Flux does not. -->
+<section class="flow-slide frontends-slide">
+  <h2 class="slide-title">Three frontends, one backend</h2>
+
+  <div class="frontends-layout">
+    <ul class="frontend-list">
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true">
+          <img src="@assets/lean.png" alt="" />
+        </span>
+        <span class="frontend-name">Imp</span>
+        <span class="frontend-kind">imperative</span>
+      </li>
+
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true">
+          <img src="@assets/lean.png" alt="" />
+        </span>
+        <span class="frontend-name">\(\lambda_{RK}\)</span>
+        <span class="frontend-kind">functional core</span>
+      </li>
+
+      <li class="flow-box frontend">
+        <span class="frontend-name">Flux</span>
+        <span class="frontend-kind">Rust</span>
+      </li>
+    </ul>
+
+    <!-- The verifier slides' brace with the axes swapped — authored vertically
+         rather than rotated, so it stretches to the list height predictably. -->
+    <div class="brace-v" aria-hidden="true">
+      <svg viewBox="0 0 10 100" preserveAspectRatio="none">
+        <path
+          d="M0.5,0.5 Q6,0.5 6,5 L6,45 Q6,49.5 9.5,50 Q6,50.5 6,55 L6,95 Q6,99.5 0.5,99.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <div class="arrow-slot">
+      <div class="flow-arrow flow-arrow-h flow-arrow-long" aria-hidden="true">
+        <span class="flow-label">constrained Horn clauses</span>
+      </div>
+    </div>
+
+    <div class="flow-box flex-solver-box">
+      <span class="lean-badge" aria-hidden="true">
+        <img src="@assets/lean.png" alt="" />
+      </span>
+      <span class="solver-name">Flex</span>
+    </div>
+  </div>
+</section>

@@ -294,7 +294,11 @@
 
 /* Same arrow, rotated to point right: the stem's axes swap, the head's borders
    move from `top` to `left`, and the label sits above rather than beside. */
-.reveal .smt-flow-h .flow-arrow {
+/* Horizontal arrows: inside a `.smt-flow-h` row, or on any arrow that opts in
+   with `.flow-arrow-h`. Without one of these the arrow keeps its default
+   vertical (downward) form. */
+.reveal .smt-flow-h .flow-arrow,
+.reveal .flow-arrow-h {
   width: 2.8em;
   height: 6px;
   border-radius: 3px 0 0 3px;
@@ -302,7 +306,8 @@
   flex: none;
 }
 
-.reveal .smt-flow-h .flow-arrow::after {
+.reveal .smt-flow-h .flow-arrow::after,
+.reveal .flow-arrow-h::after {
   top: 50%;
   left: 100%;
   transform: translateY(-50%);
@@ -312,7 +317,8 @@
   border-bottom: 0.46em solid transparent;
 }
 
-.reveal .smt-flow-h .flow-arrow .flow-label {
+.reveal .smt-flow-h .flow-arrow .flow-label,
+.reveal .flow-arrow-h .flow-label {
   left: 50%;
   top: auto;
   bottom: 0.85em;
@@ -429,7 +435,8 @@
 
 /* Longer stem so the "verification condition" label has room to sit above it
    without overhanging into the neighbouring boxes. */
-.reveal .smt-flow-h .flow-arrow-long {
+.reveal .smt-flow-h .flow-arrow-long,
+.reveal .flow-arrow-h.flow-arrow-long {
   width: 11em;
 }
 
@@ -515,7 +522,8 @@
   white-space: nowrap;
 }
 
-.reveal .smt-flow-h .flow-arrow-long .flow-label {
+.reveal .smt-flow-h .flow-arrow-long .flow-label,
+.reveal .flow-arrow-h.flow-arrow-long .flow-label {
   font-size: 0.56em;
 }
 
@@ -688,6 +696,80 @@
   font-size: 1.15em;
   font-style: normal;
   font-weight: 600;
+}
+
+/* --- Frontends slide -----------------------------------------------------
+   Three frontends gathered by a brace into one backend. The Lean badge is the
+   marker for "foundational": Imp and λ_RK carry it, Flux does not. */
+
+.reveal .frontends-layout {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  margin: auto 0;
+}
+
+.reveal .frontend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reveal .frontend {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15em;
+  padding: 16px 30px;
+  min-width: 8.6em;
+}
+
+/* Verified in Lean: same green as the Flex box and the ✓ verdict. */
+.reveal .frontend.foundational {
+  border-color: var(--ok);
+  background: #f1f8f3;
+}
+
+.reveal .frontend-name {
+  font-size: 0.8em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .frontend.foundational .frontend-name {
+  color: var(--ok);
+}
+
+.reveal .frontend-kind {
+  color: var(--muted);
+  font-size: 0.5em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* `align-self: stretch` on a flex child makes the brace span the full height of
+   the list without needing to know how many frontends there are. */
+.reveal .brace-v {
+  align-self: stretch;
+  width: 0.75em;
+  margin: 0 1.2em 0 0.9em;
+  color: var(--arrow);
+}
+
+.reveal .brace-v svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.reveal .frontends-layout .arrow-slot,
+.reveal .frontends-layout .flex-solver-box {
+  align-self: center;
 }
 
 /* The solution is the point of the slide, so it gets its own line beneath the
