@@ -30,7 +30,7 @@
 
 <!-- Horizontal flow: formula -> solvers -> answer.
      `@assets/…` is rewritten to a real bundled URL by src/main.js. -->
-<section class="smt-slide">
+<section class="flow-slide smt-slide">
   <h2 class="slide-title">SMT Solvers</h2>
 
   <div class="smt-flow smt-flow-h">
@@ -57,6 +57,56 @@
     <div class="flow-box smt-answer">
       <span class="verdict">sat</span>
       <span class="verdict">unsat</span>
+    </div>
+  </div>
+</section>
+
+<!-- SMT-based verifiers: program -> (VC) -> solver -> verdict.
+     No concrete program: the box shows abstract code bars so it reads as
+     "some program" without committing to a language. The verification
+     condition rides on the first arrow rather than getting a box of its own. -->
+<section class="flow-slide verifier-slide">
+  <h2 class="slide-title">SMT-based verifiers</h2>
+
+  <div class="smt-flow smt-flow-h">
+    <figure class="flow-box program-box">
+      <div class="code-lines" aria-hidden="true">
+        <span style="width: 62%"></span>
+        <span style="width: 40%"></span>
+        <span style="width: 74%"></span>
+        <span style="width: 52%"></span>
+        <span style="width: 30%"></span>
+      </div>
+      <figcaption>program + spec</figcaption>
+    </figure>
+
+    <!-- The arrow is decorative, but the tool chips are content, so they sit
+         beside it in a positioning wrapper rather than inside the aria-hidden
+         arrow. The whole cluster is one fragment: a single click reveals all. -->
+    <div class="arrow-slot">
+      <div class="flow-arrow flow-arrow-long" aria-hidden="true">
+        <span class="flow-label">verification condition</span>
+      </div>
+
+      <ul class="flow-chips fragment">
+        <li>Dafny</li>
+        <li>Verus</li>
+        <li>F*</li>
+        <li>Why3</li>
+        <li>Flux</li>
+      </ul>
+    </div>
+
+    <div class="flow-box solver-logos">
+      <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
+      <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+    </div>
+
+    <div class="flow-arrow" aria-hidden="true"></div>
+
+    <div class="flow-box verdict-box">
+      <span class="verdict-ok">✓ verified</span>
+      <span class="verdict-bad">✗ not verified</span>
     </div>
   </div>
 </section>
