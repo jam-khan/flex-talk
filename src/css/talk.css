@@ -925,6 +925,124 @@
   color: var(--muted);
 }
 
+/* --- Refinement types: intro --------------------------------------------
+   Left: the notation dissected. Right: types-as-sets. */
+
+.reveal .rt-columns {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 3em;
+  margin: auto 0;
+}
+
+/* The anatomy column centers as a unit: the type and its reading share a
+   center line, independent of the diagram beside them. */
+.reveal .rt-anatomy {
+  text-align: center;
+}
+
+.reveal .rt-type {
+  font-family: var(--code-font);
+  font-size: 1.3em;
+  white-space: nowrap;
+}
+
+.reveal .rt-punct {
+  color: var(--muted);
+  margin: 0 0.15em;
+}
+
+/* Each labelled part gets a rule beneath it and its name below that. The label
+   is absolutely positioned so the parts keep their natural monospace rhythm —
+   in flow, a long label like "refinement" would stretch its part. */
+.reveal .rt-part {
+  position: relative;
+  color: var(--accent);
+  padding-bottom: 0.3em;
+  border-bottom: 2px solid #cfd6de;
+}
+
+.reveal .rt-part::after {
+  content: attr(data-label);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .rt-reading {
+  /* Clears the absolutely-positioned labels above. */
+  margin: 2.2em 0 0;
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+
+.reveal .rt-reading code {
+  color: var(--accent);
+  background: none;
+  padding: 0;
+}
+
+.reveal .rt-sets {
+  margin: 0;
+}
+
+.reveal .rt-sets svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.reveal .rt-outer {
+  fill: #f7f8fa;
+  stroke: #cfd6de;
+  stroke-width: 2;
+}
+
+.reveal .rt-inner {
+  fill: #e8f0fb;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.reveal .rt-set-label {
+  font-family: var(--code-font);
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.reveal .rt-outer-label {
+  fill: var(--muted);
+}
+
+.reveal .rt-inner-label {
+  fill: var(--accent);
+}
+
+.reveal .rt-dot-out {
+  fill: #b6bfca;
+}
+
+.reveal .rt-dot-in {
+  fill: var(--accent);
+}
+
+.reveal .rt-sets figcaption {
+  margin-top: 1em;
+  color: var(--muted);
+  font-size: 0.72em;
+  line-height: 1.5;
+  text-align: center;
+}
+
 /* --- Agenda --------------------------------------------------------------
    The one slide with no diagram. Structured so it can be re-shown as a section
    divider later: add `.at-N` to the section to spotlight item N. */

@@ -1,2 +1,54 @@
-<!-- §2 · Refinement types
-     No slides yet. Add them here on request. -->
+<!-- §2 · Refinement types -->
+
+<!-- First contact with the idea. Left: the notation dissected, using the same
+     brace component as the verifier slides. Right: types-as-sets, which is what
+     makes "subtyping is implication" free later on. -->
+<section class="rt-intro-slide">
+  <h2 class="slide-title">Refinement types</h2>
+
+  <div class="rt-columns">
+    <div class="rt-anatomy fragment">
+      <div class="rt-type">
+        <span class="rt-punct">{</span>
+        <span class="rt-part" data-label="binder">v</span>
+        <span class="rt-punct">:</span>
+        <span class="rt-part" data-label="base type">i32</span>
+        <span class="rt-punct">|</span>
+        <span class="rt-part" data-label="refinement">0 &lt;= v</span>
+        <span class="rt-punct">}</span>
+      </div>
+
+      <p class="rt-reading fragment">
+        the <strong>i32</strong> values <code>v</code> such that <code>0 &lt;= v</code>
+      </p>
+    </div>
+
+    <figure class="rt-sets fragment">
+      <svg viewBox="0 0 260 170" role="img" aria-label="The non-negative integers as a subset of i32">
+        <rect class="rt-outer" x="1" y="1" width="258" height="168" rx="12" />
+        <text class="rt-set-label rt-outer-label" x="16" y="26">i32</text>
+
+        <rect class="rt-inner" x="26" y="52" width="208" height="98" rx="10" />
+        <text class="rt-set-label rt-inner-label" x="40" y="76">0 &lt;= v</text>
+
+        <!-- Values outside the refinement -->
+        <circle class="rt-dot rt-dot-out" cx="56" cy="34" r="5" />
+        <circle class="rt-dot rt-dot-out" cx="104" cy="40" r="5" />
+        <circle class="rt-dot rt-dot-out" cx="158" cy="32" r="5" />
+        <circle class="rt-dot rt-dot-out" cx="208" cy="40" r="5" />
+
+        <!-- Values the refinement keeps -->
+        <circle class="rt-dot rt-dot-in" cx="66" cy="108" r="6" />
+        <circle class="rt-dot rt-dot-in" cx="108" cy="128" r="6" />
+        <circle class="rt-dot rt-dot-in" cx="150" cy="104" r="6" />
+        <circle class="rt-dot rt-dot-in" cx="192" cy="126" r="6" />
+        <circle class="rt-dot rt-dot-in" cx="126" cy="96" r="6" />
+      </svg>
+
+      <figcaption>
+        a type is a set of values —<br />
+        a refinement restricts it to a subset
+      </figcaption>
+    </figure>
+  </div>
+</section>
