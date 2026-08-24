@@ -1027,20 +1027,93 @@
   fill: var(--accent);
 }
 
-.reveal .rt-dot-out {
-  fill: #b6bfca;
-}
-
-.reveal .rt-dot-in {
-  fill: var(--accent);
-}
-
 .reveal .rt-sets figcaption {
   margin-top: 1em;
   color: var(--muted);
   font-size: 0.72em;
   line-height: 1.5;
   text-align: center;
+}
+
+/* --- Refinement types: subtyping ----------------------------------------
+   `<:` is kept, but glossed rather than presented as a judgment. */
+
+/* Two panels of equal weight — the relation and the picture — gathered by a
+   brace into the formula they both come down to.
+
+   The column shrink-wraps (`width: fit-content`), so the brace, being a sibling
+   of the panel row, spans exactly the panels' combined width: its tips land on
+   the outer edges of the two boxes rather than on arbitrary points. */
+.reveal .sub-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: fit-content;
+  margin: auto;
+}
+
+.reveal .sub-top {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: stretch;
+  gap: 1.8em;
+}
+
+.reveal .sub-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 24px 32px;
+}
+
+/* Stacked over three lines: it gives the panel proportions close to the
+   diagram's, which is what lets the two read as a pair. */
+.reveal .sub-judgment {
+  flex-direction: column;
+  gap: 0.35em;
+  font-family: var(--code-font);
+  font-size: 0.78em;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.reveal .sub-op {
+  color: var(--accent);
+  font-size: 1.15em;
+  font-weight: 700;
+}
+
+.reveal .sub-sets svg {
+  display: block;
+  width: 11em;
+  height: auto;
+}
+
+.reveal .sub-brace {
+  margin: 1em 0 1.1em;
+  color: var(--arrow);
+}
+
+.reveal .sub-brace .brace {
+  width: 100%;
+  height: 0.55em;
+}
+
+.reveal .sub-implication {
+  color: var(--accent);
+  font-size: 1.1em;
+  text-align: center;
+}
+
+.reveal .rt-innermost {
+  fill: #cfe0f7;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.reveal .rt-innermost-label {
+  fill: var(--accent);
 }
 
 /* --- Agenda --------------------------------------------------------------

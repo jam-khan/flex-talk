@@ -31,18 +31,6 @@
         <rect class="rt-inner" x="26" y="52" width="208" height="98" rx="10" />
         <text class="rt-set-label rt-inner-label" x="40" y="76">0 &lt;= v</text>
 
-        <!-- Values outside the refinement -->
-        <circle class="rt-dot rt-dot-out" cx="56" cy="34" r="5" />
-        <circle class="rt-dot rt-dot-out" cx="104" cy="40" r="5" />
-        <circle class="rt-dot rt-dot-out" cx="158" cy="32" r="5" />
-        <circle class="rt-dot rt-dot-out" cx="208" cy="40" r="5" />
-
-        <!-- Values the refinement keeps -->
-        <circle class="rt-dot rt-dot-in" cx="66" cy="108" r="6" />
-        <circle class="rt-dot rt-dot-in" cx="108" cy="128" r="6" />
-        <circle class="rt-dot rt-dot-in" cx="150" cy="104" r="6" />
-        <circle class="rt-dot rt-dot-in" cx="192" cy="126" r="6" />
-        <circle class="rt-dot rt-dot-in" cx="126" cy="96" r="6" />
       </svg>
 
       <figcaption>
@@ -50,5 +38,55 @@
         a refinement restricts it to a subset
       </figcaption>
     </figure>
+  </div>
+</section>
+
+<!-- Subtyping. Keeps `<:` but drops the judgment form: no turnstile, no Γ.
+     Two panels of equal weight — the relation and the picture — gathered by a
+     brace into the formula they both come down to. The judgment is stacked
+     rather than set on one line so the two panels have similar proportions and
+     the brace spans them evenly. -->
+<section class="rt-sub-slide">
+  <h2 class="slide-title">Subtyping</h2>
+
+  <div class="sub-layout">
+    <div class="sub-top">
+      <div class="flow-box sub-panel sub-judgment">
+        <span class="sub-type">{ v: i32 | 0 &lt; v }</span>
+        <span class="sub-op">&lt;:</span>
+        <span class="sub-type">{ v: i32 | 0 &lt;= v }</span>
+      </div>
+
+      <figure class="flow-box sub-panel sub-sets">
+        <svg viewBox="0 0 260 170" role="img" aria-label="Positive values as a subset of the non-negative values, inside i32">
+          <rect class="rt-outer" x="1" y="1" width="258" height="168" rx="12" />
+          <text class="rt-set-label rt-outer-label" x="16" y="27">i32</text>
+
+          <rect class="rt-inner" x="22" y="44" width="216" height="112" rx="10" />
+          <text class="rt-set-label rt-inner-label" x="34" y="68">0 &lt;= v</text>
+
+          <rect class="rt-innermost" x="52" y="82" width="158" height="60" rx="9" />
+          <text class="rt-set-label rt-innermost-label" x="64" y="104">0 &lt; v</text>
+        </svg>
+      </figure>
+    </div>
+
+    <!-- Same brace as the verifier slides. It spans the panels exactly, because
+         it is a sibling of `.sub-top` inside a shrink-wrapped column. -->
+    <div class="sub-brace" aria-hidden="true">
+      <svg class="brace" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <path
+          d="M0.5,0.5 Q0.5,6 5,6 L45,6 Q49.5,6 50,9.5 Q50.5,6 55,6 L95,6 Q99.5,6 99.5,0.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <div class="sub-implication">
+      \(\forall v.\; 0 &lt; v \Rightarrow 0 \le v\)
+    </div>
   </div>
 </section>
