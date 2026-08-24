@@ -149,10 +149,10 @@
     </div>
 
     <div class="def-line fragment" data-fragment-index="1">
-      <span class="kv">\(\kv(j, n)\)</span> \(\;\triangleq\;\)
-      <span class="guard-a">\((0 \le j \;\wedge\; j &lt; n)\)</span>
+      <span class="kv">\(\kv(z_0, z_1)\)</span> \(\;\triangleq\;\)
+      <span class="guard-a">\((0 \le z_0 \;\wedge\; z_0 &lt; z_1)\)</span>
       \(\;\vee\;\)
-      <span class="guard-b">\((j = n)\)</span>
+      <span class="guard-b">\((z_0 = z_1)\)</span>
     </div>
   </div>
 </section>
@@ -164,7 +164,7 @@
      The solution is a fragment of its own, between the arrow and the result:
      it is what zap computes, and the rewrite is just substituting it. -->
 <section class="zap-slide">
-  <h2 class="slide-title">How <span class="tac">zap</span> works</h2>
+  <h2 class="slide-title">Rewriting the constraint</h2>
 
   <div class="zap-flow">
     <div class="flow-box zap-box">
@@ -183,8 +183,7 @@
     <div class="flow-box zap-box fragment" data-fragment-index="3">
       <div class="flux-chc">
         <span class="ind-0">\(\forall n.\)</span>
-        <span class="ind-1">\(\forall j.\;\) <span class="zap-sub">\(\exists v.\; 0 \le v \;\wedge\; v &lt; n \;\wedge\; j = v\)</span> \(\Rightarrow\)</span>
-        <span class="ind-3">\(j &lt; n\)</span>
+        <span class="ind-1">\(\forall j.\;\) <span class="zap-sub">\(0 \le j \;\wedge\; j &lt; n\)</span> \(\Rightarrow\; j &lt; n\)</span>
         <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
         <span class="ind-3"><span class="zap-sub">\(\True\)</span></span>
       </div>
@@ -203,7 +202,53 @@
        it. Second fragment, so it lands before the rewritten constraint. -->
   <div class="zap-solution fragment" data-fragment-index="2">
     <span class="zap-solution-label">solution</span>
-    <span class="kv">\(\kv\)</span>
-    \(\;\triangleq\; \lambda j\, n.\; \exists v.\; 0 \le v \;\wedge\; v &lt; n \;\wedge\; j = v\)
+    <span class="kv">\(\kv(z_0, z_1)\)</span>
+    \(\;\triangleq\; 0 \le z_0 \;\wedge\; z_0 &lt; z_1\)
+  </div>
+</section>
+
+<!-- The kernel takes no rewrite on faith. Same two boxes as the slide before,
+     minus the grind stage, which is not what is at stake here.
+
+     The certificate stays a black box; how it is built (§4.3) is not on the
+     slide. All the talk needs is that it exists and that the kernel checks it
+     like any other term. -->
+<section class="cert-slide">
+  <h2 class="slide-title">Certified rewrite</h2>
+
+  <div class="cert-flow">
+    <figure class="cert-panel">
+      <figcaption class="cert-tag">\(c\)</figcaption>
+      <div class="flow-box zap-box">
+        <div class="flux-chc">
+          <span class="ind-0">\(\forall n.\)</span>
+          <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+          <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
+          <span class="ind-3"><span class="kv">\(\kv(v, n)\)</span></span>
+        </div>
+      </div>
+    </figure>
+
+    <div class="flow-arrow flow-arrow-h cert-arrow" aria-hidden="true">
+      <span class="flow-label">zap</span>
+    </div>
+
+    <figure class="cert-panel">
+      <figcaption class="cert-tag">\(c'\)</figcaption>
+      <div class="flow-box zap-box">
+        <div class="flux-chc">
+          <span class="ind-0">\(\forall n.\)</span>
+          <span class="ind-1">\(\forall j.\;\) <span class="zap-sub">\(0 \le j \;\wedge\; j &lt; n\)</span> \(\Rightarrow\; j &lt; n\)</span>
+          <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
+          <span class="ind-3"><span class="zap-sub">\(\True\)</span></span>
+        </div>
+      </div>
+    </figure>
+  </div>
+
+  <div class="cert-type fragment" data-fragment-index="2">
+    <span class="cert-type-label">certificate</span>
+    <span class="tac">cert</span> \(\;:\; c' \to c\)
+    <span class="cert-note">checked by the kernel</span>
   </div>
 </section>

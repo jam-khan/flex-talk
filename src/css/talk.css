@@ -1729,12 +1729,76 @@
    the one `.rt-innermost` already uses, a shade up from `.zap-sub`'s so the two
    stay apart where they meet. */
 .reveal .kinds-slide .kv,
+.reveal .cert-slide .kv,
 .reveal .def-slide .kv,
 .reveal .zap-slide .kv {
   color: inherit;
   background: #cfe0f7;
   border-radius: 3px;
   padding: 0 0.18em;
+}
+
+/* --- Rewriting needs a proof term ---------------------------------------
+   The rewriting slide's row again, without the grind stage: what the rewrite
+   owes the kernel is stated underneath rather than drawn. */
+.reveal .cert-slide {
+  --slide-pad-x: 5%;
+
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .cert-flow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: auto 0 0;
+}
+
+.reveal .cert-panel {
+  margin: 0;
+}
+
+.reveal .cert-tag {
+  margin: 0 0 0.35em 0.2em;
+  color: var(--muted);
+  font-size: 0.72em;
+}
+
+.reveal .cert-slide .zap-box .flux-chc {
+  font-size: 0.62em;
+}
+
+.reveal .cert-arrow {
+  margin-bottom: 2.6em;
+}
+
+.reveal .cert-type {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.7em;
+  margin: 1.5em 0 auto;
+  font-size: 0.85em;
+}
+
+.reveal .cert-type-label {
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .cert-type .tac {
+  font-family: var(--code-font);
+  color: var(--accent);
+}
+
+.reveal .cert-note {
+  color: var(--muted);
+  font-size: 0.72em;
 }
 
 /* --- Cyclic vs. acyclic --------------------------------------------------
