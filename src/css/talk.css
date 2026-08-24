@@ -1607,6 +1607,119 @@
   color: var(--accent);
 }
 
+/* --- Reading a head as a definition -------------------------------------
+   One column: the constraint, then two labelled arrows stepping down to the
+   solution the next slide's `zap` computes. */
+.reveal .def-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .def-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto 0;
+}
+
+.reveal .def-constraint {
+  font-size: 0.7em;
+}
+
+.reveal .def-arrow {
+  margin: 0.85em 0 1.4em;
+}
+
+.reveal .def-line {
+  font-size: 0.88em;
+  white-space: nowrap;
+}
+
+/* --- How zap works ------------------------------------------------------
+   Paper Fig. 2 as a left-to-right flow: constraint, zap, κ-free VC, grind,
+   no goals — with the computed solution below the row. */
+.reveal .zap-slide {
+  /* The row is five elements wide; it needs the side margins back. */
+  --slide-pad-x: 5%;
+
+  display: flex;
+  flex-direction: column;
+  /* Fixed height, like the other flow slides: the title stays at the same
+     height as on every other slide and the row centres in what is left. */
+  height: 620px;
+}
+
+.reveal .zap-slide .slide-title .tac {
+  font-family: var(--code-font);
+  font-size: 0.86em;
+  color: var(--accent);
+}
+
+.reveal .zap-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0 0;
+}
+
+.reveal .zap-box {
+  padding: 14px 22px;
+}
+
+/* A size below the panels on the previous slide: two constraints plus two
+   arrows and a verdict share one row here. */
+.reveal .zap-box .flux-chc {
+  font-size: 0.62em;
+}
+
+/* What zap substituted, marked the way the paper greys its rewrites. */
+.reveal .zap-sub {
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
+  background: #eef3fb;
+  box-shadow: inset 0 0 0 1px #c3d4ec;
+}
+
+.reveal .zap-verdict {
+  font-size: 0.95em;
+}
+
+/* Centred under the row rather than tied to the zap arrow: at this width the
+   arrow is 2.8em and the solution is a good deal wider than that. */
+.reveal .zap-solution {
+  margin: 1.6em 0 auto;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.8em;
+}
+
+.reveal .zap-solution-label {
+  margin-right: 0.9em;
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .zap-solution .kv {
+  color: var(--accent);
+}
+
+/* Horn variables on the two solver slides: set in the body colour and marked
+   with a wash instead, the way the Flux slides light them on hover. The tint is
+   the one `.rt-innermost` already uses, a shade up from `.zap-sub`'s so the two
+   stay apart where they meet. */
+.reveal .kinds-slide .kv,
+.reveal .def-slide .kv,
+.reveal .zap-slide .kv {
+  color: inherit;
+  background: #cfe0f7;
+  border-radius: 3px;
+  padding: 0 0.18em;
+}
+
 /* --- Cyclic vs. acyclic --------------------------------------------------
    Two panels of equal weight, each one constraint the audience has already
    seen, with the tactic that solves it named underneath. */

@@ -94,3 +94,85 @@
     </figure>
   </div>
 </section>
+
+<!-- The intuition behind the solution zap computes, before the mechanics.
+     The head occurrence is the only thing that can make κ true, so the guard
+     above it is not a constraint on κ — it is a definition of it.
+
+     The whole constraint stays at full strength; which conjunct the definition
+     is read off is said aloud, not marked.
+
+     One beat, one idea. The general recipe — ∃-bind the clause's binders and
+     equate them to the head's arguments — is not shown here: this head's
+     argument *is* the binder, so the ∃ would collapse straight back and look
+     like ceremony. It appears on the next slide, as what zap computes. -->
+<section class="def-slide">
+  <h2 class="slide-title">Finding the strongest solution</h2>
+
+  <div class="def-stack">
+    <div class="flux-chc def-constraint">
+      <span class="ind-0">\(\forall n.\)</span>
+      <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+      <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+    </div>
+
+    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
+      <span class="flow-label">strongest solution</span>
+    </div>
+
+    <div class="def-line fragment" data-fragment-index="1">
+      <span class="kv">\(\kv(z_0, z_1)\)</span> \(\;\triangleq\; 0 \le z_0 \;\wedge\; z_0 &lt; z_1\)
+    </div>
+  </div>
+</section>
+
+<!-- Fig. 2 of the paper: what `zap` does to the acyclic constraint from the
+     previous slide. Left to right, in the deck's flow vocabulary — the arrows
+     are the same component the SMT and Flux slides use.
+
+     The solution is a fragment of its own, between the arrow and the result:
+     it is what zap computes, and the rewrite is just substituting it. -->
+<section class="zap-slide">
+  <h2 class="slide-title">How <span class="tac">zap</span> works</h2>
+
+  <div class="zap-flow">
+    <div class="flow-box zap-box">
+      <div class="flux-chc">
+        <span class="ind-0">\(\forall n.\)</span>
+        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
+        <span class="ind-3"><span class="kv">\(\kv(v, n)\)</span></span>
+      </div>
+    </div>
+
+    <div class="flow-arrow flow-arrow-h fragment" data-fragment-index="1" aria-hidden="true">
+      <span class="flow-label">zap</span>
+    </div>
+
+    <div class="flow-box zap-box fragment" data-fragment-index="3">
+      <div class="flux-chc">
+        <span class="ind-0">\(\forall n.\)</span>
+        <span class="ind-1">\(\forall j.\;\) <span class="zap-sub">\(\exists v.\; 0 \le v \;\wedge\; v &lt; n \;\wedge\; j = v\)</span> \(\Rightarrow\)</span>
+        <span class="ind-3">\(j &lt; n\)</span>
+        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
+        <span class="ind-3"><span class="zap-sub">\(\True\)</span></span>
+      </div>
+    </div>
+
+    <div class="flow-arrow flow-arrow-h fragment" data-fragment-index="4" aria-hidden="true">
+      <span class="flow-label">grind</span>
+    </div>
+
+    <div class="verdict-box zap-verdict fragment" data-fragment-index="5">
+      <span class="verdict-ok">no goals</span>
+    </div>
+  </div>
+
+  <!-- What zap computes; the rewrite in the box above is just substituting
+       it. Second fragment, so it lands before the rewritten constraint. -->
+  <div class="zap-solution fragment" data-fragment-index="2">
+    <span class="zap-solution-label">solution</span>
+    <span class="kv">\(\kv\)</span>
+    \(\;\triangleq\; \lambda j\, n.\; \exists v.\; 0 \le v \;\wedge\; v &lt; n \;\wedge\; j = v\)
+  </div>
+</section>
