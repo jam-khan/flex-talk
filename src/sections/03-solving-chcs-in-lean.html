@@ -47,3 +47,50 @@
     </span></span></span>
   </div>
 </section>
+
+<!-- The fork the previous slide's note promised. Both constraints are the ones
+     the audience has already seen, in the same math notation as the Flux slides
+     they came from — the slide is about the *shape* of a constraint, so nothing
+     here is Lean.
+
+     The two panels are the definition: in the cyclic one, the inductive clause
+     assumes the same κ it has to establish. -->
+<section class="kinds-slide">
+  <h2 class="slide-title">Cyclic vs. acyclic constraints</h2>
+
+  <div class="kinds-columns">
+    <figure class="kind-panel">
+      <figcaption class="kind-label">acyclic</figcaption>
+
+      <div class="flux-chc">
+        <span class="ind-0">\(\forall n.\)</span>
+        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
+        <span class="ind-3"><span class="kv">\(\kv(v, n)\)</span></span>
+      </div>
+
+      <div class="kind-tactic">
+        <span class="kind-tactic-label">solved by</span>
+        <span class="tac">zap</span>
+      </div>
+    </figure>
+
+    <figure class="kind-panel">
+      <figcaption class="kind-label">cyclic</figcaption>
+
+      <div class="flux-chc">
+        <span class="ind-0">\(\forall lo, hi.\)</span>
+        <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+        <span class="ind-1">\(\wedge\; \forall i.\)</span>
+        <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\Rightarrow\; i &lt; hi \;\Rightarrow\)</span>
+        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+        <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+      </div>
+
+      <div class="kind-tactic">
+        <span class="kind-tactic-label">solved by</span>
+        <span class="tac">fix</span>
+      </div>
+    </figure>
+  </div>
+</section>

@@ -1607,6 +1607,77 @@
   color: var(--accent);
 }
 
+/* --- Cyclic vs. acyclic --------------------------------------------------
+   Two panels of equal weight, each one constraint the audience has already
+   seen, with the tactic that solves it named underneath. */
+.reveal .kinds-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .kinds-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Stretch, so both panels are the same height and the two tactic footers
+     land on the same line however the notes above them wrap. */
+  align-items: stretch;
+  gap: 2em;
+  margin: auto 0;
+}
+
+.reveal .kind-panel {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 1em 1.3em 1.1em;
+  border: 1px solid #e3e7ec;
+  border-radius: 10px;
+  background: #f7f8fa;
+}
+
+.reveal .kind-label {
+  margin-bottom: 0.9em;
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Constraint lines are the `.flux-chc` component from the Flux slides, a size
+   down: two of them share the width one had there. The bottom margin is the
+   floor on the gap to the footer below — `margin-top: auto` there only opens a
+   gap in the panel with room to spare, which the taller panel has none of. */
+.reveal .kind-panel .flux-chc {
+  margin-bottom: 1.5em;
+  font-size: 0.62em;
+}
+
+/* Named, not explained: what each tactic does is the next two slides. */
+.reveal .kind-tactic {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  /* Pushed to the bottom of the panel, so both footers align. */
+  margin-top: auto;
+  padding-top: 0.8em;
+  border-top: 1px solid #e3e7ec;
+}
+
+.reveal .kind-tactic-label {
+  color: var(--muted);
+  font-size: 19px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .kind-tactic .tac {
+  font-family: var(--code-font);
+  font-size: 26px;
+  color: var(--accent);
+}
+
 .muted {
   color: var(--muted);
 }
