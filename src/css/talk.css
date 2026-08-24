@@ -1,0 +1,65 @@
+/* Talk-specific overrides on top of the reveal `white` theme.
+   Deliberately minimal for now — visual design decisions get made as slides land. */
+
+:root {
+  --accent: #1a5fb4;
+  --muted: #6b7280;
+  --code-font: 'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace;
+}
+
+.reveal {
+  font-size: 32px;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+}
+
+.reveal section {
+  text-align: left;
+}
+
+.reveal pre {
+  width: 100%;
+  box-shadow: none;
+  font-size: 0.5em;
+}
+
+.reveal pre code {
+  font-family: var(--code-font);
+  line-height: 1.35;
+  max-height: none;
+  padding: 0.8em 1em;
+  border-radius: 6px;
+}
+
+.reveal code:not(pre code) {
+  font-family: var(--code-font);
+  font-size: 0.9em;
+  background: #f1f3f5;
+  padding: 0.08em 0.3em;
+  border-radius: 4px;
+}
+
+/* MathJax SVG output inherits colour from the surrounding text. */
+.reveal mjx-container[display='true'] {
+  margin: 0.7em 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* Utility for the incremental reveals the constraint figures will need. */
+.reveal .fragment.highlight-box.visible {
+  background: #fff3bf;
+  border-radius: 3px;
+}
