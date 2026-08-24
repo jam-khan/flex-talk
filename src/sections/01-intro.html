@@ -229,3 +229,48 @@
     </div>
   </div>
 </section>
+
+<!-- The two problems from §1 of the paper: expressiveness and trust.
+     Each panel damages a piece of the flow the audience has now seen three
+     times, so the shortcomings land on a familiar picture. -->
+<section class="flow-slide problems-slide">
+  <h2 class="slide-title">Two problems with SMT</h2>
+
+  <div class="problem-panels">
+    <div class="problem fragment">
+      <h3 class="problem-title">Expressiveness</h3>
+
+      <div class="mini-flow">
+        <span class="mini-formula">\(\forall j.\; P(a[j])\)</span>
+        <div class="flow-arrow mini-arrow" aria-hidden="true"></div>
+        <div class="flow-box mini-solver">solver</div>
+        <div class="flow-arrow mini-arrow" aria-hidden="true"></div>
+        <span class="bad-outcomes">
+          <span class="verdict-unknown">unknown</span>
+          <span class="verdict-unknown">loop</span>
+        </span>
+      </div>
+
+      <p class="problem-lead">
+        Decision procedures for a <strong>fixed set of decidable theories</strong> —
+        heuristics beyond them.
+      </p>
+    </div>
+
+    <div class="problem fragment">
+      <h3 class="problem-title">Trust</h3>
+
+      <div class="mini-flow mini-flow-trust">
+        <div class="flow-box mini-solver mini-solver-risk">
+          <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
+          <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+        </div>
+        <span class="risk-note">~500,000 lines of C++<br /><em>known soundness bugs</em></span>
+      </div>
+
+      <p class="problem-lead">
+        The solver is a large, <strong>unverified artifact</strong>.
+      </p>
+    </div>
+  </div>
+</section>

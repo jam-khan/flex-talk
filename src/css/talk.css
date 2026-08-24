@@ -654,6 +654,140 @@
   font-size: 0.62em;
 }
 
+/* --- Problems slide ------------------------------------------------------
+   Two panels, each echoing a piece of the flow the audience already knows. */
+
+.reveal .problems-slide {
+  text-align: left;
+}
+
+.reveal .problem-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.2em;
+  margin: auto 0;
+}
+
+.reveal .problem-title {
+  margin: 0 0 0.9em;
+  padding-bottom: 0.35em;
+  border-bottom: 2px solid #e3e7ec;
+  color: var(--muted);
+  font-size: 0.72em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.reveal .mini-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 3.4em;
+}
+
+.reveal .mini-formula {
+  font-size: 0.68em;
+  white-space: nowrap;
+}
+
+/* Both ways the solver can fail you, stacked at the end of the mini-flow. */
+.reveal .bad-outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+
+/* The shared arrow, shortened and turned to point right. */
+.reveal .mini-arrow {
+  width: 1.5em;
+  height: 5px;
+  border-radius: 3px 0 0 3px;
+  margin: 0 0.75em 0 0.3em;
+  flex: none;
+}
+
+.reveal .mini-arrow::after {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border-left: 0.5em solid var(--arrow);
+  border-right: none;
+  border-top: 0.4em solid transparent;
+  border-bottom: 0.4em solid transparent;
+}
+
+.reveal .mini-solver {
+  padding: 12px 20px;
+  font-size: 0.68em;
+  white-space: nowrap;
+}
+
+/* The third verdict: they have seen sat and unsat, never this one. */
+.reveal .verdict-unknown {
+  color: var(--bad);
+  font-family: var(--code-font);
+  font-size: 0.68em;
+  font-weight: 600;
+}
+
+.reveal .mini-flow-trust {
+  gap: 1.1em;
+}
+
+.reveal .mini-solver-risk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  padding: 12px 18px;
+  border-color: var(--bad);
+  background: #fdf4f2;
+}
+
+.reveal .mini-solver-risk .logo {
+  display: block;
+  width: auto;
+  box-shadow: none;
+  border: none;
+  margin: 0;
+}
+
+.reveal .mini-solver-risk .logo-z3 {
+  height: 1.1em;
+}
+
+.reveal .mini-solver-risk .logo-cvc5 {
+  height: 0.62em;
+}
+
+.reveal .risk-note {
+  color: var(--bad);
+  font-size: 0.58em;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.reveal .risk-note em {
+  font-weight: 400;
+  font-style: italic;
+}
+
+.reveal .problem-lead {
+  margin: 1.1em 0 0.7em;
+  font-size: 0.68em;
+  line-height: 1.45;
+}
+
+.reveal .problem-points {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 0.48em;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 .muted {
   color: var(--muted);
 }
