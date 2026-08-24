@@ -90,3 +90,46 @@
     </div>
   </div>
 </section>
+
+<!-- Fig. 1 of the paper: `foreach` and the CHC Flux generates for it.
+     Trimmed per the paper's presentation: no sorts on the binders, and the
+     leading `∃κ.` is dropped — Horn variables are implicitly existential. -->
+<section class="flux-example-slide">
+  <h2 class="slide-title">Example: <code>foreach</code></h2>
+
+  <div class="flux-columns">
+    <pre class="flux-code"><code class="language-rust">fn foreach&lt;F&gt;(lo: usize, hi: usize, mut f: F)
+where
+    F: FnMut(usize{v: lo &lt;= v &amp;&amp; v &lt; hi})
+{
+    let mut i = lo;
+    while i &lt; hi {
+        f(i);
+        i += 1;
+    }
+}</code></pre>
+
+    <div class="flow-arrow flow-arrow-h flux-arrow" aria-hidden="true">
+      <span class="flow-label">Flux</span>
+    </div>
+
+    <!-- Line-by-line so the Horn variables can be coloured: MathJax's markup
+         extensions aren't in the offline bundle (see src/main.js). -->
+    <div class="flux-chc">
+      <span class="ind-0">\(\forall lo, hi.\)</span>
+      <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+      <span class="ind-1">\(\wedge\; \forall i.\)</span>
+      <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\Rightarrow\; i &lt; hi \;\Rightarrow\)</span>
+      <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+      <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+    </div>
+  </div>
+
+  <div class="chc-solution fragment">
+    <span class="chc-solution-inner">
+      <span class="chc-solution-label">solution</span>
+      <span class="kv">\(\kv(i, hi, lo)\)</span>
+      \(\;\triangleq\; lo \le i \le hi\)
+    </span>
+  </div>
+</section>

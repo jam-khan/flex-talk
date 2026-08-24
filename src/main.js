@@ -7,7 +7,9 @@ import RevealZoom from 'reveal.js/plugin/zoom';
 import 'reveal.js/reset.css';
 import 'reveal.js/reveal.css';
 import 'reveal.js/theme/white.css';
-import 'reveal.js/plugin/highlight/monokai.css';
+// No light syntax theme ships with reveal (only monokai and zenburn, both
+// dark), and highlight.js isn't a separate dependency here — so talk.css
+// defines the `.hljs-*` colours itself.
 import './css/talk.css';
 
 // MathJax with the newcm font bundled in, imported as source text. Reveal's math
@@ -63,6 +65,12 @@ Reveal.initialize({
 
   mathjax4: {
     mathjax: mathjaxUrl,
+
+    // MathJax 4 defaults to `linebreaks: { inline: true }`, so inline math
+    // breaks itself across lines when its container is narrow — inside the SVG
+    // output, where CSS `white-space: nowrap` has no say. On slides a formula
+    // should overflow visibly rather than silently rewrap, so it's off.
+    svg: { linebreaks: { inline: false } },
     tex: {
       // NB: only the TeX extensions compiled into the bundle are usable. The
       // `html` and `color` packages (\htmlClass, \textcolor, \class, \style)

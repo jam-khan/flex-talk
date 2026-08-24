@@ -81,6 +81,73 @@
   border-radius: 6px;
 }
 
+/* --- Syntax highlighting (light) ----------------------------------------
+   Reveal only ships dark themes and highlight.js isn't a separate dependency,
+   so the palette lives here. Muted and low-contrast on purpose: on a
+   projector, rainbow code competes with the point being made. */
+.reveal pre code.hljs {
+  background: #f7f8fa;
+  border: 1px solid #e3e7ec;
+  color: #24292f;
+}
+
+.reveal .hljs-comment,
+.reveal .hljs-quote {
+  color: #8a94a0;
+  font-style: italic;
+}
+
+.reveal .hljs-keyword,
+.reveal .hljs-selector-tag,
+.reveal .hljs-literal,
+.reveal .hljs-doctag {
+  color: #a5316a;
+}
+
+.reveal .hljs-string,
+.reveal .hljs-regexp,
+.reveal .hljs-addition {
+  color: #1a6b4a;
+}
+
+.reveal .hljs-number,
+.reveal .hljs-symbol,
+.reveal .hljs-bullet {
+  color: #1a5fb4;
+}
+
+.reveal .hljs-title,
+.reveal .hljs-section,
+.reveal .hljs-name {
+  color: #6f42c1;
+}
+
+.reveal .hljs-type,
+.reveal .hljs-built_in,
+.reveal .hljs-class .hljs-title {
+  color: #b05a1e;
+}
+
+.reveal .hljs-attr,
+.reveal .hljs-attribute,
+.reveal .hljs-variable,
+.reveal .hljs-template-variable,
+.reveal .hljs-params {
+  color: #24292f;
+}
+
+.reveal .hljs-meta {
+  color: #8a94a0;
+}
+
+.reveal .hljs-emphasis {
+  font-style: italic;
+}
+
+.reveal .hljs-strong {
+  font-weight: 700;
+}
+
 .reveal code:not(pre code) {
   font-family: var(--code-font);
   font-size: 0.9em;
@@ -1114,6 +1181,96 @@
 
 .reveal .rt-innermost-label {
   fill: var(--accent);
+}
+
+/* --- Flux example: foreach ----------------------------------------------
+   Code on the left, the constraint it generates on the right. */
+
+.reveal .flux-columns {
+  display: grid;
+  /* `max-content` on the constraint column: with `auto` the track shrinks to
+     the space left over, squeezing the lines and breaking them between the
+     separate MathJax containers on a line. */
+  grid-template-columns: auto auto max-content;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2em;
+  margin: auto 0;
+}
+
+.reveal .flux-code {
+  width: auto;
+  margin: 0;
+  font-size: 0.58em;
+}
+
+.reveal .flux-code code {
+  border-radius: 8px;
+  padding: 1em 1.2em;
+}
+
+.reveal .flux-arrow {
+  align-self: center;
+}
+
+.reveal .flux-chc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  font-size: 0.78em;
+}
+
+/* Each line is several MathJax containers plus text; keep them on one line. */
+.reveal .flux-chc > span {
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+/* Nesting depth of the constraint, mirroring the paper's layout. */
+.reveal .flux-chc .ind-1 {
+  padding-left: 1.2em;
+}
+
+.reveal .flux-chc .ind-2 {
+  padding-left: 2.4em;
+}
+
+.reveal .flux-chc .ind-3 {
+  padding-left: 3.6em;
+}
+
+.reveal .flux-chc .kv {
+  color: var(--accent);
+}
+
+/* The witness Flex finds for the loop invariant. It sits below the whole row —
+   code and constraint both — and is right-aligned so it lands under the
+   constraint it answers. A rule rather than a box: it is the answer to what is
+   above, not a further stage of the pipeline. */
+.reveal .chc-solution {
+  margin-top: 1.1em;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.85em;
+}
+
+/* The rule belongs to the solution, not to the slide: an inline-block shrinks
+   to its content, so it sits under the constraint rather than running the full
+   width beneath the code as well. */
+.reveal .chc-solution-inner {
+  display: inline-block;
+  padding-top: 0.85em;
+  border-top: 2px solid #e3e7ec;
+}
+
+.reveal .chc-solution-label {
+  display: block;
+  margin-bottom: 0.35em;
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 /* --- Agenda --------------------------------------------------------------
