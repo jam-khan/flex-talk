@@ -1213,6 +1213,97 @@
   align-self: center;
 }
 
+/* Hand-authored code block: same frame as a highlighted one. */
+.reveal pre .code-manual {
+  display: block;
+  background: #f7f8fa;
+  border: 1px solid #e3e7ec;
+  border-radius: 6px;
+  color: #24292f;
+  padding: 0.8em 1em;
+  white-space: pre;
+}
+
+/* Editor-style inlay hint, revealed by hovering the binder it describes.
+
+   Positioned above the anchor and out of flow, so showing it never reflows the
+   code — an in-flow hint would shove the rest of the line sideways on hover. */
+.reveal .hint-anchor {
+  position: relative;
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+
+.reveal .inlay-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 9px);
+  transform: translateX(-50%);
+  padding: 0.15em 0.45em;
+  border: 1px solid #c3d4ec;
+  border-radius: 5px;
+  background: #eef3fb;
+  color: var(--accent);
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* Little pointer down to the binder. */
+.reveal .inlay-hint::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #c3d4ec;
+}
+
+.reveal .hint-anchor:hover .inlay-hint {
+  visibility: visible;
+}
+
+/* On the `dot` slide the Horn variables stay black, and light up only while
+   the binder they stand for is hovered — so the hover ties the closure's
+   parameter to every κ in the constraint at once.
+
+   `:has()` is what lets a hover in the code block affect the constraint beside
+   it; the two are in different subtrees, so no sibling selector reaches. Where
+   `:has()` is unsupported the κ simply stay black, which is the resting state
+   anyway. */
+.reveal .dot-slide .flux-chc .kv {
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 0.12em;
+}
+
+.reveal .dot-slide:has(.hint-anchor:hover) .flux-chc .kv {
+  background: #cfe0f7;
+}
+
+/* Hovering a piece of the code lights the clause it is responsible for:
+   the indexing expression -> the safe-access obligation, and the closure passed
+   to `foreach` -> the subtyping obligation. Same `:has()` trick as above. */
+.reveal .src-index,
+.reveal .src-call {
+  border-bottom: 1px dashed #a9b4c0;
+  cursor: help;
+}
+
+/* The mark wraps only the text, so the highlight hugs the clause instead of
+   running to the full width of the flex column. */
+.reveal .clause-mark {
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  margin: -0.1em -0.35em;
+}
+
+.reveal .dot-slide:has(.src-index:hover) .clause-index .clause-mark,
+.reveal .dot-slide:has(.src-call:hover) .clause-sub .clause-mark {
+  background: #fdf0c8;
+}
+
 .reveal .flux-chc {
   display: flex;
   flex-direction: column;

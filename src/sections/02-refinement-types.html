@@ -133,3 +133,45 @@ where
     </span>
   </div>
 </section>
+
+<!-- Fig. 1 of the paper: `dot` and its CHC. Same design as the `foreach`
+     slide. Here κ stands for the closure's unknown input refinement. -->
+<section class="flux-example-slide dot-slide">
+  <h2 class="slide-title">Example: <code>dot</code></h2>
+
+  <div class="flux-columns">
+    <!-- Hand-authored rather than highlighted: reveal's highlight plugin
+         rebuilds a `pre code` block from its textContent, which would delete
+         the inlay-hint span. The `.hljs-*` classes are the same ones the
+         plugin emits, so this matches the highlighted block on the previous
+         slide. -->
+    <pre class="flux-code"><span class="hljs code-manual"><span class="hljs-keyword">fn</span> <span class="hljs-title">dot</span>(n: <span class="hljs-type">usize</span>, x: &amp;[<span class="hljs-type">f64</span>][n], y: &amp;[<span class="hljs-type">f64</span>][n]) -&gt; <span class="hljs-type">f64</span>
+{
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> res = <span class="hljs-number">0.0</span>;
+    <span class="hljs-keyword">let</span> body = |<span class="hint-anchor">j<span class="inlay-hint">usize{v: κ(v, n)}</span></span>| {
+        res += x[j] * <span class="src-index">y[j]</span>
+    };
+    <span class="hljs-title">foreach</span>(<span class="hljs-number">0</span>, n, <span class="src-call">body</span>);
+    res
+}</span></pre>
+
+    <div class="flow-arrow flow-arrow-h flux-arrow" aria-hidden="true">
+      <span class="flow-label">Flux</span>
+    </div>
+
+    <div class="flux-chc">
+      <span class="ind-0">\(\forall n.\)</span>
+      <span class="ind-1 clause-index"><span class="clause-mark">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span></span>
+      <span class="ind-1 clause-sub">\(\wedge\) <span class="clause-mark">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span></span>
+      <span class="ind-3 clause-sub"><span class="clause-mark"><span class="kv">\(\kv(v, n)\)</span></span></span>
+    </div>
+  </div>
+
+  <div class="chc-solution fragment">
+    <span class="chc-solution-inner">
+      <span class="chc-solution-label">solution</span>
+      <span class="kv">\(\kv(j, n)\)</span>
+      \(\;\triangleq\; 0 \le j \;\wedge\; j &lt; n\)
+    </span>
+  </div>
+</section>
