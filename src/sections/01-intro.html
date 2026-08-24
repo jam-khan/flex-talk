@@ -69,32 +69,57 @@
   <h2 class="slide-title">SMT-based verifiers</h2>
 
   <div class="smt-flow smt-flow-h">
-    <figure class="flow-box program-box">
-      <div class="code-lines" aria-hidden="true">
-        <span style="width: 62%"></span>
-        <span style="width: 40%"></span>
-        <span style="width: 74%"></span>
-        <span style="width: 52%"></span>
-        <span style="width: 30%"></span>
-      </div>
-      <figcaption>program + spec</figcaption>
-    </figure>
+    <!-- Program box + arrow are grouped so the brace can span both. The brace
+         and pills are positioned out of flow (see .frontend-group in the CSS)
+         so this group stays the same height as the boxes to its right. -->
+    <div class="frontend-group">
+      <figure class="flow-box program-box">
+        <div class="code-lines" aria-hidden="true">
+          <span style="width: 62%"></span>
+          <span style="width: 40%"></span>
+          <span style="width: 74%"></span>
+          <span style="width: 52%"></span>
+          <span style="width: 30%"></span>
+        </div>
+        <figcaption>program + spec</figcaption>
+      </figure>
 
-    <!-- The arrow is decorative, but the tool chips are content, so they sit
-         beside it in a positioning wrapper rather than inside the aria-hidden
-         arrow. The whole cluster is one fragment: a single click reveals all. -->
-    <div class="arrow-slot">
-      <div class="flow-arrow flow-arrow-long" aria-hidden="true">
-        <span class="flow-label">verification condition</span>
+      <div class="arrow-slot">
+        <div class="flow-arrow flow-arrow-long" aria-hidden="true">
+          <span class="flow-label">verification condition</span>
+        </div>
+
+        <!-- A concrete VC: ground formula, no Horn variables. Same formula as
+             the previous slide, which is where it was handed to the solver. -->
+        <div class="vc-formula">
+          $$
+          \begin{array}{c}
+            i \ge 0 \;\wedge\; i < \mathsf{len}(a) \\[2pt]
+            \wedge\; a[i] < 0 \;\wedge\; \forall j.\; a[j] \ge 0
+          \end{array}
+          $$
+        </div>
       </div>
 
-      <ul class="flow-chips fragment">
-        <li>Dafny</li>
-        <li>Verus</li>
-        <li>F*</li>
-        <li>Why3</li>
-        <li>Flux</li>
-      </ul>
+      <!-- Brace + pills: one fragment, so a brace never points at nothing. -->
+      <div class="brace-group fragment">
+        <svg class="brace" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+          <path
+            d="M0.5,0.5 Q0.5,6 5,6 L45,6 Q49.5,6 50,9.5 Q50.5,6 55,6 L95,6 Q99.5,6 99.5,0.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+
+        <ul class="flow-chips">
+          <li>Dafny</li>
+          <li>Verus</li>
+          <li>F*</li>
+          <li>Why3</li>
+        </ul>
+      </div>
     </div>
 
     <div class="flow-box solver-logos">
@@ -107,6 +132,100 @@
     <div class="flow-box verdict-box">
       <span class="verdict-ok">✓ verified</span>
       <span class="verdict-bad">✗ not verified</span>
+    </div>
+  </div>
+</section>
+
+<!-- CHC-based verifiers: the previous slide re-run with three swaps — the
+     arrow now carries Horn clauses, the formula under it has unknown
+     predicates, and the output includes the solution the solver found. -->
+<section class="flow-slide verifier-slide chc-slide">
+  <h2 class="slide-title">CHC-based verifiers</h2>
+
+  <div class="smt-flow smt-flow-h">
+    <div class="frontend-group">
+      <figure class="flow-box program-box">
+        <div class="code-lines" aria-hidden="true">
+          <span style="width: 62%"></span>
+          <span style="width: 40%"></span>
+          <span style="width: 74%"></span>
+          <span style="width: 52%"></span>
+          <span style="width: 30%"></span>
+        </div>
+        <figcaption>program + spec</figcaption>
+      </figure>
+
+      <div class="arrow-slot">
+        <div class="flow-arrow flow-arrow-long" aria-hidden="true">
+          <span class="flow-label">constrained Horn clauses</span>
+        </div>
+
+        <!-- Base case, inductive step, safety query.
+             Laid out as a CSS grid of inline-math cells rather than a LaTeX
+             `array`, so the unknowns can be wrapped in `.kv` and coloured.
+             MathJax markup extensions can't do this — see src/main.js. -->
+        <div class="vc-formula chc-system">
+          <div class="chc-grid">
+            <span>\(\top\)</span>
+            <span class="imp">\(\Longrightarrow\)</span>
+            <span><span class="kv">\(\kv(0)\)</span></span>
+
+            <span><span class="kv">\(\kv(n)\)</span> \(\wedge\; n &lt; 10\)</span>
+            <span class="imp">\(\Longrightarrow\)</span>
+            <span><span class="kv">\(\kv(n{+}1)\)</span></span>
+
+            <span><span class="kv">\(\kv(n)\)</span> \(\wedge\; n \ge 10\)</span>
+            <span class="imp">\(\Longrightarrow\)</span>
+            <span>\(n = 10\)</span>
+          </div>
+          <span class="formula-caption">&kappa; is an unknown predicate</span>
+        </div>
+      </div>
+
+      <div class="brace-group fragment">
+        <svg class="brace" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+          <path
+            d="M0.5,0.5 Q0.5,6 5,6 L45,6 Q49.5,6 50,9.5 Q50.5,6 55,6 L95,6 Q99.5,6 99.5,0.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+
+        <ul class="flow-chips">
+          <li>SeaHorn</li>
+          <li>Eldarica</li>
+          <li>Liquid Haskell</li>
+          <li>Flux</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- The CHC solver is the subject here; SMT is demoted to something it
+         calls, so the logos sit small beneath the name. -->
+    <div class="flow-box chc-solver-box">
+      <span class="solver-name">CHC solver</span>
+
+      <div class="sub-logos">
+        <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
+        <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+      </div>
+    </div>
+
+    <div class="flow-arrow" aria-hidden="true"></div>
+
+    <!-- Unlike the SMT verdict, a CHC solver returns a witness: the invariants
+         it found. That witness is what makes independent checking possible.
+         It sits below the box, positioned out of flow so it cannot alter the
+         row's vertical alignment. -->
+    <div class="verdict-group">
+      <div class="flow-box verdict-box">
+        <span class="verdict-ok">✓ verified</span>
+        <span class="verdict-bad">✗ not verified</span>
+      </div>
+
+      <span class="verdict-solution">\(\kv(n) \;\triangleq\; 0 \le n \le 10\)</span>
     </div>
   </div>
 </section>

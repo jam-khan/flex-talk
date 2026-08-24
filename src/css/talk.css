@@ -197,6 +197,10 @@
    flow centers the body in the space that's left. Without it, reveal centers
    the title+body block as a unit and the body lands below centre. */
 .reveal .flow-slide {
+  /* Narrower side margins than a text slide: these rows are five elements
+     wide and need the width back. */
+  --slide-pad-x: 5%;
+
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -281,10 +285,10 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--muted);
-  font-size: 0.46em;
+  font-size: 0.58em;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   white-space: nowrap;
 }
 
@@ -416,20 +420,19 @@
 .reveal .program-box figcaption {
   margin-top: 0.85em;
   color: var(--muted);
-  font-size: 0.42em;
+  font-size: 0.55em;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   white-space: nowrap;
 }
 
 /* Longer stem so the "verification condition" label has room to sit above it
    without overhanging into the neighbouring boxes. */
 .reveal .smt-flow-h .flow-arrow-long {
-  width: 9em;
+  width: 11em;
 }
 
-/* Positioning context for the arrow and the tool chips beneath it. */
 .reveal .arrow-slot {
   position: relative;
   display: flex;
@@ -437,21 +440,65 @@
   flex: none;
 }
 
-/* Tool names below the arrow: same rounded vocabulary as the flow boxes, but
-   lighter, so they read as annotation rather than a fourth stage. Absolutely
-   positioned so revealing them cannot reflow the row. */
-.reveal .flow-chips {
+/* The VC hangs below the arrow. Absolute, so a long formula cannot stretch the
+   arrow's slot and push the rest of the row sideways. */
+/* The offset is in px, not em: `em` here resolves against this element's own
+   (small) font-size, so it shrank as the formula shrank and let the arrow's
+   head overlap the text. px clears the head regardless of formula size. */
+.reveal .vc-formula {
   position: absolute;
-  top: calc(50% + 0.9em);
+  top: calc(50% + 26px);
   left: 50%;
   transform: translateX(-50%);
+  /* An absolutely positioned box shrink-to-fits, but is still clamped to its
+     containing block — here the narrow `.arrow-slot`. Without max-content the
+     grid columns get squeezed below their natural width and, since nothing may
+     wrap, the implication arrow overlaps the antecedent. */
+  width: max-content;
+  font-size: 0.65em;
+  white-space: nowrap;
+}
+
+.reveal .vc-formula mjx-container[display='true'] {
+  margin: 0;
+}
+
+/* Program box + arrow, grouped so the brace can span both. Everything the
+   brace group contains is positioned out of flow, so this wrapper stays
+   exactly as tall as the boxes to its right and the row's `align-items:
+   center` keeps all four stages on one axis. */
+.reveal .frontend-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.reveal .brace-group {
+  position: absolute;
+  top: calc(100% + 1.5em);
+  left: 0;
+  right: 0;
+}
+
+/* Stroked SVG rather than a rotated `}` glyph: a brace character distorts when
+   scaled to an arbitrary width and depends on the font. `non-scaling-stroke`
+   keeps the line an even weight despite the non-uniform viewBox scaling. */
+.reveal .brace {
+  display: block;
+  width: 100%;
+  height: 0.55em;
+  color: var(--arrow);
+}
+
+/* Tool names under the brace: same rounded vocabulary as the flow boxes, but
+   lighter, so they read as annotation rather than a stage of the pipeline. */
+.reveal .flow-chips {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.32em;
-  /* Sized to fit three chips, so the fourth wraps: a 3-then-2 pair of rows. */
-  width: 7.4em;
-  margin: 0;
+  margin: 0.55em 0 0;
   padding: 0;
   list-style: none;
 }
@@ -469,7 +516,7 @@
 }
 
 .reveal .smt-flow-h .flow-arrow-long .flow-label {
-  font-size: 0.4em;
+  font-size: 0.56em;
 }
 
 .reveal .verdict-box {
@@ -488,6 +535,123 @@
 
 .reveal .verdict-box .verdict-bad {
   color: var(--bad);
+}
+
+/* --- CHC slide -----------------------------------------------------------
+   The verifier slide re-run: Horn clauses on the arrow, unknown predicates in
+   the formula, and a witness in the output. */
+
+/* Three clauses need more room than the two-line VC, in both directions. */
+.reveal .chc-slide .flow-arrow-long {
+  width: 12.5em;
+}
+
+/* The clause system hangs lower than the two-line VC, so the brace has to drop
+   further to clear it. */
+.reveal .chc-slide .brace-group {
+  top: calc(100% + 3.4em);
+}
+
+.reveal .chc-system {
+  font-size: 0.6em;
+}
+
+/* Three columns: antecedent, implication, consequent — the alignment a LaTeX
+   `array` would have given, done in CSS so the cells stay stylable HTML. */
+.reveal .chc-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 0.5em;
+  row-gap: 0.35em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.reveal .chc-grid > span:last-child,
+.reveal .chc-grid > span:nth-child(3n) {
+  text-align: left;
+}
+
+.reveal .chc-grid .imp {
+  color: var(--muted);
+}
+
+/* Horn variables carry the accent so the eye lands on the unknowns.
+   MathJax's SVG glyphs fill with `currentColor`, so setting colour on the
+   wrapping element is enough. */
+.reveal .chc-system .kv {
+  color: var(--accent);
+}
+
+/* px, not em: this sits inside `.chc-system`, which is already scaled down, so
+   an em value compounds and the caption ends up around 10px. */
+.reveal .formula-caption {
+  display: block;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* The box names the CHC solver; the SMT logos shrink underneath it to signal
+   that they are subroutines rather than the stage itself. */
+.reveal .chc-solver-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.reveal .chc-solver-box .solver-name {
+  font-size: 0.72em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.reveal .chc-solver-box .sub-logos {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+}
+
+.reveal .chc-solver-box .logo {
+  display: block;
+  width: auto;
+  box-shadow: none;
+  border: none;
+  margin: 0;
+  opacity: 0.75;
+}
+
+.reveal .chc-solver-box .logo-z3 {
+  height: 1.05em;
+}
+
+.reveal .chc-solver-box .logo-cvc5 {
+  height: 0.6em;
+}
+
+/* The solution is the point of the slide, so it gets its own line beneath the
+   verdict box — out of flow, like the brace, so the row stays centered. */
+.reveal .verdict-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.reveal .verdict-solution {
+  position: absolute;
+  top: calc(100% + 18px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  color: var(--accent);
+  font-size: 0.62em;
 }
 
 .muted {

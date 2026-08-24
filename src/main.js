@@ -64,6 +64,12 @@ Reveal.initialize({
   mathjax4: {
     mathjax: mathjaxUrl,
     tex: {
+      // NB: only the TeX extensions compiled into the bundle are usable. The
+      // `html` and `color` packages (\htmlClass, \textcolor, \class, \style)
+      // are autoload stubs that fetch from a CDN at runtime, which cannot work
+      // in an offline deck — they render as literal text. To colour part of a
+      // formula, split it into inline math and colour the wrapping element:
+      // MathJax's SVG output fills with `currentColor`, so CSS wins.
       inlineMath: [
         ['$', '$'],
         ['\\(', '\\)'],
