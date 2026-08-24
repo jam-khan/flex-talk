@@ -27,3 +27,36 @@
     </ul>
   </div>
 </section>
+
+<!-- Horizontal flow: formula -> solvers -> answer.
+     `@assets/…` is rewritten to a real bundled URL by src/main.js. -->
+<section class="smt-slide">
+  <h2 class="slide-title">SMT Solvers</h2>
+
+  <div class="smt-flow smt-flow-h">
+    <!-- Split over two lines with `array`: MathJax display math does not wrap,
+         and on one line this formula is too wide for a horizontal layout. -->
+    <div class="flow-box smt-formula">
+      $$
+      \begin{array}{l}
+        i \ge 0 \;\wedge\; i < \mathsf{len}(a) \\[2pt]
+        \wedge\; a[i] < 0 \;\wedge\; \forall j.\; a[j] \ge 0
+      \end{array}
+      $$
+    </div>
+
+    <div class="flow-arrow" aria-hidden="true"><span class="flow-label">query</span></div>
+
+    <div class="flow-box solver-logos">
+      <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
+      <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+    </div>
+
+    <div class="flow-arrow" aria-hidden="true"><span class="flow-label">answer</span></div>
+
+    <div class="flow-box smt-answer">
+      <span class="verdict">sat</span>
+      <span class="verdict">unsat</span>
+    </div>
+  </div>
+</section>

@@ -4,11 +4,16 @@
 :root {
   --accent: #1a5fb4;
   --muted: #6b7280;
+  --arrow: #9aa5b4;
   --code-font: 'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace;
   /* Serif display face for titles, set against reveal's sans body text.
      Stack only — no webfont fetch, so the single-file build stays offline. */
   --display-font: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'P052',
     'URW Palladio L', 'Charter', 'Charis SIL', 'DejaVu Serif', Georgia, serif;
+
+  /* Geometry shared by all content slides — the two dials for the whole deck. */
+  --slide-pad-x: 9%;
+  --slide-lift: 1.2em;
 }
 
 .reveal {
@@ -41,6 +46,23 @@
 
 .reveal section {
   text-align: left;
+}
+
+/* --- Content-slide frame ------------------------------------------------
+   Shared geometry for every slide except the title card: side margins, and a
+   lift so the content sits above true center.
+
+   The lift works *with* reveal's centering rather than turning it off. Reveal
+   positions a centered slide at `top = (slideHeight - section.scrollHeight) / 2`,
+   and padding counts toward scrollHeight — so bottom padding shrinks the
+   computed top offset and the content rides higher.
+
+   border-box is mandatory: reveal ships no box-sizing reset, so under the
+   default content-box these `width: 100%` sections would grow past 100% and
+   overflow to the right, throwing centered content off-center. */
+.reveal .slides section:not(.title-slide):not(.stack) {
+  box-sizing: border-box;
+  padding: 0 var(--slide-pad-x) var(--slide-lift);
 }
 
 .reveal pre {
@@ -159,6 +181,212 @@
   .reveal .title-slide .authors {
     animation: none;
   }
+}
+
+/* --- SMT slide ----------------------------------------------------------
+   Left-to-right flow: formula -> solvers -> verdict, with labelled arrows for
+   the query and the answer. Everything is sized down relative to the vertical
+   version — three boxes plus two arrows have to fit one 1280px-wide row. */
+
+/* Side margins come from the shared content-slide frame above.
+
+   The fixed height makes the section fill the slide instead of shrink-wrapping
+   its content, so the title can sit near the top while `margin: auto` on the
+   flow centers the body in the space that's left. Without it, reveal centers
+   the title+body block as a unit and the body lands below centre. */
+.reveal .smt-slide {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .smt-slide .smt-flow {
+  margin: auto 0;
+}
+
+/* Headings stay flush-left on every content slide, even where the body opts
+   into centered text. The title card uses `.title`, not `.slide-title`, so it
+   is unaffected. */
+.reveal .slide-title {
+  font-family: var(--display-font);
+  font-size: 1.55em;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.3em;
+  text-align: left;
+  align-self: stretch;
+}
+
+.reveal .smt-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+}
+
+/* Horizontal variant: boxes and arrows in one row, vertically centered. */
+.reveal .smt-flow-h {
+  flex-direction: row;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Each stage of the flow sits in a box. Padding/radius are in px, not em, so
+   the three boxes match despite sitting at different font-sizes. */
+.reveal .flow-box {
+  box-sizing: border-box;
+  border: 2px solid #dde2e8;
+  border-radius: 10px;
+  background: #fafbfc;
+  padding: 16px 28px;
+}
+
+.reveal .smt-formula {
+  font-size: 0.95em;
+  margin: 0;
+}
+
+.reveal .smt-formula mjx-container[display='true'] {
+  margin: 0;
+}
+
+/* Rounded stem plus a solid triangular head — no image, scales with font-size.
+   A filled head reads far better at projection distance than a thin chevron. */
+.reveal .flow-arrow {
+  position: relative;
+  width: 6px;
+  height: 1.9em;
+  background: var(--arrow);
+  border-radius: 3px 3px 0 0;
+  margin: 0.5em 0 1.05em;
+}
+
+.reveal .flow-arrow::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 0.46em solid transparent;
+  border-right: 0.46em solid transparent;
+  border-top: 0.58em solid var(--arrow);
+}
+
+.reveal .flow-arrow .flow-label {
+  position: absolute;
+  left: 1.1em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.46em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+/* Same arrow, rotated to point right: the stem's axes swap, the head's borders
+   move from `top` to `left`, and the label sits above rather than beside. */
+.reveal .smt-flow-h .flow-arrow {
+  width: 2.8em;
+  height: 6px;
+  border-radius: 3px 0 0 3px;
+  margin: 0 1.15em 0 0.7em;
+  flex: none;
+}
+
+.reveal .smt-flow-h .flow-arrow::after {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border-left: 0.58em solid var(--arrow);
+  border-right: none;
+  border-top: 0.46em solid transparent;
+  border-bottom: 0.46em solid transparent;
+}
+
+.reveal .smt-flow-h .flow-arrow .flow-label {
+  left: 50%;
+  top: auto;
+  bottom: 0.85em;
+  transform: translateX(-50%);
+}
+
+.reveal .solver-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.5em;
+}
+
+/* Sized by height so the two marks read as visually equal weight despite very
+   different aspect ratios (Z3 is square, cvc5 is a wide wordmark). */
+.reveal .solver-logos .logo {
+  display: block;
+  width: auto;
+  box-shadow: none;
+  border: none;
+  margin: 0;
+}
+
+.reveal .solver-logos .logo-z3 {
+  height: 3em;
+}
+
+.reveal .solver-logos .logo-cvc5 {
+  height: 1.75em;
+}
+
+/* The output of the flow, so it carries the accent rather than the neutral grey. */
+.reveal .smt-answer {
+  font-family: var(--code-font);
+  font-size: 1em;
+  letter-spacing: 0.02em;
+  border-color: var(--accent);
+  background: #f2f6fc;
+}
+
+.reveal .smt-answer .verdict {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.reveal .smt-answer .verdict-sep {
+  color: var(--muted);
+  margin: 0 0.45em;
+  font-weight: 400;
+}
+
+/* Horizontal fitting: three boxes plus two arrows share one row, so the type
+   and logos come down from their vertical-layout sizes, and the two verdicts
+   stack instead of sitting side by side to keep the last box narrow. */
+.reveal .smt-flow-h .flow-box {
+  padding: 14px 22px;
+}
+
+.reveal .smt-flow-h .smt-formula {
+  font-size: 0.66em;
+}
+
+.reveal .smt-flow-h .solver-logos {
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+.reveal .smt-flow-h .logo-z3 {
+  height: 2.1em;
+}
+
+.reveal .smt-flow-h .logo-cvc5 {
+  height: 1.2em;
+}
+
+.reveal .smt-flow-h .smt-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  font-size: 0.8em;
 }
 
 .muted {

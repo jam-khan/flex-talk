@@ -27,9 +27,23 @@ const sections = import.meta.glob('./sections/*.html', {
   eager: true,
 });
 
+// Images used by the slides. Sections are imported ?raw — as opaque strings —
+// so Vite never sees their `src` attributes and cannot rewrite them to built
+// asset URLs. Instead the slides write `@assets/<file>` and we substitute the
+// real (hashed, or base64 in the single-file build) URL here.
+const assets = import.meta.glob('./assets/*', { import: 'default', eager: true });
+const assetUrls = Object.fromEntries(
+  Object.entries(assets).map(([path, url]) => [path.split('/').pop(), url])
+);
+
+const resolveAssets = (html) =>
+  // Replacement *function*: asset URLs are data: URIs in the single-file build
+  // and can contain `$&`, which a replacement string would expand.
+  html.replace(/@assets\/([\w.-]+)/g, (match, name) => assetUrls[name] ?? match);
+
 document.querySelector('.slides').innerHTML = Object.keys(sections)
   .sort()
-  .map((path) => sections[path])
+  .map((path) => resolveAssets(sections[path]))
   .join('\n');
 
 Reveal.initialize({
