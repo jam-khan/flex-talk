@@ -94,20 +94,23 @@
 <!-- Fig. 1 of the paper: `foreach` and the CHC Flux generates for it.
      Trimmed per the paper's presentation: no sorts on the binders, and the
      leading `∃κ.` is dropped — Horn variables are implicitly existential. -->
-<section class="flux-example-slide">
+<section class="flux-example-slide foreach-slide">
   <h2 class="slide-title">Example: <code>foreach</code></h2>
 
   <div class="flux-columns">
-    <pre class="flux-code"><code class="language-rust">fn foreach&lt;F&gt;(lo: usize, hi: usize, mut f: F)
-where
-    F: FnMut(usize{v: lo &lt;= v &amp;&amp; v &lt; hi})
+    <!-- Hand-authored rather than highlighted: reveal's highlight plugin
+         rebuilds a `pre code` block from its textContent, which would delete
+         the hover anchors. `.hljs-*` classes match what the plugin emits. -->
+    <pre class="flux-code"><span class="hljs code-manual"><span class="hljs-keyword">fn</span> <span class="hljs-title">foreach</span>&lt;F&gt;(lo: <span class="hljs-type">usize</span>, hi: <span class="hljs-type">usize</span>, <span class="hljs-keyword">mut</span> f: F)
+<span class="hljs-keyword">where</span>
+    F: <span class="hljs-type">FnMut</span>(<span class="hljs-type">usize</span>{v: <span class="spec-pre">lo &lt;= v &amp;&amp; v &lt; hi</span>})
 {
-    let mut i = lo;
-    while i &lt; hi {
-        f(i);
-        i += 1;
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> i <span class="src-entry">=</span> lo;
+    <span class="hljs-keyword src-loop hint-anchor">while<span class="inlay-hint">invariant: κ(i, hi, lo)</span></span> i &lt; hi {
+        f(<span class="src-guard">i</span>);
+        i <span class="src-step">+=</span> <span class="hljs-number">1</span>;
     }
-}</code></pre>
+}</span></pre>
 
     <div class="flow-arrow flow-arrow-h flux-arrow" aria-hidden="true">
       <span class="flow-label">Flux</span>
@@ -117,11 +120,11 @@ where
          extensions aren't in the offline bundle (see src/main.js). -->
     <div class="flux-chc">
       <span class="ind-0">\(\forall lo, hi.\)</span>
-      <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+      <span class="ind-1"><span class="kv kv-entry">\(\kv(lo, hi, lo)\)</span></span>
       <span class="ind-1">\(\wedge\; \forall i.\)</span>
-      <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\Rightarrow\; i &lt; hi \;\Rightarrow\)</span>
-      <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-      <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+      <span class="ind-2 clause-body"><span class="clause-mark"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\Rightarrow\; i &lt; hi \;\Rightarrow\)</span></span>
+      <span class="ind-3 clause-guard"><span class="clause-mark">\(lo \le i \;\wedge\; i &lt; hi\)</span></span>
+      <span class="ind-3">\(\wedge\;\) <span class="kv kv-step">\(\kv(i{+}1, hi, lo)\)</span></span>
     </div>
   </div>
 

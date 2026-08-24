@@ -1230,8 +1230,6 @@
    code — an in-flow hint would shove the rest of the line sideways on hover. */
 .reveal .hint-anchor {
   position: relative;
-  border-bottom: 1px dashed var(--accent);
-  cursor: help;
 }
 
 .reveal .inlay-hint {
@@ -1264,31 +1262,68 @@
   visibility: visible;
 }
 
-/* On the `dot` slide the Horn variables stay black, and light up only while
-   the binder they stand for is hovered — so the hover ties the closure's
-   parameter to every κ in the constraint at once.
+/* Hovering code lights the part of the constraint it accounts for. Two kinds
+   of link, kept in different colours so they never read as one signal:
+
+     blue  — what a Horn variable stands for (the binder, the loop invariant)
+     amber — which obligation a piece of code is responsible for
 
    `:has()` is what lets a hover in the code block affect the constraint beside
-   it; the two are in different subtrees, so no sibling selector reaches. Where
-   `:has()` is unsupported the κ simply stay black, which is the resting state
-   anyway. */
-.reveal .dot-slide .flux-chc .kv {
+   it; the two sit in different subtrees, so no sibling selector reaches. Where
+   `:has()` is unsupported the constraint simply stays in its resting state. */
+.reveal .flux-example-slide .flux-chc .kv {
   color: inherit;
   border-radius: 3px;
   padding: 0 0.12em;
 }
 
-.reveal .dot-slide:has(.hint-anchor:hover) .flux-chc .kv {
+/* Anchors that answer "what is this unknown?" */
+.reveal .hint-anchor,
+.reveal .src-loop {
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+}
+
+/* Anchors that answer "where does this obligation come from?" */
+.reveal .src-index,
+.reveal .src-call,
+.reveal .src-entry,
+.reveal .src-step,
+.reveal .src-guard {
+  border-bottom: 1px dashed #a9b4c0;
+  cursor: help;
+}
+
+/* Blue: every κ at once. */
+.reveal .dot-slide:has(.hint-anchor:hover) .flux-chc .kv,
+.reveal .foreach-slide:has(.src-loop:hover) .flux-chc .kv {
   background: #cfe0f7;
 }
 
-/* Hovering a piece of the code lights the clause it is responsible for:
-   the indexing expression -> the safe-access obligation, and the closure passed
-   to `foreach` -> the subtyping obligation. Same `:has()` trick as above. */
-.reveal .src-index,
-.reveal .src-call {
-  border-bottom: 1px dashed #a9b4c0;
-  cursor: help;
+/* Amber: the single obligation this code produces. */
+.reveal .foreach-slide:has(.src-entry:hover) .kv-entry,
+.reveal .foreach-slide:has(.src-step:hover) .kv-step {
+  background: #fdf0c8;
+}
+
+/* Both head obligations of the inductive clause discharge under the same
+   hypotheses, so lighting a head also lights the clause body it holds under —
+   in a paler amber, so head and hypotheses stay distinguishable. */
+.reveal .foreach-slide:has(.src-guard:hover) .clause-body .clause-mark,
+.reveal .foreach-slide:has(.src-step:hover) .clause-body .clause-mark {
+  background: #fdf7e4;
+}
+
+/* The head obligation from `f(i)` is exactly the closure's declared
+   precondition, so hovering the argument lights the spec it comes from. */
+.reveal .spec-pre {
+  border-radius: 3px;
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
+}
+
+.reveal .foreach-slide:has(.src-guard:hover) .spec-pre {
+  background: #fdf0c8;
 }
 
 /* The mark wraps only the text, so the highlight hugs the clause instead of
@@ -1300,7 +1335,8 @@
 }
 
 .reveal .dot-slide:has(.src-index:hover) .clause-index .clause-mark,
-.reveal .dot-slide:has(.src-call:hover) .clause-sub .clause-mark {
+.reveal .dot-slide:has(.src-call:hover) .clause-sub .clause-mark,
+.reveal .foreach-slide:has(.src-guard:hover) .clause-guard .clause-mark {
   background: #fdf0c8;
 }
 
