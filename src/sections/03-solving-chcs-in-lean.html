@@ -126,6 +126,37 @@
   </div>
 </section>
 
+<!-- The general case, in the same shape as the slide before it: two clauses
+     now put κ in the head, so the strongest κ is what either of them gives —
+     a disjunction, one disjunct per head occurrence. The guards are tinted and
+     the tints repeat in the definition, so the pairing needs no explaining.
+
+     The last conjunct has κ in the hypothesis, and contributes nothing: only
+     heads make κ true. -->
+<section class="def-slide disj-slide">
+  <h2 class="slide-title">In general: a disjunction</h2>
+
+  <div class="def-stack">
+    <div class="flux-chc def-constraint">
+      <span class="ind-0">\(\forall n.\)</span>
+      <span class="ind-1">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n)\)</span> \(\Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+      <span class="ind-1">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n)\)</span> \(\Rightarrow\) <span class="kv">\(\kv(w, n)\)</span></span>
+      <span class="ind-1">\(\wedge\; \forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
+    </div>
+
+    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
+      <span class="flow-label">one disjunct per head occurrence</span>
+    </div>
+
+    <div class="def-line fragment" data-fragment-index="1">
+      <span class="kv">\(\kv(j, n)\)</span> \(\;\triangleq\;\)
+      <span class="guard-a">\((0 \le j \;\wedge\; j &lt; n)\)</span>
+      \(\;\vee\;\)
+      <span class="guard-b">\((j = n)\)</span>
+    </div>
+  </div>
+</section>
+
 <!-- Fig. 2 of the paper: what `zap` does to the acyclic constraint from the
      previous slide. Left to right, in the deck's flow vocabulary — the arrows
      are the same component the SMT and Flux slides use.

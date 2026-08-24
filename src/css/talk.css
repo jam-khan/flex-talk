@@ -1636,6 +1636,23 @@
   white-space: nowrap;
 }
 
+/* Each head occurrence's guard, and the disjunct it turns into. Two washes,
+   both clear of the blue the Horn variables carry, so a guard is never mistaken
+   for a κ. */
+.reveal .disj-slide .guard-a,
+.reveal .disj-slide .guard-b {
+  border-radius: 3px;
+  padding: 0 0.18em;
+}
+
+.reveal .disj-slide .guard-a {
+  background: #fdf1cf;
+}
+
+.reveal .disj-slide .guard-b {
+  background: #dfeede;
+}
+
 /* --- How zap works ------------------------------------------------------
    Paper Fig. 2 as a left-to-right flow: constraint, zap, κ-free VC, grind,
    no goals — with the computed solution below the row. */
