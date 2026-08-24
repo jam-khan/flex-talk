@@ -12,3 +12,38 @@
     <li><span class="agenda-num">04</span><span class="agenda-title">Experimental results</span></li>
   </ol>
 </section>
+
+<!-- The CHC the audience just saw for `dot`, now as the Lean term it really is.
+     The two Flux slides deliberately dropped the sorts and the leading `∃κ`
+     (see the comments in 02-refinement-types.html); this slide puts them back,
+     which is the whole point: the binder is what a proof has to answer for.
+
+     Lines are separate spans rather than one `<pre>`, in the same idiom as
+     `.flux-chc`, so the binder line can carry the callout as a sibling: it
+     floats out into the gutter beside it, leaving the term untouched when
+     revealed. -->
+<section class="lean-prop-slide">
+  <h2 class="slide-title">CHCs as Lean Props</h2>
+
+  <div class="lean-code">
+    <span class="lean-line"><span class="hljs-keyword">theorem</span> <span class="hljs-title">c_dot</span> :</span>
+
+    <!-- Notes hang off `.note-anchor`, which wraps the exact text they are
+         about: the leader then starts where that text ends, whatever its
+         length. Nothing may separate the anchor from the note — a newline
+         inside a `white-space: pre` line would show up as a line break. -->
+    <span class="lean-line ind-1"><span class="note-anchor">∃ <span class="kv">κ</span> : <span class="hljs-type">Int</span> → <span class="hljs-type">Int</span> → <span class="hljs-type">Prop</span>,<span class="lean-annot note-up fragment">
+      the unknown refinement is an <em>existentially quantified predicate</em>
+    </span></span></span>
+
+    <span class="lean-line ind-2">∀ n : <span class="hljs-type">Int</span>,</span>
+    <span class="lean-line ind-3">(∀ j : <span class="hljs-type">Int</span>, <span class="kv">κ</span> j n → j &lt; n)</span>
+    <span class="lean-line lean-and">∧ (∀ v : <span class="hljs-type">Int</span>, 0 ≤ v ∧ v &lt; n → <span class="kv">κ</span> v n)</span>
+
+    <!-- The proof is left open on purpose: what goes in place of the ellipsis
+         is the rest of the section. -->
+    <span class="lean-line lean-proof ind-1"><span class="note-anchor">:= <span class="hljs-keyword">by</span> <span class="lean-todo">...</span><span class="lean-annot note-down fragment">
+      two tactics: <span class="tac">zap</span> and <span class="tac">fix</span>
+    </span></span></span>
+  </div>
+</section>
