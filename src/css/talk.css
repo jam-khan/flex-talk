@@ -635,6 +635,61 @@
   height: 0.6em;
 }
 
+/* --- Flex slide ----------------------------------------------------------
+   The CHC slide with the solver swapped. Green — the same green as the verdict,
+   and the visual opposite of the red-outlined solver on the Trust panel. */
+
+.reveal .flex-solver-box {
+  position: relative;
+  border-color: var(--ok);
+  background: #f1f8f3;
+  padding: 20px 34px;
+}
+
+.reveal .flex-solver-box .solver-name {
+  color: var(--ok);
+  font-size: 0.95em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Negative offsets put the badge on top of the corner rather than inside the
+   box: it straddles the border, half in and half out. */
+.reveal .lean-badge {
+  position: absolute;
+  top: -0.62em;
+  left: -0.62em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35em;
+  height: 1.35em;
+  border-radius: 50%;
+  border: 2px solid var(--ok);
+  background: #fff;
+  overflow: hidden;
+}
+
+.reveal .lean-badge img {
+  width: 82%;
+  height: auto;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.reveal .proof-note {
+  display: block;
+  margin-top: 0.4em;
+  color: var(--ok);
+  /* Sits inside `.verdict-solution` (0.62em), so an em value compounds — 1.15em
+     here lands at roughly 0.71em of the slide's base size, matching the verdict
+     text above it rather than out-shouting it. */
+  font-size: 1.15em;
+  font-style: normal;
+  font-weight: 600;
+}
+
 /* The solution is the point of the slide, so it gets its own line beneath the
    verdict box — out of flow, like the brace, so the row stays centered. */
 .reveal .verdict-group {

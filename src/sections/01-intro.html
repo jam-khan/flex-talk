@@ -274,3 +274,69 @@
     </div>
   </div>
 </section>
+
+<!-- Flex: the CHC-verifier slide with the solver box swapped out. The front
+     half is deliberately identical — only the backend and the output change. -->
+<section class="flow-slide verifier-slide chc-slide flex-slide">
+  <h2 class="slide-title">Flex: a foundational CHC solver</h2>
+
+  <div class="smt-flow smt-flow-h">
+    <div class="frontend-group">
+      <figure class="flow-box program-box">
+        <div class="code-lines" aria-hidden="true">
+          <span style="width: 62%"></span>
+          <span style="width: 40%"></span>
+          <span style="width: 74%"></span>
+          <span style="width: 52%"></span>
+          <span style="width: 30%"></span>
+        </div>
+        <figcaption>program + spec</figcaption>
+      </figure>
+
+      <div class="arrow-slot">
+        <div class="flow-arrow flow-arrow-long" aria-hidden="true">
+          <span class="flow-label">constrained Horn clauses</span>
+        </div>
+
+        <div class="vc-formula chc-system">
+          <div class="chc-grid">
+            <span>\(\top\)</span>
+            <span class="imp">\(\Longrightarrow\)</span>
+            <span><span class="kv">\(\kv(0)\)</span></span>
+
+            <span><span class="kv">\(\kv(n)\)</span> \(\wedge\; n &lt; 10\)</span>
+            <span class="imp">\(\Longrightarrow\)</span>
+            <span><span class="kv">\(\kv(n{+}1)\)</span></span>
+
+            <span><span class="kv">\(\kv(n)\)</span> \(\wedge\; n \ge 10\)</span>
+            <span class="imp">\(\Longrightarrow\)</span>
+            <span>\(n = 10\)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The badge straddles the corner: positioned with negative offsets so it
+         overlaps the border and sits on top of the box, not inside it. -->
+    <div class="flow-box flex-solver-box">
+      <span class="lean-badge" aria-hidden="true">
+        <img src="@assets/lean.png" alt="" />
+      </span>
+      <span class="solver-name">Flex</span>
+    </div>
+
+    <div class="flow-arrow" aria-hidden="true"></div>
+
+    <div class="verdict-group">
+      <div class="flow-box verdict-box">
+        <span class="verdict-ok">✓ verified</span>
+        <span class="verdict-bad">✗ not verified</span>
+      </div>
+
+      <span class="verdict-solution">
+        \(\kv(n) \;\triangleq\; 0 \le n \le 10\)
+        <em class="proof-note">+ machine-checked proof</em>
+      </span>
+    </div>
+  </div>
+</section>
