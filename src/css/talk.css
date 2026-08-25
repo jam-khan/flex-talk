@@ -3121,3 +3121,135 @@
   letter-spacing: 0.1em;
   white-space: nowrap;
 }
+
+/* --- Case studies slide --------------------------------------------------
+   A 2x2 of cards plus a punchline strip. The cards are on screen from the
+   start and only the strip is a fragment: the studies are the setup, and the
+   one thing worth a beat is what they have in common. */
+.reveal .case-slide {
+  --slide-pad-x: 5%;
+
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .case-body {
+  margin: auto 0;
+}
+
+.reveal .case-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+}
+
+.reveal .case-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  padding: 16px 22px;
+}
+
+.reveal .case-name {
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .case-prop {
+  /* Reserves two lines on every card, so the stat rows sit on a common
+     baseline whether the property took one line to state or two. */
+  min-height: 2.8em;
+  margin: 0;
+  color: #374151;
+  font-size: 0.5em;
+  line-height: 1.4;
+}
+
+.reveal .case-prop strong {
+  font-weight: 700;
+  color: #111827;
+}
+
+.reveal .case-stats {
+  color: var(--muted);
+  font-size: 0.42em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.reveal .case-stats b {
+  color: #374151;
+  font-weight: 700;
+}
+
+/* Marks the two studies that are upstream kernel code rather than benchmarks
+   written to be verifiable. Same pill vocabulary as `.flow-chips`. */
+.reveal .case-chip {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  border: 1px solid #d5dbe2;
+  border-radius: 999px;
+  padding: 0.25em 0.8em;
+  color: var(--muted);
+  font-size: 0.4em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.reveal .case-punch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 0.85em;
+  padding-top: 0.75em;
+  border-top: 2px solid #e3e7ec;
+  text-align: center;
+}
+
+.reveal .case-punch-lead {
+  font-size: 0.72em;
+  font-weight: 700;
+}
+
+.reveal .case-punch-note {
+  max-width: 30em;
+  color: var(--muted);
+  font-size: 0.46em;
+  line-height: 1.45;
+}
+
+/* --- Research questions --------------------------------------------------
+   Same numbered-list vocabulary as the agenda (and reuses `.agenda-num`), but
+   each entry is a question plus a line of scope rather than a section name. */
+.reveal .rq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reveal .rq-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1.1em;
+}
+
+.reveal .rq-q {
+  font-size: 1.05em;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.reveal .rq-q strong {
+  font-weight: 700;
+  color: var(--accent);
+}

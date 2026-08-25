@@ -215,3 +215,63 @@
     </div>
   </div>
 </section>
+
+<!-- The case studies (§6.1, Table 1). Four cards rather than the table: the
+     studies differ in kind — functional correctness, memory safety, raw
+     arithmetic, refinement of a spec — and a table flattens that into five
+     columns of digits nobody reads from the back of a room.
+
+     Proof LoC is on the cards deliberately. It is more than double the verified
+     Rust, and that is the honest answer to "what did it cost?"; hiding it until
+     someone asks reads worse than owning it.
+
+     The Tock chips matter: two of the four are upstream kernel code, not
+     benchmarks written to be verifiable. -->
+<section class="case-slide">
+  <h2 class="slide-title">Case studies</h2>
+
+  <div class="case-body">
+    <div class="case-grid">
+      <div class="flow-box case-card">
+        <span class="case-name">Sorting</span>
+        <p class="case-prop">
+          in-place insertion, quick, and merge sort each return a
+          <strong>sorted permutation</strong> of the input
+        </p>
+        <span class="case-stats"><b>316</b> rust · <b>15</b> chc · <b>620</b> proof</span>
+      </div>
+
+      <div class="flow-box case-card">
+        <span class="case-chip">Tock kernel</span>
+        <span class="case-name">RingBuffer</span>
+        <p class="case-prop">
+          a ring-buffer deque <strong>never reads uninitialized memory</strong>,
+          and implements a queue
+        </p>
+        <span class="case-stats"><b>257</b> rust · <b>10</b> chc · <b>501</b> proof</span>
+      </div>
+
+      <div class="flow-box case-card">
+        <span class="case-chip">Tock kernel</span>
+        <span class="case-name">TickTock</span>
+        <p class="case-prop">
+          a handful of functions whose modular-arithmetic and bitvector goals
+          <strong>time out in SMT</strong>
+        </p>
+        <span class="case-stats"><b>15</b> rust · <b>5</b> chc · <b>302</b> proof</span>
+      </div>
+
+      <div class="flow-box case-card">
+        <span class="case-name">HashTable</span>
+        <p class="case-prop">
+          a chaining hash table <strong>refines a functional Lean spec</strong>
+        </p>
+        <span class="case-stats"><b>562</b> rust · <b>22</b> chc · <b>1361</b> proof</span>
+      </div>
+    </div>
+
+    <div class="case-punch fragment">
+      <span class="case-punch-lead">None of this was in expressible in Flux</span>
+    </div>
+  </div>
+</section>
