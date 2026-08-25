@@ -124,7 +124,7 @@
     </div>
 
     <div class="def-line fragment" data-fragment-index="1">
-      <span class="kv">\(\kv(z_0, z_1)\)</span> \(\;\triangleq\; 0 \le z_0 \;\wedge\; z_0 &lt; z_1\)
+      <span class="kv">\(\kv(x, y)\)</span> \(\;\triangleq\; 0 \le x \;\wedge\; x &lt; y\)
     </div>
   </div>
 </section>
@@ -153,11 +153,55 @@
     </div>
 
     <div class="def-line fragment" data-fragment-index="1">
-      \(\kv(z_0, z_1)\) \(\;\triangleq\;\)
-      <span class="guard-a">\((0 \le z_0 \;\wedge\; z_0 &lt; z_1)\)</span>
+      \(\kv(x, y)\) \(\;\triangleq\;\)
+      <span class="guard-a">\((0 \le x \;\wedge\; x &lt; y)\)</span>
       \(\;\vee\;\)
-      <span class="guard-b">\((z_0 = z_1)\)</span>
+      <span class="guard-b">\((x = y)\)</span>
     </div>
+  </div>
+</section>
+
+<!-- The same constraint and the same disjunction, but before simplification:
+     what Zap actually builds is, per head occurrence, an existential over the
+     variables bound on the path to that head, conjoined with equations pinning
+     kappa's parameters to the head's arguments.
+
+     No `exists n`: n is a parameter of kappa, so both heads pass it directly
+     and it is already in scope as y. Only v and w — bound on the path but not
+     arguments of the head — need binding. The note says so, because the
+     asymmetry is the first thing anyone asks about.
+
+     The disjuncts here collapse to the previous slide's line: every existential
+     is pinned by an equation, so each substitutes away. That only happens
+     because each head argument is a distinct bound variable; a head like
+     kappa(i + 1, hi, lo) leaves a genuine existential behind. -->
+<section class="def-slide disj-slide exi-slide">
+  <h2 class="slide-title"><span class="tac">Zap</span>: each disjunct binds its own variables</h2>
+
+  <div class="def-stack">
+    <div class="flux-chc def-constraint">
+      <span class="ind-0">\(\exists\) \(\kv\)\(.\)</span>
+      <span class="ind-0">\(\forall n.\)</span>
+      <span class="ind-1">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n)\)</span> \(\Rightarrow\) \(\kv(v, n)\)</span>
+      <span class="ind-1">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n)\)</span> \(\Rightarrow\) \(\kv(w, n)\)</span>
+      <span class="ind-1">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
+    </div>
+
+    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
+      <span class="flow-label">bind the path variables, pin the arguments</span>
+    </div>
+
+    <div class="def-line fragment" data-fragment-index="1">
+      \(\kv(x, y)\) \(\;\triangleq\;\)
+      <span class="guard-a">\((\exists v.\; 0 \le v \;\wedge\; v &lt; y \;\wedge\; x = v)\)</span>
+      \(\;\vee\;\)
+      <span class="guard-b">\((\exists w.\; w = y \;\wedge\; x = w)\)</span>
+    </div>
+
+    <p class="def-note fragment" data-fragment-index="2">
+      no \(\exists n\): both heads pass \(n\) straight through, so it is
+      already in scope as \(y\)
+    </p>
   </div>
 </section>
 
@@ -205,7 +249,7 @@
        it. Second fragment, so it lands before the rewritten constraint. -->
   <div class="zap-solution fragment" data-fragment-index="2">
     <span class="zap-solution-label">solution</span>
-    <span class="zap-sub">\(\kv(z_0, z_1) \;\triangleq\; 0 \le z_0 \;\wedge\; z_0 &lt; z_1\)</span>
+    <span class="zap-sub">\(\kv(x, y) \;\triangleq\; 0 \le x \;\wedge\; x &lt; y\)</span>
   </div>
 </section>
 
@@ -449,6 +493,320 @@
       <span class="seq-done verdict-ok">no goals</span>
     </div>
   </div>
+</section>
+
+<!-- The same walk as the slide before, against the *unsimplified* solution --
+     same film strip, same states, same arrows -- with the difference that the
+     solution is named kappa_sol and bound in the context from the first state,
+     so it is never spelled out inside a hypothesis or a goal. It is applied,
+     carried along, and unfolded exactly once, at the leaf, which is why
+     `unfold` earns a step of its own and the states either side of it differ
+     only below the bar.
+
+     Every transition takes two clicks. The first lights what the step is about
+     on the state already on screen and drops the previous step's marks; the
+     second brings the resulting state in and scrolls the strip. Splitting them
+     means the room reads the argument for a step before seeing its result,
+     rather than both landing at once.
+
+     That split is why the marks key off the `.beat-N` spans rather than off
+     state visibility: a beat fires a click ahead of its state. The beats are
+     empty and zero-sized -- they exist only to be counted as fragments -- and
+     the marks are this slide's own classes, so none of the shared `seq-slide`
+     highlight rules, which are keyed to states, can fire alongside them. -->
+<section class="seq-slide fold-slide">
+  <h2 class="slide-title"><span class="tac">Zap</span>: the solution stays folded</h2>
+
+  <div class="beats" aria-hidden="true">
+    <span class="beat beat-2 fragment" data-fragment-index="1"></span>
+    <span class="beat beat-3 fragment" data-fragment-index="3"></span>
+    <span class="beat beat-4 fragment" data-fragment-index="5"></span>
+    <span class="beat beat-5 fragment" data-fragment-index="7"></span>
+    <span class="beat beat-6 fragment" data-fragment-index="9"></span>
+    <span class="beat beat-7 fragment" data-fragment-index="11"></span>
+  </div>
+
+  <div class="seq-flow">
+    <div class="goal-state state-1">
+      <div class="state-ctx">
+      <div class="ctx-line ctx-def">
+        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
+        <span class="ctx-colon">:=</span>
+        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
+      </div>
+      <div class="ctx-line">
+        <span class="ctx-name">\(q\)</span>
+        <span class="ctx-colon">:</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0">\(\forall n.\)</span>
+            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
+            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \True\)</span>
+            <span class="ind-1">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="state-goal">
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0"><span class="mk m-2l">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span></span>
+            <span class="ind-0">\(\forall n.\)</span>
+            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(v, n)\)</span></span>
+            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(w, n)\)</span></span>
+            <span class="ind-1">\(\wedge\; \forall j.\;\) <span class="kv mk m-2l">\(\kv(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-1 fragment" data-fragment-index="2" aria-hidden="true">
+      <span class="flow-label">\(\exists\) intro \(\kv_{\mathsf{sol}}\)</span>
+    </div>
+    <div class="goal-state state-2 fragment" data-fragment-index="2">
+      <div class="state-ctx">
+      <div class="ctx-line ctx-def">
+        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
+        <span class="ctx-colon">:=</span>
+        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
+      </div>
+      <div class="ctx-line">
+        <span class="ctx-name">\(q\)</span>
+        <span class="ctx-colon">:</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0"><span class="mk m-3l">\(\forall n.\)</span></span>
+            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
+            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \True\)</span>
+            <span class="ind-1">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="state-goal">
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0"><span class="mk m-3l">\(\forall n.\)</span></span>
+            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(v, n)\)</span></span>
+            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(w, n)\)</span></span>
+            <span class="ind-1">\(\wedge\; \forall j.\;\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-2 fragment" data-fragment-index="4" aria-hidden="true">
+      <span class="flow-label">intro \(n\);<br />specialize \(q\,n\)</span>
+    </div>
+    <div class="goal-state state-3 fragment" data-fragment-index="4">
+      <div class="state-ctx">
+      <div class="ctx-line ctx-def">
+        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
+        <span class="ctx-colon">:=</span>
+        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
+      </div>
+      <div class="ctx-line ctx-binder mk-row m-3r">
+        <span class="ctx-name">\(n\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(\Int\)</span>
+      </div>
+      <div class="ctx-line">
+        <span class="ctx-name">\(q\)</span>
+        <span class="ctx-colon">:</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0 line mk m-4l">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
+            <span class="ind-0">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \True\)</span>
+            <span class="ind-0">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="state-goal">
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0 line mk m-4l">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \kv_{\mathsf{sol}}(v, n)\)</span>
+            <span class="ind-0">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \kv_{\mathsf{sol}}(w, n)\)</span>
+            <span class="ind-0">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-3 fragment" data-fragment-index="6" aria-hidden="true">
+      <span class="flow-label">\(\wedge\) intro-left;<br />specialize \(q.1\)</span>
+    </div>
+    <div class="goal-state state-4 fragment" data-fragment-index="6">
+      <div class="state-ctx">
+      <div class="ctx-line ctx-def">
+        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
+        <span class="ctx-colon">:=</span>
+        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
+      </div>
+      <div class="ctx-line ctx-binder">
+        <span class="ctx-name">\(n\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(\Int\)</span>
+      </div>
+      <div class="ctx-line">
+        <span class="ctx-name">\(q\)</span>
+        <span class="ctx-colon">:</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0 line mk m-4r"><span class="mk m-5l">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n)\)</span> \(\Rightarrow\; \True\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="state-goal">
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0 line mk m-4r"><span class="mk m-5l">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n)\)</span> \(\Rightarrow\; \kv_{\mathsf{sol}}(v, n)\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-4 fragment" data-fragment-index="8" aria-hidden="true">
+      <span class="flow-label">intro \(v\) \(h\);<br />specialize \(q\,v\,h\)</span>
+    </div>
+    <div class="goal-state state-5 fragment" data-fragment-index="8">
+      <div class="state-ctx">
+      <div class="ctx-line ctx-def mk-row m-6l">
+        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
+        <span class="ctx-colon">:=</span>
+        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
+      </div>
+      <div class="ctx-line ctx-binder">
+        <span class="ctx-name">\(n\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(\Int\)</span>
+      </div>
+      <div class="ctx-line ctx-binder mk-row m-5r">
+        <span class="ctx-name">\(v\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(\Int\)</span>
+      </div>
+      <div class="ctx-line ctx-binder mk-row m-5r">
+        <span class="ctx-name">\(h\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(0 \le v \;\wedge\; v < n\)</span>
+      </div>
+      <div class="ctx-line">
+        <span class="ctx-name">\(q\)</span>
+        <span class="ctx-colon">:</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0">\(\True\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="state-goal">
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0"><span class="mk m-6l">\(\kv_{\mathsf{sol}}(v, n)\)</span></span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-5 fragment" data-fragment-index="10" aria-hidden="true">
+      <span class="flow-label">unfold \(\kv_{\mathsf{sol}}\)</span>
+    </div>
+    <div class="goal-state state-6 fragment" data-fragment-index="10">
+      <div class="state-ctx">
+      <div class="ctx-line ctx-def">
+        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
+        <span class="ctx-colon">:=</span>
+        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
+      </div>
+      <div class="ctx-line ctx-binder">
+        <span class="ctx-name">\(n\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(\Int\)</span>
+      </div>
+      <div class="ctx-line ctx-binder">
+        <span class="ctx-name">\(v\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(\Int\)</span>
+      </div>
+      <div class="ctx-line ctx-binder mk-row m-7l">
+        <span class="ctx-name">\(h\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(0 \le v \;\wedge\; v < n\)</span>
+      </div>
+      <div class="ctx-line">
+        <span class="ctx-name">\(q\)</span>
+        <span class="ctx-colon">:</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0">\(\True\)</span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="state-goal">
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0"><span class="mk m-6r"><span class="mk m-7l">\((\exists v'.\, 0 \le v' \wedge v' &lt; n \wedge v = v')\)</span> \(\;\vee\; (\exists w.\, w = n \wedge v = w)\)</span></span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-6 fragment" data-fragment-index="12" aria-hidden="true">
+      <span class="flow-label">exact<br /><span class="tac">inl \(\langle v, h, \mathsf{rfl}\rangle\)</span></span>
+    </div>
+    <div class="goal-state state-7 fragment" data-fragment-index="12">
+      <span class="seq-done verdict-ok">no goals</span>
+    </div>
+  </div>
+
+  <!-- The route taken through the constraint, one segment per step, laid down
+       at the foot of the slide as the walk goes on. It is the same path Zap
+       walks to build a disjunct: these binders are the witnesses the
+       certificate supplies, and this hypothesis is what proves it.
+
+       Driven off the beats rather than being fragments of its own, so it costs
+       no extra clicks and each segment lands with the highlight for the step
+       that made it. -->
+  <ol class="path" aria-label="path through the constraint">
+    <li class="path-seg seg-1"><span class="tac">intro n</span></li>
+    <li class="path-seg seg-2"><span class="tac">left</span></li>
+    <li class="path-seg seg-3"><span class="tac">intro v</span></li>
+    <li class="path-seg seg-4"><span class="tac">intro h</span></li>
+  </ol>
 </section>
 
 <!-- The turn from zap to fix. Same shape as the two `def-slide`s that opened

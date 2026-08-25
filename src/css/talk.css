@@ -1829,6 +1829,13 @@
   .reveal .seq-flow {
     transition: none;
   }
+
+  /* The path's delay exists to wait out the scroll above; with no scroll to
+     wait for it would just be a lag. */
+  .reveal .fold-slide .path-seg,
+  .reveal .fold-slide .path-seg[class] {
+    transition-delay: 0s;
+  }
 }
 
 .reveal .goal-state {
@@ -3251,5 +3258,404 @@
 
 .reveal .rq-q strong {
   font-weight: 700;
+  color: var(--accent);
+}
+
+/* --- The unsimplified solution ------------------------------------------
+   Same shape as the disjunction slide, but the definition line carries two
+   existentials and their equations, so it needs the size back. */
+.reveal .exi-slide .def-line {
+  font-size: 0.74em;
+}
+
+/* Why one binder is missing. Sits under the definition rather than beside it:
+   it is an aside about the line above, not a further step. */
+.reveal .def-note {
+  max-width: 26em;
+  margin: 1.3em 0 0;
+  color: var(--muted);
+  font-size: 0.5em;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* --- The certificate with the solution folded ----------------------------
+   Runs on the `seq-slide` machinery — same film strip, same fixed-width states,
+   same one-arrow-at-a-time reveal — with its own shift table, because it has a
+   seventh step (unfolding is a step here) and because it centres the *pair* of
+   states rather than the newest one.
+
+   The row holds seven 14em states 20em apart (state + arrow), so it is 134em
+   wide and its centre sits at 67em. The centre of the pair ending at state i is
+   20i - 3, hence a shift of 70 - 20i; the opening state, with no predecessor,
+   is centred on its own at 60em. Without this the newest state lands dead
+   centre and its predecessor is pushed off the left edge, which defeats the
+   point of a strip. */
+.reveal .fold-slide:not(:has(.state-2.visible)) .seq-flow {
+  --seq-shift: 60em;
+}
+
+.reveal .fold-slide:has(.state-2.visible):not(:has(.state-3.visible)) .seq-flow {
+  --seq-shift: 50em;
+}
+
+.reveal .fold-slide:has(.state-3.visible):not(:has(.state-4.visible)) .seq-flow {
+  --seq-shift: 30em;
+}
+
+.reveal .fold-slide:has(.state-4.visible):not(:has(.state-5.visible)) .seq-flow {
+  --seq-shift: 10em;
+}
+
+.reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seq-flow {
+  --seq-shift: -10em;
+}
+
+.reveal .fold-slide:has(.state-6.visible):not(:has(.state-7.visible)) .seq-flow {
+  --seq-shift: -30em;
+}
+
+.reveal .fold-slide:has(.state-7.visible) .seq-flow {
+  --seq-shift: -50em;
+}
+
+.reveal .fold-slide:has(.state-7.visible) .arrow-5 {
+  opacity: 0;
+}
+
+/* --- Aligning the bars --------------------------------------------------
+   Each state carries a different amount of context, so under the shared
+   `align-items: center` every sequent bar landed at a different height and the
+   strip read as a row of unrelated blocks.
+
+   The row becomes a three-row grid — context, bar, goal — and each state maps
+   its three parts onto those rows with `grid-template-rows: subgrid`. The bars
+   then share one row by construction, whatever the states contain. Context is
+   pushed down onto its bar and goals pulled up onto theirs, so the two halves
+   meet at the line instead of drifting from it. */
+.reveal .fold-slide .seq-flow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  grid-template-rows: auto auto auto;
+  justify-content: center;
+}
+
+.reveal .fold-slide .goal-state {
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+  /* Kept on the state, not on each half: the two halves inherit them through
+     `subgrid` below, so the turnstile sits in the same column as the hypothesis
+     names and lines up with them. Two independent grids sized their first
+     columns separately and left it adrift. */
+  grid-template-columns: max-content max-content auto;
+  column-gap: 0;
+  row-gap: 0;
+}
+
+.reveal .fold-slide .state-ctx,
+.reveal .fold-slide .state-goal {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  row-gap: 0.5em;
+  align-items: baseline;
+}
+
+/* Top-aligned, not bottom-aligned onto the bar: the context row of the strip
+   is as tall as the largest context, so pinning every context to its top keeps
+   the solution — always the first hypothesis — on one line across all seven
+   states. Bottom-aligning pushed it up and down as the hypotheses below it came
+   and went, which made the one fixed thing on the slide look like it moved. */
+.reveal .fold-slide .state-ctx {
+  align-self: start;
+}
+
+.reveal .fold-slide .state-goal {
+  align-self: start;
+  padding-top: 0.55em;
+}
+
+/* The closing state has no sequent to split, so it opts out of the subgrid and
+   simply centres across all three rows — level with the arrow that produced it,
+   rather than pinned to the top of the context row. */
+.reveal .fold-slide .state-7 {
+  display: flex;
+  align-items: center;
+}
+
+/* The turnstile belongs in the colon column, not the name column: it plays the
+   same role as the `:` and the `:=` above it — the mark between a name and what
+   it stands for — and reads as a column of separators rather than as a nameless
+   hypothesis. */
+.reveal .fold-slide .goal-line > .ctx-name {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.reveal .fold-slide .seq-arrow {
+  grid-row: 1 / -1;
+  align-self: center;
+}
+
+/* Horn variables carry no mark at all here, unlike the other `seq-slide`s,
+   where they wear a blue wash. The first step is about the occurrences the
+   existential binds, and nothing it is about can already be marked when the
+   slide opens — colour included, or the beat has nothing left to add. */
+.reveal .fold-slide .kv {
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+
+/* --- Marking the steps ---------------------------------------------------
+   Each step lights what it is about on the state already on screen, and where
+   it ended up on the state that follows. The left marks fire on the step's
+   beat — a click before its state exists — and the right marks fire with the
+   state itself; both go out on the next beat, so exactly one step is lit.
+
+   Own classes rather than the shared `hl-*`/`step-*` ones: those are keyed to
+   state visibility, and on a two-click strip they would fire a beat late. */
+.reveal .fold-slide .beats {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.reveal .fold-slide .mk {
+  border-radius: 3px;
+  transition: background 320ms ease;
+}
+
+/* Whole-line marks hug their formula: these are flex children of `.flux-chc`,
+   which would otherwise stretch them to the panel. */
+.reveal .fold-slide .mk.line {
+  align-self: flex-start;
+  padding: 0 0.2em;
+  margin: 0 -0.2em;
+}
+
+/* A context entry lights as one box across name, colon and body: the cells sit
+   flush, so painting them together with the ends rounded reads as one label. */
+.reveal .fold-slide .mk-row > * {
+  padding-top: 0.12em;
+  padding-bottom: 0.12em;
+  transition: background 320ms ease;
+}
+
+/* The definition's name cell is zero-width (it overhangs to the left), so
+   padding it would give it width and shove the colon column sideways the moment
+   the row lit. Its inner span carries the wash instead. */
+.reveal .fold-slide .mk-row:not(.ctx-def) > :first-child {
+  padding-left: 0.45em;
+  border-radius: 5px 0 0 5px;
+}
+
+/* The definition row's three cells are sized by their own contents, and the
+   body — parenthesised, subscripted — is taller than the name beside it. Left
+   baseline-aligned, their washes came out as three boxes of different heights
+   sitting in a row. Stretching them to the track gives one continuous band, and
+   centring the text inside each keeps it where baseline alignment had it. */
+.reveal .fold-slide .ctx-def > .ctx-name,
+.reveal .fold-slide .ctx-def > .ctx-colon,
+.reveal .fold-slide .ctx-def > .ctx-sort {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+
+/* `stretch`, not `center`: the span inside is what actually carries the wash,
+   so it has to reach the full height of the track like the two cells beside it.
+   Centred, it painted a short box and the band stepped up where it ended. */
+.reveal .fold-slide .ctx-def > .ctx-name {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+/* And no vertical padding on the cell, or the span would stretch to the cell's
+   content box — shorter than the neighbours' border boxes by exactly that
+   padding, which is the step again. The span centres its own text instead. */
+.reveal .fold-slide .mk-row.ctx-def > .ctx-name {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.reveal .fold-slide .mk-row.ctx-def > .ctx-name > span {
+  display: flex;
+  align-items: center;
+  padding: 0 0.3em 0 0.45em;
+  border-radius: 5px 0 0 5px;
+  transition: background 320ms ease;
+}
+
+.reveal .fold-slide .mk-row > :last-child {
+  padding-right: 0.55em;
+  border-radius: 0 5px 5px 0;
+}
+
+.reveal .fold-slide:has(.beat-2.visible):not(:has(.beat-3.visible)) .m-2l,
+.reveal .fold-slide:has(.state-2.visible):not(:has(.beat-3.visible)) .m-2r,
+.reveal .fold-slide:has(.beat-3.visible):not(:has(.beat-4.visible)) .m-3l,
+.reveal .fold-slide:has(.state-3.visible):not(:has(.beat-4.visible)) .m-3r,
+.reveal .fold-slide:has(.beat-4.visible):not(:has(.beat-5.visible)) .m-4l,
+.reveal .fold-slide:has(.state-4.visible):not(:has(.beat-5.visible)) .m-4r,
+.reveal .fold-slide:has(.beat-5.visible):not(:has(.beat-6.visible)) .m-5l,
+.reveal .fold-slide:has(.state-5.visible):not(:has(.beat-6.visible)) .m-5r,
+.reveal .fold-slide:has(.beat-6.visible):not(:has(.beat-7.visible)) .m-6l,
+.reveal .fold-slide:has(.state-6.visible):not(:has(.beat-7.visible)) .m-6r,
+.reveal .fold-slide:has(.beat-7.visible):not(:has(.beat-8.visible)) .m-7l,
+.reveal .fold-slide:has(.state-7.visible):not(:has(.beat-8.visible)) .m-7r {
+  background: #cfe0f7;
+}
+
+.reveal .fold-slide:has(.beat-2.visible):not(:has(.beat-3.visible)) .mk:not(.line):not(.mk-row).m-2l,
+.reveal .fold-slide:has(.state-2.visible):not(:has(.beat-3.visible)) .mk:not(.line):not(.mk-row).m-2r,
+.reveal .fold-slide:has(.beat-3.visible):not(:has(.beat-4.visible)) .mk:not(.line):not(.mk-row).m-3l,
+.reveal .fold-slide:has(.state-3.visible):not(:has(.beat-4.visible)) .mk:not(.line):not(.mk-row).m-3r,
+.reveal .fold-slide:has(.beat-4.visible):not(:has(.beat-5.visible)) .mk:not(.line):not(.mk-row).m-4l,
+.reveal .fold-slide:has(.state-4.visible):not(:has(.beat-5.visible)) .mk:not(.line):not(.mk-row).m-4r,
+.reveal .fold-slide:has(.beat-5.visible):not(:has(.beat-6.visible)) .mk:not(.line):not(.mk-row).m-5l,
+.reveal .fold-slide:has(.state-5.visible):not(:has(.beat-6.visible)) .mk:not(.line):not(.mk-row).m-5r,
+.reveal .fold-slide:has(.beat-6.visible):not(:has(.beat-7.visible)) .mk:not(.line):not(.mk-row).m-6l,
+.reveal .fold-slide:has(.state-6.visible):not(:has(.beat-7.visible)) .mk:not(.line):not(.mk-row).m-6r,
+.reveal .fold-slide:has(.beat-7.visible):not(:has(.beat-8.visible)) .mk:not(.line):not(.mk-row).m-7l,
+.reveal .fold-slide:has(.state-7.visible):not(:has(.beat-8.visible)) .mk:not(.line):not(.mk-row).m-7r {
+  padding: 0 0.16em;
+}
+
+.reveal .fold-slide:has(.beat-2.visible):not(:has(.beat-3.visible)) .mk-row.m-2l > *,
+.reveal .fold-slide:has(.state-2.visible):not(:has(.beat-3.visible)) .mk-row.m-2r > *,
+.reveal .fold-slide:has(.beat-3.visible):not(:has(.beat-4.visible)) .mk-row.m-3l > *,
+.reveal .fold-slide:has(.state-3.visible):not(:has(.beat-4.visible)) .mk-row.m-3r > *,
+.reveal .fold-slide:has(.beat-4.visible):not(:has(.beat-5.visible)) .mk-row.m-4l > *,
+.reveal .fold-slide:has(.state-4.visible):not(:has(.beat-5.visible)) .mk-row.m-4r > *,
+.reveal .fold-slide:has(.beat-5.visible):not(:has(.beat-6.visible)) .mk-row.m-5l > *,
+.reveal .fold-slide:has(.state-5.visible):not(:has(.beat-6.visible)) .mk-row.m-5r > *,
+.reveal .fold-slide:has(.beat-6.visible):not(:has(.beat-7.visible)) .mk-row.m-6l > *,
+.reveal .fold-slide:has(.state-6.visible):not(:has(.beat-7.visible)) .mk-row.m-6r > *,
+.reveal .fold-slide:has(.beat-7.visible):not(:has(.beat-8.visible)) .mk-row.m-7l > *,
+.reveal .fold-slide:has(.state-7.visible):not(:has(.beat-8.visible)) .mk-row.m-7r > * {
+  background: #cfe0f7;
+}
+
+.reveal .fold-slide:has(.beat-2.visible):not(:has(.beat-3.visible)) .mk-row.ctx-def.m-2l > .ctx-name > span,
+.reveal .fold-slide:has(.state-2.visible):not(:has(.beat-3.visible)) .mk-row.ctx-def.m-2r > .ctx-name > span,
+.reveal .fold-slide:has(.beat-3.visible):not(:has(.beat-4.visible)) .mk-row.ctx-def.m-3l > .ctx-name > span,
+.reveal .fold-slide:has(.state-3.visible):not(:has(.beat-4.visible)) .mk-row.ctx-def.m-3r > .ctx-name > span,
+.reveal .fold-slide:has(.beat-4.visible):not(:has(.beat-5.visible)) .mk-row.ctx-def.m-4l > .ctx-name > span,
+.reveal .fold-slide:has(.state-4.visible):not(:has(.beat-5.visible)) .mk-row.ctx-def.m-4r > .ctx-name > span,
+.reveal .fold-slide:has(.beat-5.visible):not(:has(.beat-6.visible)) .mk-row.ctx-def.m-5l > .ctx-name > span,
+.reveal .fold-slide:has(.state-5.visible):not(:has(.beat-6.visible)) .mk-row.ctx-def.m-5r > .ctx-name > span,
+.reveal .fold-slide:has(.beat-6.visible):not(:has(.beat-7.visible)) .mk-row.ctx-def.m-6l > .ctx-name > span,
+.reveal .fold-slide:has(.state-6.visible):not(:has(.beat-7.visible)) .mk-row.ctx-def.m-6r > .ctx-name > span,
+.reveal .fold-slide:has(.beat-7.visible):not(:has(.beat-8.visible)) .mk-row.ctx-def.m-7l > .ctx-name > span,
+.reveal .fold-slide:has(.state-7.visible):not(:has(.beat-8.visible)) .mk-row.ctx-def.m-7r > .ctx-name > span {
+  background: #cfe0f7;
+}
+
+/* The solution is bound to a name, not assumed — `:=`, not `:`. */
+.reveal .ctx-def .ctx-colon {
+  font-family: var(--code-font);
+}
+
+/* Unboxed: the panel is the vocabulary for constraints, and this is a
+   definition sitting in the context — the same kind of thing as `n : Int`.
+   One line, so it reads as a single definition rather than as two claims. */
+.reveal .ctx-def-body {
+  white-space: nowrap;
+}
+
+/* `κ_sol(z₀, z₁)` is far the longest name in the context, and sizing the name
+   column to it pushed every panel in both halves to the right. Given zero width
+   it stops contributing to that column and hangs off the left instead, which
+   costs nothing — the space beside a state is empty — and buys the definition
+   the room it needs to stay on one line.
+
+   The flex wrapper is what aims the overflow: a child that cannot fit spills
+   away from `justify-content`, so `flex-end` sends it leftwards. */
+.reveal .fold-slide .ctx-def > .ctx-name {
+  width: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reveal .fold-slide .ctx-def > .ctx-name > span {
+  white-space: nowrap;
+}
+
+/* --- The path through the constraint -------------------------------------
+   A breadcrumb of the route taken to the head, laid down at the foot of the
+   slide one segment per step. Visibility keys off the beats, like the marks, so
+   it costs no clicks of its own and each segment lands with the highlight for
+   the step that made it.
+
+   It sits after the strip, whose `margin: auto 0` splits the free space above
+   and below it — so the path rides the bottom of that gap rather than hugging
+   the states. The min-height keeps its line reserved from the start, so nothing
+   above it moves as the path grows. */
+.reveal .fold-slide .path {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.55em;
+  min-height: 1.6em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* No transition in the resting state, so a segment that stops matching — going
+   backwards through the deck — simply vanishes. The animation lives on the lit
+   rule below, which is the state being entered when a segment arrives; CSS
+   takes the transition from the state it is moving *to*, so forwards animates
+   and backwards does not. */
+.reveal .fold-slide .path-seg {
+  opacity: 0;
+  color: var(--muted);
+  font-size: 0.68em;
+  transition: none;
+}
+
+/* The separator hangs off the following segment rather than sitting between
+   two of them, so a segment that has not landed yet takes its own separator
+   with it. */
+.reveal .fold-slide .path-seg + .path-seg::before {
+  content: '▸';
+  margin-right: 0.65em;
+  color: var(--arrow);
+}
+
+.reveal .fold-slide .path-seg .tac {
+  font-family: var(--code-font);
+  color: inherit;
+}
+
+/* Keyed to the states, not the beats: a segment names the tactic written on an
+   arrow, so it should arrive with that arrow — on the second click of a step,
+   not the first. On the beat the step is only being pointed at; it has not been
+   taken yet, and the path records steps taken.
+
+   `intro v` and `intro h` land together: the strip does both in one step. */
+.reveal .fold-slide:has(.state-3.visible) .seg-1,
+.reveal .fold-slide:has(.state-4.visible) .seg-2,
+.reveal .fold-slide:has(.state-5.visible) .seg-3,
+.reveal .fold-slide:has(.state-5.visible) .seg-4 {
+  opacity: 1;
+  /* Timed to settle just before the scroll does: the strip's transform runs
+     520ms, so a 140ms fade delayed by 160ms is done at 300ms — the segment is
+     down and still for the whole back half of the scroll. It starts a little
+     into the slide rather than with it, so the two are never moving off the
+     mark together. The colour is on the same clock, so the previous segment
+     dims exactly as the new one arrives. */
+  transition: opacity 140ms ease 160ms, color 140ms ease 160ms;
+}
+
+/* The newest segment, until the next one lands. */
+.reveal .fold-slide:has(.state-3.visible):not(:has(.state-4.visible)) .seg-1,
+.reveal .fold-slide:has(.state-4.visible):not(:has(.state-5.visible)) .seg-2,
+.reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seg-3,
+.reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seg-4 {
   color: var(--accent);
 }
