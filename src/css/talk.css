@@ -1667,7 +1667,9 @@
   height: 620px;
 }
 
-.reveal .zap-slide .slide-title .tac {
+/* A tactic named in a heading: code font, accent, a shade smaller so it sits
+   with the display face rather than towering over it. */
+.reveal .slide-title .tac {
   font-family: var(--code-font);
   font-size: 0.86em;
   color: var(--accent);
@@ -1690,7 +1692,14 @@
   font-size: 0.62em;
 }
 
-/* What zap substituted, marked the way the paper greys its rewrites. */
+/* What zap substituted, and the solution it substituted: the same wash the
+   Horn variables carry, so the two sides of the rewrite read as one colour. */
+.reveal .zap-slide .zap-sub,
+.reveal .cert-slide .zap-sub {
+  background: #cfe0f7;
+  box-shadow: none;
+}
+
 .reveal .zap-sub {
   border-radius: 4px;
   padding: 0.05em 0.3em;
@@ -1730,12 +1739,311 @@
    stay apart where they meet. */
 .reveal .kinds-slide .kv,
 .reveal .cert-slide .kv,
+.reveal .seq-slide .kv,
 .reveal .def-slide .kv,
 .reveal .zap-slide .kv {
   color: inherit;
   background: #cfe0f7;
   border-radius: 3px;
   padding: 0 0.18em;
+}
+
+/* --- Proof states -------------------------------------------------------
+   Sequent form: what we have above the bar, what we owe below it. The reduced
+   constraint arrives as a hypothesis (zap proved it), the original is the goal
+   the kernel actually demands. */
+.reveal .seq-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .seq-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  /* Before the second state is revealed, the row is nudged right so the first
+     state sits centred on the slide; revealing it slides the row back. */
+  transform: translateX(var(--seq-shift, 0));
+  transition: transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+ /* One step per click: the row slides left so the newest pair of states lands
+    centre, and the older ones run off the left edge. The row holds four states
+    at 17.9em apart, so its own centre is the gap between states two and three —
+    hence the values below. */
+.reveal .seq-slide:not(:has(.state-2.visible)) .seq-flow {
+  --seq-shift: 50em;
+}
+
+.reveal .seq-slide:has(.state-2.visible):not(:has(.state-3.visible)) .seq-flow {
+  --seq-shift: 40em;
+}
+
+.reveal .seq-slide:has(.state-3.visible):not(:has(.state-4.visible)) .seq-flow {
+  --seq-shift: 20em;
+}
+
+.reveal .seq-slide:has(.state-4.visible):not(:has(.state-5.visible)) .seq-flow {
+  --seq-shift: 0;
+}
+
+.reveal .seq-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seq-flow {
+  --seq-shift: -20em;
+}
+
+.reveal .seq-slide:has(.state-6.visible) .seq-flow {
+  --seq-shift: -40em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .seq-flow {
+    transition: none;
+  }
+}
+
+.reveal .goal-state {
+  flex: none;
+  /* A fixed width, so every step of the row is the same distance: the shifts
+     below are multiples of one state plus one arrow. Without it the slide would
+     need a hand-tuned offset per step, since the states shrink as the proof
+     goes on. */
+  width: 14em;
+  /* Three columns — name, colon, formula — so every hypothesis lines up on its
+     colon and the boxes share one left edge. The rows are the `.ctx-line`s,
+     which contribute their children directly via `display: contents`. */
+  display: grid;
+  grid-template-columns: max-content max-content auto;
+  /* No column gap: a highlighted `x : T` row paints all three cells, and a gap
+     between them would show as a white sliver through the band. The spacing
+     lives in the cells' padding instead. */
+  column-gap: 0;
+  row-gap: 0.5em;
+  align-items: baseline;
+}
+
+.reveal .ctx-line {
+  display: contents;
+}
+
+/* The turnstile sits in the name column; its formula skips the colon column. */
+.reveal .goal-line > .flow-box {
+  grid-column: 3;
+}
+
+.reveal .state-bar {
+  grid-column: 1 / -1;
+}
+
+/* Each formula keeps the panel the constraints wear on the other slides; the
+   state itself is unframed, so the bar reads as the sequent's rule rather than
+   as another box's edge. */
+.reveal .seq-slide .zap-box {
+  padding: 10px 14px;
+}
+
+.reveal .seq-arrow {
+  margin: 0 1.6em;
+  transition: opacity 320ms ease;
+}
+
+/* Only the newest arrow is shown: once the step after it lands, an arrow fades
+   out. It keeps its space — the row's shifts are measured in whole steps. */
+.reveal .seq-slide:has(.state-3.visible) .arrow-1,
+.reveal .seq-slide:has(.state-4.visible) .arrow-2,
+.reveal .seq-slide:has(.state-5.visible) .arrow-3,
+.reveal .seq-slide:has(.state-6.visible) .arrow-4 {
+  opacity: 0;
+}
+
+/* Two lines, so the label needs the nowrap off — plus `max-content`, or it
+   would wrap to the arrow's own width instead of breaking where the <br> is. */
+.reveal .seq-arrow .flow-label {
+  white-space: normal;
+  width: max-content;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.reveal .ctx-name,
+.reveal .ctx-colon {
+  font-size: 0.5em;
+}
+
+.reveal .ctx-name {
+  justify-self: end;
+  padding-right: 0.35em;
+}
+
+.reveal .ctx-colon {
+  padding-right: 0.35em;
+}
+
+.reveal .seq-slide .flux-chc {
+  font-size: 0.44em;
+}
+
+/* The bar: spans the state, since the state shrink-wraps to its widest line. */
+.reveal .state-bar {
+  margin: 0.7em 0;
+  border-top: 1px solid #c3cbd6;
+}
+
+.reveal .ctx-sort {
+  /* Hugs its text: the third column is `auto`, so a stretched cell would drag
+     a highlighted row's band across the whole state. */
+  justify-self: start;
+  font-size: 0.5em;
+}
+
+/* On this slide the marks are all one colour: the substitution the first step
+   makes gets the same blue wash as every later highlight, rather than the
+   ringed box the rewrite slides use. */
+.reveal .seq-slide .zap-sub {
+  background: #cfe0f7;
+  box-shadow: none;
+}
+
+/* A context entry lights up as one box around name, colon and type: the cells
+   sit flush (the grid has no column gap), so painting them together with the
+   ends rounded reads as a single label. */
+.reveal .hl-n > *,
+.reveal .hl-v > *,
+.reveal .hl-h > * {
+  padding-top: 0.12em;
+  padding-bottom: 0.12em;
+  transition: background 320ms ease;
+}
+
+.reveal .hl-n > :first-child,
+.reveal .hl-v > :first-child,
+.reveal .hl-h > :first-child {
+  padding-left: 0.45em;
+  border-radius: 5px 0 0 5px;
+}
+
+.reveal .hl-n > :last-child,
+.reveal .hl-v > :last-child,
+.reveal .hl-h > :last-child {
+  padding-right: 0.55em;
+  border-radius: 0 5px 5px 0;
+}
+
+.reveal .seq-slide:has(.state-3.visible):not(:has(.state-4.visible)) .hl-n > *,
+.reveal .seq-slide:has(.state-5.visible):not(:has(.state-6.visible)) .hl-v > *,
+.reveal .seq-slide:has(.state-5.visible) .hl-h > * {
+  background: #cfe0f7;
+}
+
+/* The step is about n, so when it fires the attention moves onto n: the binder
+   about to be introduced lights up on the left, and the blue that marked the
+   substitution steps back. */
+.reveal .n-binder,
+.reveal .seq-slide .zap-sub {
+  border-radius: 3px;
+  transition: background 320ms ease, box-shadow 320ms ease;
+}
+
+.reveal .seq-slide:has(.state-3.visible) .n-binder {
+  padding: 0 0.14em;
+  background: #cfe0f7;
+}
+
+.reveal .seq-slide:has(.state-3.visible) .state-2 .zap-sub,
+.reveal .state-3 .zap-sub {
+  background: none;
+  box-shadow: none;
+}
+
+/* What closes the goal: the hypothesis in the context, and the disjunct it
+   proves. Both light up as the last step fires. */
+.reveal .step-h {
+  border-radius: 3px;
+  transition: background 320ms ease;
+}
+
+.reveal .seq-slide:has(.state-6.visible) .step-h {
+  padding: 0 0.16em;
+  background: #cfe0f7;
+}
+
+.reveal .seq-slide:has(.state-6.visible) .step-v.step-v:not(.step-h) {
+  background: none;
+}
+
+/* Nothing left to prove. */
+.reveal .seq-done {
+  grid-column: 1 / -1;
+  color: var(--ok);
+  font-size: 0.8em;
+  font-weight: 600;
+  /* Flush left in its slot: the states are a fixed width, and centring left the
+     verdict stranded half a state away from the arrow that produced it. */
+  text-align: left;
+}
+
+/* A tactic named inside an arrow label stays code, and stays lower case. */
+.reveal .seq-arrow .flow-label .tac {
+  font-family: var(--code-font);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+
+/* The binder and the guard the next step introduces: lit on the left as it
+   fires, and again on the right where they now sit in the context. */
+.reveal .step-v {
+  border-radius: 3px;
+  transition: background 320ms ease;
+}
+
+.reveal .seq-slide:has(.state-5.visible) .step-v {
+  padding: 0 0.16em;
+  background: #cfe0f7;
+}
+
+.reveal .seq-slide:has(.state-5.visible) .conj-1.conj-1 {
+  background: none;
+}
+
+/* The conjunct the next step follows: lights up on the left as the step fires,
+   and is all that is left on the right. */
+.reveal .conj-1 {
+  border-radius: 3px;
+  transition: background 320ms ease;
+}
+
+.reveal .seq-slide:has(.state-4.visible) .conj-1 {
+  padding: 0 0.2em;
+  margin: 0 -0.2em;
+  background: #cfe0f7;
+}
+
+/* Hug the formula rather than stretching to the box: these lines are flex
+   children of `.flux-chc`, which stretches them by default. */
+.reveal .seq-slide .conj-1 {
+  align-self: flex-start;
+}
+
+/* Inside a context name the wash is the whole label, so the spacing margin the
+   variable carries inside formulas would push the colon column out of true. */
+.reveal .ctx-name .var-n {
+  margin: 0;
+}
+
+.reveal .seq-slide:has(.state-4.visible) .var-n.var-n {
+  background: none;
+}
+
+/* The variable the intro put in scope, wherever it now appears. Splitting it
+   into its own math chunk drops the spacing MathJax would have set around the
+   neighbouring operator, so the margin puts it back. */
+.reveal .var-n {
+  margin: 0 0.12em;
+  border-radius: 3px;
+  padding: 0 0.14em;
+  background: #cfe0f7;
 }
 
 /* --- Rewriting needs a proof term ---------------------------------------
@@ -1751,7 +2059,9 @@
 
 .reveal .cert-flow {
   display: flex;
-  align-items: flex-end;
+  /* Tops, not bottoms: the boxes differ by a line — one carries the ∃κ — and
+     the tags above them have to line up. */
+  align-items: flex-start;
   justify-content: center;
   margin: auto 0 0;
 }
@@ -1771,7 +2081,7 @@
 }
 
 .reveal .cert-arrow {
-  margin-bottom: 2.6em;
+  margin-top: 3.4em;
 }
 
 .reveal .cert-type {
