@@ -31,7 +31,7 @@
 <!-- Horizontal flow: formula -> solvers -> answer.
      `@assets/…` is rewritten to a real bundled URL by src/main.js. -->
 <section class="flow-slide smt-slide">
-  <h2 class="slide-title">SMT Solvers</h2>
+  <h2 class="slide-title">Satisfiability Modulo Theories</h2>
 
   <div class="smt-flow smt-flow-h">
     <!-- Split over two lines with `array`: MathJax display math does not wrap,
@@ -47,9 +47,17 @@
 
     <div class="flow-arrow" aria-hidden="true"><span class="flow-label">query</span></div>
 
-    <div class="flow-box solver-logos">
-      <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
-      <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+    <!-- The box is the *kind* of tool, with the two solvers under it as
+         instances: a logo pair alone reads as "this talk is about Z3", which is
+         a narrower claim than the one being made. Same name-over-sub-logos
+         shape the CHC solver box uses later in the section. -->
+    <div class="flow-box smt-solver-box">
+      <span class="solver-name">SMT solver</span>
+
+      <div class="sub-logos">
+        <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
+        <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+      </div>
     </div>
 
     <div class="flow-arrow" aria-hidden="true"><span class="flow-label">answer</span></div>
@@ -122,16 +130,24 @@
       </div>
     </div>
 
-    <div class="flow-box solver-logos">
-      <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
-      <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+    <!-- The box is the *kind* of tool, with the two solvers under it as
+         instances: a logo pair alone reads as "this talk is about Z3", which is
+         a narrower claim than the one being made. Same name-over-sub-logos
+         shape the CHC solver box uses later in the section. -->
+    <div class="flow-box smt-solver-box">
+      <span class="solver-name">SMT solver</span>
+
+      <div class="sub-logos">
+        <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
+        <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+      </div>
     </div>
 
     <div class="flow-arrow" aria-hidden="true"></div>
 
     <div class="flow-box verdict-box">
-      <span class="verdict-ok">✓ verified</span>
-      <span class="verdict-bad">✗ not verified</span>
+      <span class="verdict-ok">✓ safe</span>
+      <span class="verdict-bad">✗ unsafe</span>
     </div>
   </div>
 </section>
@@ -195,7 +211,7 @@
 
         <ul class="flow-chips">
           <li>SeaHorn</li>
-          <li>Eldarica</li>
+          <li>Thrust</li>
           <li>Liquid Haskell</li>
           <li>Flux</li>
         </ul>
@@ -221,8 +237,8 @@
          row's vertical alignment. -->
     <div class="verdict-group">
       <div class="flow-box verdict-box">
-        <span class="verdict-ok">✓ verified</span>
-        <span class="verdict-bad">✗ not verified</span>
+        <span class="verdict-ok">✓ safe</span>
+        <span class="verdict-bad">✗ unsafe</span>
       </div>
 
       <span class="verdict-solution">\(\kv(n) \;\triangleq\; 0 \le n \le 10\)</span>
@@ -275,68 +291,72 @@
   </div>
 </section>
 
-<!-- Flex: the CHC-verifier slide with the solver box swapped out. The front
-     half is deliberately identical — only the backend and the output change. -->
-<section class="flow-slide verifier-slide chc-slide flex-slide">
+<!-- The answer to the two problems, as the same two panels with the damage
+     repaired: same headings, same order, same mini-flow slot, so the room does
+     the matching itself rather than being told a new story.
+
+     Panel 1 replaces `unknown`/`loop` in place. The second outcome is the
+     honest half — Flex does not promise it always succeeds, it promises that
+     failure leaves you somewhere you can stand. RQ2 backs that up later.
+
+     Panel 2 turns a static object into a chain. The problem panel indicts a
+     box; this one shows where the answer goes afterwards, which is the whole
+     argument for "foundational" without the word having to appear. The 500k
+     figure is the previous slide's own string, struck through — cheaper and
+     more convincing than a new number. -->
+<section class="flow-slide problems-slide answers-slide">
   <h2 class="slide-title">Flex: a foundational CHC solver</h2>
 
-  <div class="smt-flow smt-flow-h">
-    <div class="frontend-group">
-      <figure class="flow-box program-box">
-        <div class="code-lines" aria-hidden="true">
-          <span style="width: 62%"></span>
-          <span style="width: 40%"></span>
-          <span style="width: 74%"></span>
-          <span style="width: 52%"></span>
-          <span style="width: 30%"></span>
-        </div>
-        <figcaption>program + spec</figcaption>
-      </figure>
+  <div class="problem-panels">
+    <div class="problem fragment">
+      <h3 class="problem-title">Expressiveness</h3>
 
-      <div class="arrow-slot">
-        <div class="flow-arrow flow-arrow-long" aria-hidden="true">
-          <span class="flow-label">constrained Horn clauses</span>
+      <div class="mini-flow">
+        <span class="mini-formula">\(\forall j.\; P(a[j])\)</span>
+        <div class="flow-arrow mini-arrow" aria-hidden="true"></div>
+
+        <div class="flow-box mini-solver mini-solver-flex">
+          <span class="lean-badge" aria-hidden="true">
+            <img src="@assets/lean.png" alt="" />
+          </span>
+          Flex
         </div>
 
-        <div class="vc-formula chc-system">
-          <div class="chc-grid">
-            <span>\(\top\)</span>
-            <span class="imp">\(\Longrightarrow\)</span>
-            <span><span class="kv">\(\kv(0)\)</span></span>
+        <div class="flow-arrow mini-arrow" aria-hidden="true"></div>
 
-            <span><span class="kv">\(\kv(n)\)</span> \(\wedge\; n &lt; 10\)</span>
-            <span class="imp">\(\Longrightarrow\)</span>
-            <span><span class="kv">\(\kv(n{+}1)\)</span></span>
-
-            <span><span class="kv">\(\kv(n)\)</span> \(\wedge\; n \ge 10\)</span>
-            <span class="imp">\(\Longrightarrow\)</span>
-            <span>\(n = 10\)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- The badge straddles the corner: positioned with negative offsets so it
-         overlaps the border and sits on top of the box, not inside it. -->
-    <div class="flow-box flex-solver-box">
-      <span class="lean-badge" aria-hidden="true">
-        <img src="@assets/lean.png" alt="" />
-      </span>
-      <span class="solver-name">Flex</span>
-    </div>
-
-    <div class="flow-arrow" aria-hidden="true"></div>
-
-    <div class="verdict-group">
-      <div class="flow-box verdict-box">
-        <span class="verdict-ok">✓ verified</span>
-        <span class="verdict-bad">✗ not verified</span>
+        <span class="good-outcomes">
+          <span class="verdict-ok">✓ safe</span>
+          <span class="outcome-alt">or a goal you can prove</span>
+        </span>
       </div>
 
-      <span class="verdict-solution">
-        \(\kv(n) \;\triangleq\; 0 \le n \le 10\)
-        <em class="proof-note">+ machine-checked proof</em>
-      </span>
+      <p class="problem-lead">
+        Constraints are <strong>arbitrary Lean Props</strong>.
+      </p>
+    </div>
+
+    <div class="problem fragment">
+      <h3 class="problem-title">Trust</h3>
+
+      <div class="mini-flow">
+        <div class="flow-box mini-solver mini-solver-flex">
+          <span class="lean-badge" aria-hidden="true">
+            <img src="@assets/lean.png" alt="" />
+          </span>
+          Flex
+        </div>
+
+        <div class="flow-arrow mini-arrow mini-arrow-long">
+          <span class="flow-label">proof term</span>
+        </div>
+
+        <div class="flow-box mini-solver mini-kernel">Lean kernel</div>
+      </div>
+
+      <p class="problem-lead">
+        <s class="lead-struck">~500,000 lines of C++</s>
+        Trusted base: <strong>Lean's kernel</strong>.
+      </p>
     </div>
   </div>
 </section>
@@ -344,7 +364,7 @@
 <!-- Three frontends, one backend. The Lean badge established on the Flex box
      is the marker for "foundational": Imp and λ_RK carry it, Flux does not. -->
 <section class="flow-slide frontends-slide">
-  <h2 class="slide-title">Three frontends, one backend</h2>
+  <h2 class="slide-title">Three verifiers on top of Flex</h2>
 
   <div class="frontends-layout">
     <ul class="frontend-list">

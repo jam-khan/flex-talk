@@ -1,12 +1,16 @@
 <!-- §2 · Refinement types -->
 
-<!-- First contact with the idea. Left: the notation dissected, using the same
-     brace component as the verifier slides. Right: types-as-sets, which is what
-     makes "subtyping is implication" free later on. -->
+<!-- First contact with the idea: the notation dissected, and the sentence it
+     stands for. The types-as-sets picture that used to sit beside it is gone —
+     the reading line already says "the values such that", and the set drawing
+     was a second telling of it.
+
+     With the column to itself the type is set large: it is the only thing on
+     the slide and every later slide's syntax is read off it. -->
 <section class="rt-intro-slide">
   <h2 class="slide-title">Refinement types</h2>
 
-  <div class="rt-columns">
+  <div class="rt-body">
     <div class="rt-anatomy fragment">
       <div class="rt-type">
         <span class="rt-punct">{</span>
@@ -22,67 +26,26 @@
         the <strong>i32</strong> values <code>v</code> such that <code>0 &lt;= v</code>
       </p>
     </div>
-
-    <figure class="rt-sets fragment">
-      <svg viewBox="0 0 260 170" role="img" aria-label="The non-negative integers as a subset of i32">
-        <rect class="rt-outer" x="1" y="1" width="258" height="168" rx="12" />
-        <text class="rt-set-label rt-outer-label" x="16" y="26">i32</text>
-
-        <rect class="rt-inner" x="26" y="52" width="208" height="98" rx="10" />
-        <text class="rt-set-label rt-inner-label" x="40" y="76">0 &lt;= v</text>
-
-      </svg>
-
-      <figcaption>
-        a type is a set of values —<br />
-        a refinement restricts it to a subset
-      </figcaption>
-    </figure>
   </div>
 </section>
 
 <!-- Subtyping. Keeps `<:` but drops the judgment form: no turnstile, no Γ.
-     Two panels of equal weight — the relation and the picture — gathered by a
-     brace into the formula they both come down to. The judgment is stacked
-     rather than set on one line so the two panels have similar proportions and
-     the brace spans them evenly. -->
+     With the set picture gone there is nothing to gather, so the brace that
+     used to span two panels is now a single arrow: the relation, and what it
+     comes down to. The judgment goes back on one line — it was stacked only to
+     match the diagram's proportions. -->
 <section class="rt-sub-slide">
   <h2 class="slide-title">Subtyping</h2>
 
   <div class="sub-layout">
-    <div class="sub-top">
-      <div class="flow-box sub-panel sub-judgment">
-        <span class="sub-type">{ v: i32 | 0 &lt; v }</span>
-        <span class="sub-op">&lt;:</span>
-        <span class="sub-type">{ v: i32 | 0 &lt;= v }</span>
-      </div>
-
-      <figure class="flow-box sub-panel sub-sets">
-        <svg viewBox="0 0 260 170" role="img" aria-label="Positive values as a subset of the non-negative values, inside i32">
-          <rect class="rt-outer" x="1" y="1" width="258" height="168" rx="12" />
-          <text class="rt-set-label rt-outer-label" x="16" y="27">i32</text>
-
-          <rect class="rt-inner" x="22" y="44" width="216" height="112" rx="10" />
-          <text class="rt-set-label rt-inner-label" x="34" y="68">0 &lt;= v</text>
-
-          <rect class="rt-innermost" x="52" y="82" width="158" height="60" rx="9" />
-          <text class="rt-set-label rt-innermost-label" x="64" y="104">0 &lt; v</text>
-        </svg>
-      </figure>
+    <div class="flow-box sub-panel sub-judgment">
+      <span class="sub-type">{ v: i32 | 0 &lt; v }</span>
+      <span class="sub-op">&lt;:</span>
+      <span class="sub-type">{ v: i32 | 0 &lt;= v }</span>
     </div>
 
-    <!-- Same brace as the verifier slides. It spans the panels exactly, because
-         it is a sibling of `.sub-top` inside a shrink-wrapped column. -->
-    <div class="sub-brace" aria-hidden="true">
-      <svg class="brace" viewBox="0 0 100 10" preserveAspectRatio="none">
-        <path
-          d="M0.5,0.5 Q0.5,6 5,6 L45,6 Q49.5,6 50,9.5 Q50.5,6 55,6 L95,6 Q99.5,6 99.5,0.5"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1"
-          vector-effect="non-scaling-stroke"
-        />
-      </svg>
+    <div class="flow-arrow sub-arrow">
+      <span class="flow-label">means</span>
     </div>
 
     <div class="sub-implication">
@@ -101,10 +64,11 @@
     <!-- Hand-authored rather than highlighted: reveal's highlight plugin
          rebuilds a `pre code` block from its textContent, which would delete
          the hover anchors. `.hljs-*` classes match what the plugin emits. -->
-    <pre class="flux-code"><span class="hljs code-manual"><span class="hljs-keyword">fn</span> <span class="hljs-title">foreach</span>&lt;F&gt;(lo: <span class="hljs-type">usize</span>, hi: <span class="hljs-type">usize</span>, <span class="hljs-keyword">mut</span> f: F)
-<span class="hljs-keyword">where</span>
-    F: <span class="hljs-type">FnMut</span>(<span class="hljs-type">usize</span>{v: <span class="spec-pre">lo &lt;= v &amp;&amp; v &lt; hi</span>})
-{
+    <pre class="flux-code"><span class="hljs code-manual"><span class="hljs-keyword">fn</span> <span class="hljs-title">foreach</span>(
+    lo: <span class="hljs-type">usize</span>,
+    hi: <span class="hljs-type">usize</span>,
+    <span class="hljs-keyword">mut</span> f: <span class="hljs-keyword">impl</span> <span class="hljs-type">FnMut</span>(<span class="hljs-type">usize</span>{v: <span class="spec-pre">lo &lt;= v &amp;&amp; v &lt; hi</span>}),
+) {
     <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> i <span class="src-entry">=</span> lo;
     <span class="hljs-keyword src-loop hint-anchor">while<span class="inlay-hint">invariant: κ(i, hi, lo)</span></span> i &lt; hi {
         f(<span class="src-guard">i</span>);
@@ -112,13 +76,13 @@
     }
 }</span></pre>
 
-    <div class="flow-arrow flow-arrow-h flux-arrow" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h flux-arrow fragment" data-fragment-index="1" aria-hidden="true">
       <span class="flow-label">Flux</span>
     </div>
 
     <!-- Line-by-line so the Horn variables can be coloured: MathJax's markup
          extensions aren't in the offline bundle (see src/main.js). -->
-    <div class="flux-chc">
+    <div class="flux-chc fragment" data-fragment-index="1">
       <span class="ind-0">\(\forall lo, hi.\)</span>
       <span class="ind-1"><span class="kv kv-entry">\(\kv(lo, hi, lo)\)</span></span>
       <span class="ind-1">\(\wedge\; \forall i.\)</span>
@@ -128,11 +92,18 @@
     </div>
   </div>
 
-  <div class="chc-solution fragment">
+  <!-- What the Greek letter is, on the click that first puts it on screen.
+       One line: the room needs to know κ is the unknown, not to be taught
+       Horn variables. -->
+  <p class="kv-note fragment" data-fragment-index="1">
+    <span class="kv">\(\kv\)</span> is an <strong>unknown predicate</strong>
+  </p>
+
+  <div class="chc-solution fragment" data-fragment-index="2">
     <span class="chc-solution-inner">
       <span class="chc-solution-label">solution</span>
       <span class="kv">\(\kv(i, hi, lo)\)</span>
-      \(\;\triangleq\; lo \le i \le hi\)
+      \(\;\triangleq\; lo \le i\)
     </span>
   </div>
 </section>
@@ -158,19 +129,18 @@
     res
 }</span></pre>
 
-    <div class="flow-arrow flow-arrow-h flux-arrow" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h flux-arrow fragment" data-fragment-index="1" aria-hidden="true">
       <span class="flow-label">Flux</span>
     </div>
 
-    <div class="flux-chc">
+    <div class="flux-chc fragment" data-fragment-index="1">
       <span class="ind-0">\(\forall n.\)</span>
       <span class="ind-1 clause-index"><span class="clause-mark">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span></span>
-      <span class="ind-1 clause-sub">\(\wedge\) <span class="clause-mark">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span></span>
-      <span class="ind-3 clause-sub"><span class="clause-mark"><span class="kv">\(\kv(v, n)\)</span></span></span>
+      <span class="ind-1 clause-sub">\(\wedge\) <span class="clause-mark">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span></span>
     </div>
   </div>
 
-  <div class="chc-solution fragment">
+  <div class="chc-solution fragment" data-fragment-index="2">
     <span class="chc-solution-inner">
       <span class="chc-solution-label">solution</span>
       <span class="kv">\(\kv(j, n)\)</span>

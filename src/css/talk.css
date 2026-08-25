@@ -392,31 +392,8 @@
   transform: translateX(-50%);
 }
 
-.reveal .solver-logos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3.5em;
-}
-
 /* Sized by height so the two marks read as visually equal weight despite very
    different aspect ratios (Z3 is square, cvc5 is a wide wordmark). */
-.reveal .solver-logos .logo {
-  display: block;
-  width: auto;
-  box-shadow: none;
-  border: none;
-  margin: 0;
-}
-
-.reveal .solver-logos .logo-z3 {
-  height: 3em;
-}
-
-.reveal .solver-logos .logo-cvc5 {
-  height: 1.75em;
-}
-
 /* The output of the flow, so it carries the accent rather than the neutral grey. */
 .reveal .smt-answer {
   font-family: var(--code-font);
@@ -446,19 +423,6 @@
 
 .reveal .smt-flow-h .smt-formula {
   font-size: 0.66em;
-}
-
-.reveal .smt-flow-h .solver-logos {
-  flex-direction: column;
-  gap: 0.7em;
-}
-
-.reveal .smt-flow-h .logo-z3 {
-  height: 2.1em;
-}
-
-.reveal .smt-flow-h .logo-cvc5 {
-  height: 1.2em;
 }
 
 .reveal .smt-flow-h .smt-answer {
@@ -674,26 +638,45 @@
 
 /* The box names the CHC solver; the SMT logos shrink underneath it to signal
    that they are subroutines rather than the stage itself. */
-.reveal .chc-solver-box {
+.reveal .chc-solver-box,
+.reveal .smt-solver-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.6em;
 }
 
-.reveal .chc-solver-box .solver-name {
+.reveal .chc-solver-box .solver-name,
+.reveal .smt-solver-box .solver-name {
   font-size: 0.72em;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.reveal .chc-solver-box .sub-logos {
+.reveal .chc-solver-box .sub-logos,
+.reveal .smt-solver-box .sub-logos {
   display: flex;
   align-items: center;
   gap: 0.9em;
 }
 
-.reveal .chc-solver-box .logo {
+/* On slides 1-2 the solver is the subject of the diagram, so its name carries
+   more weight than it does on the CHC slide where SMT is demoted to a callee. */
+.reveal .smt-solver-box .solver-name {
+  font-size: 0.85em;
+  font-weight: 700;
+}
+
+/* z3.jpg is a JPEG, so its white background is opaque and shows as a pale
+   rectangle on the box. `multiply` maps white to whatever is behind it and
+   leaves the dark glyphs alone — the deck's surfaces are all light, so this
+   works everywhere the logo appears. */
+.reveal .logo-z3 {
+  mix-blend-mode: multiply;
+}
+
+.reveal .chc-solver-box .logo,
+.reveal .smt-solver-box .logo {
   display: block;
   width: auto;
   box-shadow: none;
@@ -702,11 +685,13 @@
   opacity: 0.75;
 }
 
-.reveal .chc-solver-box .logo-z3 {
+.reveal .chc-solver-box .logo-z3,
+.reveal .smt-solver-box .logo-z3 {
   height: 1.05em;
 }
 
-.reveal .chc-solver-box .logo-cvc5 {
+.reveal .chc-solver-box .logo-cvc5,
+.reveal .smt-solver-box .logo-cvc5 {
   height: 0.6em;
 }
 
@@ -993,25 +978,31 @@
 }
 
 /* --- Refinement types: intro --------------------------------------------
-   Left: the notation dissected. Right: types-as-sets. */
+   The notation dissected, alone on the slide. */
 
-.reveal .rt-columns {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  align-items: center;
-  gap: 3em;
+/* Both slides in this pair take the deck's standard frame: a fixed-height flex
+   column, so the title pins to the top and the body centres in what is left.
+   They used to rely on the content being tall enough to push the title up. */
+.reveal .rt-intro-slide,
+.reveal .rt-sub-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .rt-body {
   margin: auto 0;
 }
 
-/* The anatomy column centers as a unit: the type and its reading share a
-   center line, independent of the diagram beside them. */
 .reveal .rt-anatomy {
   text-align: center;
 }
 
+/* Large: it has the slide to itself, and every later slide's syntax is read
+   off it. */
 .reveal .rt-type {
   font-family: var(--code-font);
-  font-size: 1.3em;
+  font-size: 1.7em;
   white-space: nowrap;
 }
 
@@ -1039,7 +1030,7 @@
   width: max-content;
   color: var(--muted);
   font-family: inherit;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1047,8 +1038,8 @@
 
 .reveal .rt-reading {
   /* Clears the absolutely-positioned labels above. */
-  margin: 2.2em 0 0;
-  font-size: 0.88em;
+  margin: 2.6em 0 0;
+  font-size: 0.95em;
   line-height: 1.5;
 }
 
@@ -1058,72 +1049,16 @@
   padding: 0;
 }
 
-.reveal .rt-sets {
-  margin: 0;
-}
-
-.reveal .rt-sets svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.reveal .rt-outer {
-  fill: #f7f8fa;
-  stroke: #cfd6de;
-  stroke-width: 2;
-}
-
-.reveal .rt-inner {
-  fill: #e8f0fb;
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-
-.reveal .rt-set-label {
-  font-family: var(--code-font);
-  font-size: 21px;
-  font-weight: 600;
-}
-
-.reveal .rt-outer-label {
-  fill: var(--muted);
-}
-
-.reveal .rt-inner-label {
-  fill: var(--accent);
-}
-
-.reveal .rt-sets figcaption {
-  margin-top: 1em;
-  color: var(--muted);
-  font-size: 0.72em;
-  line-height: 1.5;
-  text-align: center;
-}
-
 /* --- Refinement types: subtyping ----------------------------------------
    `<:` is kept, but glossed rather than presented as a judgment. */
 
-/* Two panels of equal weight — the relation and the picture — gathered by a
-   brace into the formula they both come down to.
-
-   The column shrink-wraps (`width: fit-content`), so the brace, being a sibling
-   of the panel row, spans exactly the panels' combined width: its tips land on
-   the outer edges of the two boxes rather than on arbitrary points. */
+/* One column: the relation, an arrow, and the formula it comes down to. */
 .reveal .sub-layout {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   width: fit-content;
   margin: auto;
-}
-
-.reveal .sub-top {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: stretch;
-  gap: 1.8em;
 }
 
 .reveal .sub-panel {
@@ -1134,15 +1069,16 @@
   padding: 24px 32px;
 }
 
-/* Stacked over three lines: it gives the panel proportions close to the
-   diagram's, which is what lets the two read as a pair. */
+/* On one line, now that there is no diagram to match proportions with. */
 .reveal .sub-judgment {
-  flex-direction: column;
-  gap: 0.35em;
+  gap: 0.7em;
   font-family: var(--code-font);
-  font-size: 0.78em;
-  line-height: 1.35;
+  font-size: 0.92em;
   white-space: nowrap;
+}
+
+.reveal .sub-arrow {
+  margin: 1.5em 0 1.9em;
 }
 
 .reveal .sub-op {
@@ -1151,36 +1087,10 @@
   font-weight: 700;
 }
 
-.reveal .sub-sets svg {
-  display: block;
-  width: 11em;
-  height: auto;
-}
-
-.reveal .sub-brace {
-  margin: 1em 0 1.1em;
-  color: var(--arrow);
-}
-
-.reveal .sub-brace .brace {
-  width: 100%;
-  height: 0.55em;
-}
-
 .reveal .sub-implication {
   color: var(--accent);
-  font-size: 1.1em;
+  font-size: 1.2em;
   text-align: center;
-}
-
-.reveal .rt-innermost {
-  fill: #cfe0f7;
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-
-.reveal .rt-innermost-label {
-  fill: var(--accent);
 }
 
 /* --- Flux example: foreach ----------------------------------------------
@@ -1374,6 +1284,16 @@
    code and constraint both — and is right-aligned so it lands under the
    constraint it answers. A rule rather than a box: it is the answer to what is
    above, not a further stage of the pipeline. */
+/* The gloss on κ, under the constraint it belongs to rather than under the
+   slide as a whole — same right alignment the solution below it uses. Sized to
+   be read from the back: it is the one sentence here that is not notation. */
+.reveal .kv-note {
+  margin: 1.1em 0 0;
+  font-size: 0.8em;
+  line-height: 1.4;
+  text-align: right;
+}
+
 .reveal .chc-solution {
   margin-top: 1.1em;
   text-align: right;
@@ -1932,81 +1852,6 @@
   font-size: 0.5em;
 }
 
-/* On this slide the marks are all one colour: the substitution the first step
-   makes gets the same blue wash as every later highlight, rather than the
-   ringed box the rewrite slides use. */
-.reveal .seq-slide .zap-sub {
-  background: #cfe0f7;
-  box-shadow: none;
-}
-
-/* A context entry lights up as one box around name, colon and type: the cells
-   sit flush (the grid has no column gap), so painting them together with the
-   ends rounded reads as a single label. */
-.reveal .hl-n > *,
-.reveal .hl-v > *,
-.reveal .hl-h > * {
-  padding-top: 0.12em;
-  padding-bottom: 0.12em;
-  transition: background 320ms ease;
-}
-
-.reveal .hl-n > :first-child,
-.reveal .hl-v > :first-child,
-.reveal .hl-h > :first-child {
-  padding-left: 0.45em;
-  border-radius: 5px 0 0 5px;
-}
-
-.reveal .hl-n > :last-child,
-.reveal .hl-v > :last-child,
-.reveal .hl-h > :last-child {
-  padding-right: 0.55em;
-  border-radius: 0 5px 5px 0;
-}
-
-.reveal .seq-slide:has(.state-3.visible):not(:has(.state-4.visible)) .hl-n > *,
-.reveal .seq-slide:has(.state-5.visible):not(:has(.state-6.visible)) .hl-v > *,
-.reveal .seq-slide:has(.state-5.visible) .hl-h > * {
-  background: #cfe0f7;
-}
-
-/* The step is about n, so when it fires the attention moves onto n: the binder
-   about to be introduced lights up on the left, and the blue that marked the
-   substitution steps back. */
-.reveal .n-binder,
-.reveal .seq-slide .zap-sub {
-  border-radius: 3px;
-  transition: background 320ms ease, box-shadow 320ms ease;
-}
-
-.reveal .seq-slide:has(.state-3.visible) .n-binder {
-  padding: 0 0.14em;
-  background: #cfe0f7;
-}
-
-.reveal .seq-slide:has(.state-3.visible) .state-2 .zap-sub,
-.reveal .state-3 .zap-sub {
-  background: none;
-  box-shadow: none;
-}
-
-/* What closes the goal: the hypothesis in the context, and the disjunct it
-   proves. Both light up as the last step fires. */
-.reveal .step-h {
-  border-radius: 3px;
-  transition: background 320ms ease;
-}
-
-.reveal .seq-slide:has(.state-6.visible) .step-h {
-  padding: 0 0.16em;
-  background: #cfe0f7;
-}
-
-.reveal .seq-slide:has(.state-6.visible) .step-v.step-v:not(.step-h) {
-  background: none;
-}
-
 /* Nothing left to prove. */
 .reveal .seq-done {
   grid-column: 1 / -1;
@@ -2024,51 +1869,6 @@
   text-transform: none;
   letter-spacing: 0;
   color: var(--accent);
-}
-
-/* The binder and the guard the next step introduces: lit on the left as it
-   fires, and again on the right where they now sit in the context. */
-.reveal .step-v {
-  border-radius: 3px;
-  transition: background 320ms ease;
-}
-
-.reveal .seq-slide:has(.state-5.visible) .step-v {
-  padding: 0 0.16em;
-  background: #cfe0f7;
-}
-
-.reveal .seq-slide:has(.state-5.visible) .conj-1.conj-1 {
-  background: none;
-}
-
-/* The conjunct the next step follows: lights up on the left as the step fires,
-   and is all that is left on the right. */
-.reveal .conj-1 {
-  border-radius: 3px;
-  transition: background 320ms ease;
-}
-
-.reveal .seq-slide:has(.state-4.visible) .conj-1 {
-  padding: 0 0.2em;
-  margin: 0 -0.2em;
-  background: #cfe0f7;
-}
-
-/* Hug the formula rather than stretching to the box: these lines are flex
-   children of `.flux-chc`, which stretches them by default. */
-.reveal .seq-slide .conj-1 {
-  align-self: flex-start;
-}
-
-/* Inside a context name the wash is the whole label, so the spacing margin the
-   variable carries inside formulas would push the colon column out of true. */
-.reveal .ctx-name .var-n {
-  margin: 0;
-}
-
-.reveal .seq-slide:has(.state-4.visible) .var-n.var-n {
-  background: none;
 }
 
 /* The variable the intro put in scope, wherever it now appears. Splitting it
@@ -2715,6 +2515,7 @@
 /* The box is drawn behind the lines rather than around them, so revealing it
    moves nothing. */
 .reveal .hoare-box {
+  transition: background 200ms ease, border-color 200ms ease;
   position: absolute;
   /* Inset *inwards* vertically: the parts are adjacent, so a box that bled
      past its lines would overlap its neighbour's border. The line-height
@@ -3268,17 +3069,6 @@
   font-size: 0.74em;
 }
 
-/* Why one binder is missing. Sits under the definition rather than beside it:
-   it is an aside about the line above, not a further step. */
-.reveal .def-note {
-  max-width: 26em;
-  margin: 1.3em 0 0;
-  color: var(--muted);
-  font-size: 0.5em;
-  line-height: 1.45;
-  text-align: center;
-}
-
 /* --- The certificate with the solution folded ----------------------------
    Runs on the `seq-slide` machinery — same film strip, same fixed-width states,
    same one-arrow-at-a-time reveal — with its own shift table, because it has a
@@ -3658,4 +3448,646 @@
 .reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seg-3,
 .reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seg-4 {
   color: var(--accent);
+}
+
+/* --- Source note ----------------------------------------------------------
+   A pointer to where an idea is worked out in full. Sits at the foot of the
+   slide it belongs to, quiet enough to ignore while speaking and legible enough
+   to note down. */
+.reveal .slide-cite {
+  /* Pinned to the slide rather than flowed after the content: the slides that
+     carry one already spend their free space on an `auto` margin that centres
+     the body, and a second `auto` here just splits it three ways and leaves the
+     note hanging off the content instead of sitting at the foot. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.6em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.7em;
+  text-align: center;
+}
+
+.reveal .slide-cite cite {
+  font-style: italic;
+}
+
+/* Divider variant of the two-panel slide: re-shown mid-section with one side
+   spotlit, the same way `.at-N` re-shows the agenda. Everything recedes except
+   the kind about to be discussed. */
+.reveal .kinds-slide[class*='at-'] .kind-panel {
+  opacity: 0.3;
+  transition: opacity 200ms;
+}
+
+.reveal .kinds-slide.at-cyclic .kinds-columns > .kind-panel:last-child {
+  opacity: 1;
+}
+
+/* Once the proof is boxed, the triple's boxes come down. Three parts lit at
+   once plus the proof reads as four things being pointed at simultaneously;
+   what is wanted is the attention moving on. The spec's box already clears
+   itself, being keyed to `.current-fragment`. */
+.reveal .imp-slide:has(.hoare-proof.visible) .hoare-assert .hoare-box,
+.reveal .imp-slide:has(.hoare-proof.visible) .hoare-body .hoare-box {
+  background: none;
+  border-color: transparent;
+}
+
+.reveal .imp-slide:has(.hoare-proof.visible) .hoare-label {
+  opacity: 0;
+}
+
+/* The proof line's box. Green rather than the assertion blue or the program
+   grey: this is the one part that is discharged, and green is what the deck
+   already uses for a goal that closes. */
+.reveal .hoare-proof.visible .hoare-box {
+  background: #eef6f0;
+  border: 1px solid #bfd9c8;
+}
+
+/* The gap that sets the proof off from the triple moves to the wrapper, or the
+   box would be drawn around the line's top margin too and sit with dead space
+   above the text. */
+.reveal .lean-code .hoare-proof {
+  margin-top: 0.35em;
+}
+
+.reveal .lean-code .hoare-proof .lean-proof {
+  margin-top: 0;
+}
+
+/* --- What RQ1 measures ----------------------------------------------------
+   The closing step of the certificate walk, on its own: a term, an arrow, and
+   a discharged goal. Same three components the solver slides use, so it reads
+   as a callback rather than as new notation. */
+.reveal .rq-focus-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+/* Flow and note are centred as one block. Given an `auto` margin each they
+   competed and the pair drifted above centre with the slack piling up below. */
+.reveal .rq-focus-body {
+  margin: auto 0;
+}
+
+.reveal .rq-focus-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The sequent, in the same three-column shape the certificate walk used, so the
+   hypothesis lines up on its colon and the turnstile sits under it. */
+.reveal .rq-focus-goal {
+  display: grid;
+  /* name, colon/formula, then the arrow and the verdict, which share the
+     conclusion's row. */
+  grid-template-columns: repeat(5, max-content);
+  column-gap: 0;
+  row-gap: 0.5em;
+  align-items: baseline;
+}
+
+/* Every cell is placed explicitly. The shared `.goal-line > .flow-box` rule
+   fixes the conclusion to column 3, and mixing that one definite position with
+   auto-placement for its neighbours pushed the turnstile onto a row of its own
+   and floated the arrow up beside the hypothesis. */
+.reveal .rq-focus-goal .ctx-binder > * {
+  grid-row: 1;
+}
+
+.reveal .rq-focus-goal .state-bar {
+  grid-row: 2;
+  /* The bar belongs to the sequent, not to what follows it. */
+  grid-column: 1 / 4;
+}
+
+.reveal .rq-focus-goal .goal-line > * {
+  grid-row: 3;
+}
+
+.reveal .rq-focus-goal .goal-line > .ctx-name {
+  grid-column: 1;
+}
+
+/* Arrow and verdict ride in the bar's row. Given height, that row would grow
+   and shove the hypothesis and the conclusion apart; at `height: 0` the flex
+   box is the bar's own line and its contents overflow evenly above and below,
+   so they centre on the rule without moving anything. */
+.reveal .rq-focus-tail {
+  grid-row: 2;
+  grid-column: 4 / 6;
+  height: 0;
+  display: flex;
+  align-items: center;
+  /* The grid aligns on baselines; a zero-height box has none worth using, and
+     left to it the tail settled a few pixels above the rule. Centring it in the
+     row puts it on the rule, whose 0.7em margins sit it at the row's middle. */
+  align-self: center;
+}
+
+/* Hug the glyphs. Centring two boxes aligns their boxes, not their text: the
+   verdict's line box carries leading above and below, so its letters sit below
+   the arrow's stem even when the boxes agree. */
+.reveal .rq-focus-verdict {
+  line-height: 1;
+}
+
+/* Hypothesis and conclusion at one size: they are the two halves of a sequent
+   and reading one as smaller than the other suggests a hierarchy that is not
+   there. */
+.reveal .rq-focus-slide .flux-chc,
+.reveal .rq-focus-slide .ctx-name,
+.reveal .rq-focus-slide .ctx-colon,
+.reveal .rq-focus-slide .ctx-sort {
+  font-size: 0.62em;
+}
+
+.reveal .rq-focus-arrow {
+  margin: 0 2.6em;
+}
+
+/* Two-part label — a tactic name after a keyword — so it needs the width to
+   sit on one line rather than wrapping to the arrow's own. */
+.reveal .rq-focus-arrow .flow-label {
+  width: max-content;
+  white-space: nowrap;
+  bottom: 1em;
+}
+
+.reveal .rq-focus-arrow .flow-label .tac {
+  font-family: var(--code-font);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+
+.reveal .rq-focus-verdict {
+  font-weight: 600;
+}
+
+/* The comparison, as two columns astride a `vs`. Each side names the thing and
+   then what kind of thing it is, so the two kinds line up and can be read off
+   against each other. */
+.reveal .rq-focus-versus {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1.9em;
+  margin-top: 2.6em;
+}
+
+.reveal .rq-versus-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.reveal .rq-versus-what {
+  font-size: 0.62em;
+}
+
+.reveal .rq-versus-what .tac {
+  font-family: var(--code-font);
+  color: var(--accent);
+}
+
+.reveal .rq-versus-kind {
+  color: var(--muted);
+  font-size: 0.46em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+}
+
+.reveal .rq-versus-op {
+  color: var(--muted);
+  font-size: 0.55em;
+  font-style: italic;
+}
+
+/* --- RQ1 results ----------------------------------------------------------
+   Three cards astride the same slot the `.rq-focus-versus` pair occupied, in
+   the same order, so the comparison the previous slide set up is the one being
+   answered. Card geometry is borrowed from `.case-card`: this slide sits two
+   away from the case studies and the two should read as one family.
+
+   Every card carries the same four rows, at the same sizes, so the bars and
+   the cost figures line up across the three without any explicit alignment. */
+.reveal .res-slide {
+  --slide-pad-x: 5%;
+
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+/* Sample size, sitting under the three cards as their common footing. It is
+   scope rather than a finding, so it stays quiet and off the cards themselves —
+   on one it would read as a fourth metric. */
+.reveal .res-scope {
+  margin-top: 0.85em;
+  color: var(--muted);
+  font-size: 0.52em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.reveal .res-body {
+  margin: auto 0;
+}
+
+.reveal .res-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6em;
+}
+
+.reveal .res-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  padding: 20px 22px 18px;
+  text-align: center;
+}
+
+.reveal .res-name {
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .res-name .tac {
+  font-family: var(--code-font);
+  color: var(--accent);
+}
+
+.reveal .res-kind {
+  color: var(--muted);
+  font-size: 0.42em;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.reveal .res-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+  width: 100%;
+  margin-top: 0.75em;
+}
+
+/* A bar, not a fraction: 247/369 is unreadable from the back of a room, and
+   the point is a comparison of lengths rather than a number to be recalled. */
+.reveal .res-bar {
+  width: 100%;
+  height: 0.42em;
+  border-radius: 999px;
+  background: #e8ecf1;
+  overflow: hidden;
+}
+
+/* Neutral fill throughout. The comparison is one of lengths, and colouring the
+   full bar green against two red ones scores the result twice — the audience
+   can already see which track is full. */
+.reveal .res-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #8b93a1;
+}
+
+.reveal .res-cover-pct {
+  font-size: 0.72em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reveal .res-cover-label {
+  color: var(--muted);
+  font-size: 0.4em;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* The rule separates the two beats: coverage above, cost below. */
+.reveal .res-cost {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2em;
+  width: 100%;
+  margin-top: 0.8em;
+  padding-top: 0.7em;
+  border-top: 1px solid #e3e7ec;
+}
+
+/* Zap's column is the baseline, so it shows an absolute figure where the others
+   show multipliers; a literal "1x" there would be a cell that says nothing. Only
+   the baseline is labelled "avg" — it reads across the row, and repeating it on
+   the two multipliers turns a caveat into clutter. */
+.reveal .res-cost-big {
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* --- RQ2 setup ------------------------------------------------------------
+   The two backends side by side, borrowing the `.rq-versus` shape (a name, what
+   kind of thing it is, astride a `vs`) at card size, so the slide reads as the
+   same comparison move the deck has made twice already. */
+.reveal .rq2-slide {
+  --slide-pad-x: 7%;
+
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .rq2-body {
+  margin: auto 0;
+}
+
+.reveal .rq2-versus {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1.1em;
+}
+
+.reveal .rq2-card {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  padding: 20px 22px 18px;
+  text-align: center;
+}
+
+.reveal .rq2-name {
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reveal .rq2-kind {
+  color: var(--muted);
+  font-size: 0.5em;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.reveal .rq2-card-rule {
+  width: 100%;
+  height: 1px;
+  margin: 0.75em 0 0.65em;
+  background: #e3e7ec;
+}
+
+/* Each side's *how*: the solvers on one, the tactic line on the other — the one
+   from "The full pipeline", unchanged, so this reads as that slide run at
+   scale rather than as a new claim. */
+.reveal .rq2-how {
+  font-size: 0.66em;
+}
+
+.reveal .rq2-how .tac {
+  font-family: var(--code-font);
+  color: var(--accent);
+}
+
+/* The `vs` sits between two stretched cards, so it needs centring in the row
+   rather than the baseline alignment the smaller version uses. */
+.reveal .rq2-op {
+  align-self: center;
+  font-size: 0.85em;
+}
+
+/* The actual claim of the experiment, and the reason it is worth running: every
+   invariant, qualifier and hand proof shown so far is withdrawn. */
+.reveal .rq2-claim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 1.15em;
+  text-align: center;
+}
+
+.reveal .rq2-claim-lead {
+  font-size: 0.88em;
+  font-weight: 500;
+}
+
+.reveal .rq2-claim-lead b {
+  font-weight: 700;
+}
+
+/* Where the constraints come from. They are the two systems' own regression
+   suites, not benchmarks written for this paper — worth saying, and worth
+   saying at a size the back row can read. */
+.reveal .rq2-claim-src {
+  color: var(--muted);
+  font-size: 0.56em;
+  line-height: 1.45;
+}
+
+
+/* --- RQ2 results ----------------------------------------------------------
+   One system measured twice, so two full-width bars rather than the RQ1 slide's
+   three cards — but the same bar, so the two results read as a pair. */
+.reveal .rq2-res-slide {
+  --slide-pad-x: 7%;
+
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .rq2-res-body {
+  margin: auto 0;
+}
+
+.reveal .rq2-lead {
+  margin-bottom: 1.15em;
+  font-size: 0.7em;
+  font-weight: 500;
+}
+
+.reveal .rq2-rows {
+  display: grid;
+  /* label · bar · percentage · denominator, so the four columns line up down
+     the two rows without either row setting its own widths. */
+  grid-template-columns: max-content 1fr max-content max-content;
+  align-items: center;
+  column-gap: 0.9em;
+  row-gap: 1.15em;
+}
+
+.reveal .rq2-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.reveal .rq2-row-label {
+  font-size: 0.56em;
+}
+
+.reveal .rq2-row .res-bar {
+  height: 0.5em;
+}
+
+.reveal .rq2-row-pct {
+  font-size: 0.66em;
+  font-weight: 700;
+  text-align: right;
+}
+
+.reveal .rq2-row-of {
+  color: var(--muted);
+  font-size: 0.44em;
+  font-weight: 500;
+}
+
+.reveal .rq2-cost {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3em;
+  margin-top: 1.4em;
+  padding-top: 1em;
+  border-top: 1px solid #e3e7ec;
+}
+
+/* Two wall-clock times and an arrow. Deliberately not a multiplier: the room
+   should hear the gap, not compute it. */
+.reveal .rq2-cost-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  font-size: 0.66em;
+}
+
+.reveal .rq2-cost-label {
+  color: var(--muted);
+}
+
+.reveal .rq2-cost-side b {
+  font-weight: 700;
+}
+
+.reveal .rq2-cost-arrow {
+  color: var(--arrow);
+}
+
+/* --- Closing slide --------------------------------------------------------
+   The frontends diagram again, under the paper's title. The title is set in the
+   title slide's vocabulary rather than the deck's `.slide-title`, because it is
+   the same sentence coming back rather than a heading for what follows. */
+.reveal .closing-slide .closing-title {
+  /* One line. The title only reads as a coda if it arrives as a single
+     sentence; broken over two it starts to look like a heading again. Sized to
+     fit the text column at this slide's 5% side padding — if the title ever
+     changes, this number has to be re-checked. */
+  white-space: nowrap;
+  /* The title is a coda, not a label for the diagram: the gap has to read as a
+     break between two things rather than as a heading sitting on one. */
+  margin: 0 auto 2.6em;
+  font-family: var(--display-font);
+  font-size: 0.92em;
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+
+/* The system's name leads, in the title's own colour — the green below marks
+   what is Lean-backed, and spending it here would say something it does not. */
+.reveal .closing-slide .closing-title b {
+  font-weight: 600;
+}
+
+.reveal .closing-slide .closing-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* --- The two answers ------------------------------------------------------
+   Deliberately built out of the problems slide's own parts: same panels, same
+   headings, same mini-flow slot. Only what Flex changes is styled differently,
+   so the difference between the two slides is the argument. */
+
+/* The Flex box wherever it appears at mini size: the green border and Lean
+   badge are the deck's mark for "foundational", already established on the
+   solver box. `relative` is what the badge's negative offsets hang off. */
+.reveal .mini-solver-flex {
+  position: relative;
+  border-color: var(--ok);
+  background: #f1f8f3;
+  font-weight: 600;
+}
+
+.reveal .mini-kernel {
+  font-weight: 600;
+}
+
+/* Sits in the slot the problems slide gives `unknown` / `loop`, so the two
+   outcomes are read against those two. */
+.reveal .good-outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.reveal .good-outcomes .verdict-ok {
+  font-size: 0.68em;
+  font-weight: 700;
+}
+
+/* The second outcome is not a verdict, so it is not styled like one: failure
+   here means an open goal, which is a place to work rather than an answer. */
+.reveal .outcome-alt {
+  color: var(--muted);
+  font-size: 0.56em;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Long enough to carry a label and to read as a step rather than a join. */
+.reveal .answers-slide .mini-arrow-long {
+  width: 4.2em;
+  margin-right: 1.2em;
+}
+
+.reveal .answers-slide .mini-arrow .flow-label {
+  left: 50%;
+  top: auto;
+  bottom: 0.6em;
+  width: max-content;
+  transform: translateX(-50%);
+  font-size: 0.5em;
+}
+
+/* The previous slide's own figure, cancelled. */
+.reveal .lead-struck {
+  display: block;
+  margin-bottom: 0.15em;
+  color: var(--muted);
+  font-weight: 400;
 }

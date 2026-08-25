@@ -76,7 +76,7 @@
      same tactics §3 just built. The qualifier library and the `@[grind]`
      attribute on `fib` are left off; they are machinery, not the point. -->
 <section class="imp-slide">
-  <h2 class="slide-title">Imp: <code>fibLoop</code></h2>
+  <h2 class="slide-title">Imp: example</h2>
 
   <div class="lean-code">
     <!-- The specification, boxed on its own click: it is worth a beat before
@@ -115,7 +115,13 @@
       <span class="hoare-label">postcondition</span>
     </div>
 
-    <span class="lean-line lean-proof">:= <span class="hljs-keyword">by</span> <span class="tac">generate</span>; <span class="tac">fix</span>; <span class="tac">grind</span></span>
+    <!-- The proof, boxed on its own click: the three tactics are the payoff of
+         everything the last section built, and they deserve a beat after the
+         triple has been read. -->
+    <div class="hoare-part hoare-proof fragment paint" data-fragment-index="3">
+      <span class="hoare-box" aria-hidden="true"></span>
+      <span class="lean-line lean-proof">:= <span class="hljs-keyword">by</span> <span class="tac">generate</span>; <span class="tac">fix</span>; <span class="tac">grind</span></span>
+    </div>
   </div>
 </section>
 
@@ -132,13 +138,13 @@
      every row of it is Lean, so a per-box colour would imply a distinction in
      trust that does not exist. -->
 <section class="rk-sound-slide">
-  <h2 class="slide-title">Soundness for \(\lambda_{RK}\)</h2>
+  <h2 class="slide-title">\(\lambda_{RK}\): soundness</h2>
 
   <div class="rk-grid">
     <!-- Spans the whole chain. The brace SVG is the one from the frontends
          slide, mirrored: there it gathered a list on its left, here it points
          rightwards at the stack it gathers. -->
-    <div class="rk-brace fragment" data-fragment-index="6">
+    <div class="rk-brace fragment" data-fragment-index="5">
       <span class="rk-brace-label">Thm 5.4 · verifier soundness</span>
       <div class="brace-v rk-brace-svg" aria-hidden="true">
         <svg viewBox="0 0 10 100" preserveAspectRatio="none">
@@ -172,9 +178,10 @@
       <span class="kmark-inline">κ</span>'s
     </div>
 
-    <!-- The answer to the obligation on the arrow, on its own click: the step
-         states what it needs, and only then does Flex supply it. -->
-    <div class="flow-box rk-seam fragment" data-fragment-index="5">
+    <!-- The answer to the obligation on the arrow, and the last thing on the
+         slide: the chain is closed as a theorem first, and only then does Flex
+         turn up to discharge the one hypothesis it rests on. -->
+    <div class="flow-box rk-seam fragment" data-fragment-index="6">
       <span class="rk-seam-name">Flex <em>finds</em> such a <span class="kmark-inline">K</span></span>
     </div>
 
@@ -228,7 +235,7 @@
      The Tock chips matter: two of the four are upstream kernel code, not
      benchmarks written to be verifiable. -->
 <section class="case-slide">
-  <h2 class="slide-title">Case studies</h2>
+  <h2 class="slide-title">Flux: case studies</h2>
 
   <div class="case-body">
     <div class="case-grid">
@@ -271,7 +278,7 @@
     </div>
 
     <div class="case-punch fragment">
-      <span class="case-punch-lead">None of this was in expressible in Flux</span>
+      <span class="case-punch-lead">None of this was expressible in Flux</span>
     </div>
   </div>
 </section>

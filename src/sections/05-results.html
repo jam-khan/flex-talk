@@ -39,4 +39,314 @@
   </ol>
 </section>
 
-<!-- Results slides go here. -->
+<!-- What RQ1 is actually about, lifted from the last step of the certificate
+     walk: a goal on the left, the term that closes it on the arrow, and no
+     goals on the right. Zap writes that term down by construction; a search
+     tactic has to find it. The numbers that follow are the cost of the
+     difference. -->
+<section class="rq-focus-slide">
+  <h2 class="slide-title">RQ1: constructing vs. searching</h2>
+
+  <div class="rq-focus-body">
+  <div class="rq-focus-flow">
+    <div class="rq-focus-goal">
+      <div class="ctx-line ctx-binder">
+        <span class="ctx-name">\(h\)</span>
+        <span class="ctx-colon">:</span>
+        <span class="ctx-sort">\(0 \le v \;\wedge\; v < n\)</span>
+      </div>
+
+      <div class="state-bar" aria-hidden="true"></div>
+
+      <div class="ctx-line goal-line">
+        <span class="ctx-name">\(\vdash\)</span>
+        <div class="flow-box zap-box">
+          <div class="flux-chc">
+            <span class="ind-0">\((\exists v'.\, 0 \le v' \wedge v' &lt; n \wedge v = v')\)</span>
+            <span class="ind-0">\(\vee\; (\exists w.\, w = n \wedge v = w)\)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- What the tactic does, level with the sequent's rule: the step is
+           about the whole sequent, so it leaves from its spine rather than
+           from the conclusion alone. -->
+      <div class="rq-focus-tail">
+        <div class="flow-arrow flow-arrow-h rq-focus-arrow" aria-hidden="true">
+          <span class="flow-label">exact <span class="tac">inl \(\langle v, h, \mathsf{rfl}\rangle\)</span></span>
+        </div>
+
+        <span class="verdict-ok rq-focus-verdict">no goals</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- The two sides of the comparison as a pair of columns rather than a
+       sentence: the parentheses and the "vs" buried mid-line were doing
+       structural work that alignment does better. -->
+  <div class="rq-focus-versus fragment">
+    <div class="rq-versus-side">
+      <span class="rq-versus-what"><span class="tac">exact inl \(\langle v, h, \mathsf{rfl}\rangle\)</span></span>
+      <span class="rq-versus-kind">deterministic</span>
+    </div>
+
+    <span class="rq-versus-op">vs</span>
+
+    <div class="rq-versus-side">
+      <span class="rq-versus-what"><span class="tac">grind</span> · <span class="tac">aesop</span></span>
+      <span class="rq-versus-kind">search</span>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- The answer to RQ1 (§6.2, Table 2, the "All" row over 369 constraints).
+
+     Three cards rather than the paper's table: the per-suite breakdown is five
+     rows of six columns, and no suite reverses the story, so projecting it
+     costs a lot of legibility for nothing. The three names and their order are
+     the ones the previous slide just put on screen — Zap deterministic, then
+     the two search tactics — so this reads as that comparison being filled in.
+
+     Coverage leads, cost follows. The headline is not "18x slower", it is that
+     a search tactic outright fails on a third of the constraints; that is the
+     robustness claim, and it is what makes Zap "crucial in practice" rather
+     than merely a nice optimization. Speed is the second beat.
+
+     Left off deliberately: the appendix result that aesop's proof terms are 10%
+     deeper and 50% slower to kernel-check. True, and a fourth metric on a slide
+     that already carries three. It belongs on a backup slide. -->
+<section class="res-slide">
+  <h2 class="slide-title">RQ1: constructing vs. searching</h2>
+
+  <div class="res-body">
+    <div class="res-grid">
+      <div class="flow-box res-card">
+        <span class="res-name"><span class="tac">Zap</span></span>
+        <span class="res-kind">deterministic</span>
+
+        <div class="res-cover fragment" data-fragment-index="1">
+          <div class="res-bar">
+            <span class="res-bar-fill" style="width: 100%"></span>
+          </div>
+          <span class="res-cover-pct">100%</span>
+          <span class="res-cover-label">reduced</span>
+        </div>
+
+        <div class="res-cost fragment" data-fragment-index="2">
+          <span class="res-cost-big">avg 16 ms</span>
+        </div>
+      </div>
+
+      <div class="flow-box res-card">
+        <span class="res-name"><span class="tac">grind</span></span>
+        <span class="res-kind">search</span>
+
+        <div class="res-cover fragment" data-fragment-index="1">
+          <div class="res-bar">
+            <span class="res-bar-fill" style="width: 67%"></span>
+          </div>
+          <span class="res-cover-pct">67%</span>
+          <span class="res-cover-label">reduced</span>
+        </div>
+
+        <div class="res-cost fragment" data-fragment-index="2">
+          <span class="res-cost-big">13&times;</span>
+        </div>
+      </div>
+
+      <div class="flow-box res-card">
+        <span class="res-name"><span class="tac">aesop</span></span>
+        <span class="res-kind">search</span>
+
+        <div class="res-cover fragment" data-fragment-index="1">
+          <div class="res-bar">
+            <span class="res-bar-fill" style="width: 90%"></span>
+          </div>
+          <span class="res-cover-pct">90%</span>
+          <span class="res-cover-label">reduced</span>
+        </div>
+
+        <div class="res-cost fragment" data-fragment-index="2">
+          <span class="res-cost-big">22&times;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- The sample size, under the cards it qualifies rather than beside the
+         title: it is a footing for the three columns, and up in the title row it
+         competed with the question for the top line. -->
+    <div class="res-scope">over 369 constraints</div>
+  </div>
+</section>
+
+<!-- RQ2, setup (§6.3). The experiment is a head-to-head: the same constraints,
+     handed to the SMT backend Flux ships with and to the Lean pipeline the last
+     two sections built. So the slide is two named backends astride a `vs`, in
+     the same shape the deterministic/search comparison used.
+
+     The tactic line is verbatim from "The full pipeline" — this is deliberately
+     the same thing the audience already understands, now pointed at 880
+     constraints instead of one.
+
+     The claim that matters is not a metric but a posture: nobody helped. Every
+     invariant, qualifier and interactive proof shown up to this point is
+     withdrawn. That is the one beat, and it gets the whole lower half.
+
+     Two caveats are deliberately spoken rather than shown: flex-bench is left
+     out of this run, and Lean's heartbeat limit was raised from 200k to 5M so
+     the search tactics had room. Both belong in the telling, not on a slide
+     that has to carry to the back of the room. -->
+<section class="rq2-slide">
+  <h2 class="slide-title">RQ2: LiquidFixpoint vs Flex</h2>
+
+  <div class="rq2-body">
+    <div class="rq2-versus">
+      <div class="flow-box rq2-card">
+        <span class="rq2-name">LiquidFixpoint</span>
+        <span class="rq2-kind">SMT</span>
+        <div class="rq2-card-rule" aria-hidden="true"></div>
+        <span class="rq2-how">Z3 · CVC5</span>
+      </div>
+
+      <span class="rq-versus-op rq2-op">vs</span>
+
+      <div class="flow-box rq2-card">
+        <span class="rq2-name">Flex</span>
+        <span class="rq2-kind">Lean</span>
+        <div class="rq2-card-rule" aria-hidden="true"></div>
+        <span class="rq2-how">
+          <span class="tac">zap</span>; <span class="tac">fix</span>;
+          <span class="tac">grind</span>/<span class="tac">aesop</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="rq2-claim">
+      <span class="rq2-claim-lead">the same <b>880</b> constraints, <b>no human input</b></span>
+      <span class="rq2-claim-src">taken from the Flux and LiquidFixpoint test suites</span>
+    </div>
+  </div>
+</section>
+
+<!-- RQ2, results (Table 3, Total row). Two bars rather than three cards: this
+     is one system measured twice, not a field of contenders. Same bar
+     vocabulary as the RQ1 slide so the pair reads as one result.
+
+     Order is deliberate: the headline first, then straight to where it is
+     weakest. The drop on cyclic κ is the honest part of the story and it is
+     ours to frame — the paper puts it down to addressable gaps in Fix, not to
+     anything foundational.
+
+     Cost is two wall-clock times, not a multiplier: a multiplier invites the
+     room to do arithmetic while you are still talking.
+
+     What a failure hands you — a Lean goal rather than an opaque SMT timeout —
+     is left to the telling. It is the strongest thing to say here and it does
+     not need to be on the slide to be said. -->
+<section class="rq2-res-slide">
+  <h2 class="slide-title">RQ2: automation and cost</h2>
+
+  <div class="rq2-res-body">
+    <!-- Names what the bars are counting. Without it the two labels read as the
+         populations alone, and the room has to infer that the percentage is
+         Flex solving them unaided. -->
+    <div class="rq2-lead">how many constraints can Flex solve on its own?</div>
+
+    <div class="rq2-rows">
+      <div class="rq2-row fragment" data-fragment-index="1">
+        <span class="rq2-row-label">all constraints</span>
+        <div class="res-bar">
+          <span class="res-bar-fill" style="width: 95.7%"></span>
+        </div>
+        <span class="rq2-row-pct">95.7%</span>
+        <span class="rq2-row-of">of 880</span>
+      </div>
+
+      <div class="rq2-row fragment" data-fragment-index="2">
+        <span class="rq2-row-label">with a cyclic \(\kappa\)</span>
+        <div class="res-bar">
+          <span class="res-bar-fill" style="width: 82.3%"></span>
+        </div>
+        <span class="rq2-row-pct">82.3%</span>
+        <span class="rq2-row-of">of 164</span>
+      </div>
+    </div>
+
+    <div class="rq2-cost fragment" data-fragment-index="3">
+      <div class="rq2-lead">how fast is Flex?</div>
+
+      <div class="rq2-cost-row">
+        <span class="rq2-cost-label">over the whole suite</span>
+        <span class="rq2-cost-side"><b>31 s</b> LiquidFixpoint</span>
+        <span class="rq2-cost-arrow" aria-hidden="true">→</span>
+        <span class="rq2-cost-side"><b>21.8 min</b> Flex</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Close. The three-frontends diagram from §3, re-shown under the paper's
+     title: the same words that opened the talk, now over a picture the room can
+     read. Nothing new is asserted — the last slide is a place to land, and the
+     one thing worth leaving on screen is what was built, not another number.
+
+     Kept verbatim from `.frontends-slide` rather than abstracted into a shared
+     partial: the deck injects flat HTML files and a second copy is cheaper to
+     read here than an indirection. If that diagram changes, change it twice. -->
+<section class="flow-slide frontends-slide closing-slide">
+  <p class="closing-title">
+    <b>Flex</b>: Foundational Constraint Solving
+    <em>for</em> Expressive Refinement Typing
+  </p>
+
+  <div class="frontends-layout">
+    <ul class="frontend-list">
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true">
+          <img src="@assets/lean.png" alt="" />
+        </span>
+        <span class="frontend-name">Imp</span>
+        <span class="frontend-kind">imperative</span>
+      </li>
+
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true">
+          <img src="@assets/lean.png" alt="" />
+        </span>
+        <span class="frontend-name">\(\lambda_{RK}\)</span>
+        <span class="frontend-kind">functional core</span>
+      </li>
+
+      <li class="flow-box frontend">
+        <span class="frontend-name">Flux</span>
+        <span class="frontend-kind">Rust</span>
+      </li>
+    </ul>
+
+    <div class="brace-v" aria-hidden="true">
+      <svg viewBox="0 0 10 100" preserveAspectRatio="none">
+        <path
+          d="M0.5,0.5 Q6,0.5 6,5 L6,45 Q6,49.5 9.5,50 Q6,50.5 6,55 L6,95 Q6,99.5 0.5,99.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <div class="arrow-slot">
+      <div class="flow-arrow flow-arrow-h flow-arrow-long" aria-hidden="true">
+        <span class="flow-label">constrained Horn clauses</span>
+      </div>
+    </div>
+
+    <div class="flow-box flex-solver-box">
+      <span class="lean-badge" aria-hidden="true">
+        <img src="@assets/lean.png" alt="" />
+      </span>
+      <span class="solver-name">Flex</span>
+    </div>
+  </div>
+</section>
