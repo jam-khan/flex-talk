@@ -2214,8 +2214,7 @@
    The three `fix` slides. They borrow the arrow from the zap intuition slides
    and the flow row from the zap rewrite slide; what is new here is the
    candidate chip and the round ledger. */
-.reveal .cand-slide,
-.reveal .weaken-slide {
+.reveal .cand-slide {
   display: flex;
   flex-direction: column;
   height: 620px;
@@ -2225,8 +2224,7 @@
    beats the rule above and leaves the auto margins below with nothing to
    distribute. Scoped to `.present` on purpose: the inline `display: none` on
    every other slide has to keep winning. */
-.reveal .cand-slide.present,
-.reveal .weaken-slide.present {
+.reveal .cand-slide.present {
   display: flex !important;
 }
 
@@ -2344,22 +2342,25 @@
   border-top: 1px solid #b9bec8;
 }
 
-/* One row per weakening round: label, the κ-goal it is checking, and the
-   candidate set as it stands going in. */
-.reveal .rounds {
-  display: grid;
-  grid-template-columns: max-content max-content 1fr;
-  align-items: baseline;
-  column-gap: 1.6em;
-  row-gap: 1.5em;
-  margin: auto 0 0;
+/* --- Fix: one slide per weakening round ---------------------------------
+   Assignment across the top, constraint on the left with the clause under test
+   marked, that clause's goal on the right as a proof state. */
+.reveal .round-slide {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 620px;
 }
 
-.reveal .round {
-  display: contents;
+.reveal .round-slide.present {
+  display: flex !important;
 }
 
-.reveal .round-label {
+.reveal .round-badge {
+  position: absolute;
+  bottom: 0.4em;
+  left: 50%;
+  transform: translateX(-50%);
   color: var(--muted);
   font-size: 19px;
   font-weight: 500;
@@ -2367,22 +2368,62 @@
   letter-spacing: 0.1em;
 }
 
-.reveal .round-goal {
-  font-size: 0.62em;
+/* The assignment being weakened: one formula, in κ's own parameters, which the
+   round edits in place. */
+/* The candidates the library also produced and this example does not follow.
+   Muted: it marks that the list is abridged, it is not a candidate. */
+.reveal .cj-more {
+  color: var(--muted);
+}
+
+.reveal .theta-line {
+  margin: 1.2em 0 0;
+  text-align: center;
+  font-size: 0.72em;
   white-space: nowrap;
 }
 
-.reveal .weaken-slide .chips {
-  max-width: none;
+/* Fixed columns, top-aligned: the constraint is the same figure on all three
+   round slides and must not move as the goal beside it grows a hypothesis or a
+   second sequent. */
+.reveal .round-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1em;
+  margin: 1.6em 0 auto;
 }
 
-.reveal .round-stable {
-  margin-left: 0.6em;
-  color: var(--muted);
+.reveal .round-chc {
+  flex: none;
+  width: 340px;
+  padding-top: 0.6em;
   font-size: 0.62em;
 }
 
-.reveal .weaken-slide .kv,
+/* The column is a fixed width so the constraint beside it never moves; each
+   sequent inside shrinks to its own content, so its bar is exactly as wide as
+   the goal it separates. */
+.reveal .rnd-states {
+  flex: none;
+  width: 560px;
+}
+
+/* The last round checks both heads and nothing dies at either: side by side,
+   the two sequents read as one verdict rather than as two more steps. */
+.reveal .round-last .rnd-states {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2.6em;
+}
+
+.reveal .rnd-state {
+  width: max-content;
+}
+
+/* The head under test, and the hypothesis occurrence feeding it. Blue is the
+   colour κ already carries everywhere; the amber marks the other role. */
+.reveal .round-slide .kv,
 .reveal .fix-slide .kv {
   color: inherit;
   background: #cfe0f7;
@@ -2390,15 +2431,191 @@
   padding: 0 0.18em;
 }
 
-.reveal .weaken-slide .zap-solution {
-  margin: 2.2em 0 auto;
+/* The head is part of the same clause as its context, so it takes the same
+   amber; the border is what says "this is the one we are proving". */
+.reveal .round-slide .kv.focus-head {
+  background: #fdf1cf;
+  box-shadow: inset 0 0 0 1.5px #dcbc63;
 }
 
-/* The rewrite row is one line taller here than zap's — the cyclic constraint
-   has two clauses — so the closing note gets its air from the row instead of
-   adding its own. */
-.reveal .fix-slide .fix-cert-note {
-  margin: 1.4em 0 0;
+/* Everything the goal's context is made of — the binders, the hypotheses, and
+   the κ occurrence among them — carries the same amber, so the left column
+   shows where the sequent on the right came from. */
+.reveal .round-slide .focus-ctx {
+  background: #fdf1cf;
+  border-radius: 3px;
+  padding: 0 0.18em;
+}
+
+/* The goal for that head: context above the bar, what is owed below it — the
+   same shape as the certificate slides, at this slide's proportions. */
+.reveal .rnd-states {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+}
+
+.reveal .rnd-state {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+/* The context is a grid so names, colons and types line up; the goal is *not*
+   in it. A grid item spanning every column hands its own max-content width to
+   those columns, and the goal is much the widest line here — inside the grid
+   it would stretch the context row across the slide. */
+.reveal .rnd-ctxs {
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  justify-content: start;
+  align-items: baseline;
+  column-gap: 0.4em;
+  row-gap: 0.5em;
+}
+
+.reveal .rnd-ctx {
+  display: contents;
+}
+
+.reveal .rnd-goal {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+}
+
+.reveal .rnd-name,
+.reveal .rnd-colon,
+.reveal .rnd-type,
+.reveal .rnd-conj {
+  font-size: 0.62em;
+  white-space: nowrap;
+}
+
+/* What the assignment says at the *body* occurrence — named, because the whole
+   point of the round is that this and the goal are the same θ at different
+   arguments. */
+.reveal .rnd-note {
+  margin-left: 0.9em;
+  color: var(--muted);
+  font-size: 0.82em;
+}
+
+.reveal .rnd-bar {
+  height: 1px;
+  margin: 0.15em 0;
+  background: #d5d9e0;
+}
+
+/* A conjunct of the assignment, in either line. Positioned so its highlight,
+   its strike and its verdict can be laid over it without moving anything. */
+.reveal .cj {
+  position: relative;
+  display: inline-block;
+  padding: 0 0.18em;
+}
+
+.reveal .cj-body {
+  position: relative;
+}
+
+/* The conjunct under test. A `fade-in-then-out` fragment, so reveal shows it
+   for exactly one step and clears it on the next click. */
+.reveal .cur {
+  position: absolute;
+  inset: -0.1em 0;
+  border-radius: 3px;
+  background: #fdf1cf;
+}
+
+/* A conjunct of the assignment is boxed — it is a candidate, an item that can
+   be dropped — while the goal's conjuncts are plain text. */
+.reveal .theta-line .cj {
+  margin: 0 0.1em;
+  padding: 0.06em 0.4em;
+  border: 1px solid #c3d4ec;
+  border-radius: 5px;
+  background: #eef3fb;
+}
+
+/* Discarded: shaded back rather than struck through, so the assignment stays
+   readable as the audience watches it thin out. */
+.reveal .shade {
+  position: absolute;
+  inset: -1px;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 68%);
+}
+
+.reveal .verdict {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85em;
+}
+
+.reveal .verdict-yes {
+  color: #2b8a3e;
+}
+
+.reveal .verdict-no {
+  color: #c92a2a;
+}
+
+.reveal .round-slide .zap-solution {
+  margin: 0 0 0.6em;
+}
+
+/* --- The epigraph -------------------------------------------------------
+   No heading, so the quote itself has to carry the slide: set large, centred,
+   and given the whole height to breathe in. */
+.reveal .quote-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 620px;
+}
+
+.reveal .quote-slide.present {
+  display: flex !important;
+}
+
+/* Reveal's own blockquote is a boxed pull-quote: panel, shadow and all. Here
+   the words stand on the white. */
+/* The column the quote and its attribution share. It shrink-wraps the quote,
+   so the quote itself is laid out exactly as it would be on its own and the
+   attribution below simply aligns to that box's right edge. */
+.reveal .quote-block {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+}
+
+/* A set measure rather than a max: inside the shrink-wrapping column above, a
+   max-width would let the quote be squeezed to its longest line and rewrap. */
+.reveal .quote-text {
+  width: 22em;
+  font-size: 1.05em;
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  text-wrap: balance;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.reveal .quote-attrib {
+  margin: 1.1em 0 0;
+  color: var(--muted);
+  font-size: 0.69em;
+  text-align: right;
+}
+
+.reveal .quote-slide .zap-solution {
+  margin: 3.2em 0 0;
 }
 
 .muted {

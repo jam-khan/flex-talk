@@ -501,7 +501,7 @@
   <h2 class="slide-title"><span class="tac">Fix</span>: start strong, then iterate</h2>
 
   <div class="qual-list">
-    <span class="qual-list-label">qualifiers</span>
+    <span class="qual-list-label">qualifiers (a.k.a. templates)</span>
 
     <div class="qual-row">
       <span class="qual-def">\(q_{\le}(a, b) \;\triangleq\; a \le b\)</span>
@@ -511,7 +511,7 @@
   </div>
 
   <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
-    <span class="flow-label">instantiate all the combinations</span>
+    <span class="flow-label">generate all combinations</span>
   </div>
 
   <div class="cand-def fragment" data-fragment-index="1">
@@ -532,53 +532,233 @@
 
 </section>
 
-<!-- Beat 3: the fixpoint loop. One row per round rather than one mutating chip
-     set: the history stays on screen, so "nothing died this round" in the last
-     row is visibly the termination condition rather than an assertion.
+<!-- Beat 3: the fixpoint loop, one slide per round in a shared layout —
+     the assignment on top, the constraint on the left with the clause under
+     test boxed (head blue, hypothesis amber), and that clause's goal on the
+     right as a proof state.
 
-     Each round is a κ-goal — hypotheses under the current assignment, and the
-     head to prove — and the chips the oracle cannot discharge there are struck
-     out. Round 3 kills nothing, so the assignment is valid for every head. -->
-<section class="weaken-slide">
-  <h2 class="slide-title"><span class="tac">Fix</span>: weaken till fixpoint</h2>
+     The goal is the whole assignment substituted at the head's arguments, and
+     the round walks it conjunct by conjunct: each click boxes one conjunct in
+     both the goal and the assignment above, and lands its verdict. A conjunct
+     the oracle cannot discharge is struck in both places, so the assignment at
+     the top is edited down in front of the audience — what is left is exactly
+     what the next round opens with.
 
-  <div class="rounds">
-    <div class="round fragment" data-fragment-index="1">
-      <span class="round-label">round 1</span>
-      <span class="round-goal">\(\vdash\) <span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-      <div class="chips">
-        <span class="chip">\(lo \le z\)</span>
-        <span class="chip">\(z \le lo\)</span>
-        <span class="chip dead">\(z \le hi\)</span>
-        <span class="chip dead">\(hi \le z\)</span>
-        <span class="chip dead">\(lo &lt; z\)</span>
-        <span class="chip dead">\(z &lt; hi\)</span>
-        <span class="chip dead">\(hi &lt; z\)</span>
-        <span class="chip">\(z = lo\)</span>
-      </div>
+     The current-conjunct box is a `fade-in-then-out` fragment, which reveal
+     shows only while its own index is the current one: no `:has()` state
+     machine needed to clear the previous step's highlight. -->
+<section class="round-slide">
+  <h2 class="slide-title"><span class="tac">Fix</span>: weaken until fixpoint</h2>
+  <span class="round-badge">round 1</span>
+
+  <div class="theta-line">
+    <span class="theta-head">\(\kv(z, hi, lo) \;\triangleq\;\)</span>
+    <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="1"></span><span class="cj-body">\(lo \le z\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="2"></span><span class="cj-body">\(z \le lo\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="3"></span><span class="cj-body">\(z \le hi\)</span>
+        <span class="shade fragment" data-fragment-index="3"></span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="4"></span><span class="cj-body">\(z < hi\)</span>
+        <span class="shade fragment" data-fragment-index="4"></span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="5"></span><span class="cj-body">\(z = lo\)</span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span>
+  </div>
+
+  <div class="round-body">
+    <div class="flux-chc round-chc">
+      <span class="ind-0"><span class="focus-ctx">\(\forall lo, hi.\)</span></span>
+      <span class="ind-1"><span class="kv focus-head">\(\kv(lo, hi, lo)\)</span></span>
+      <span class="ind-1">\(\wedge\; \forall i.\;\) \(\kv(i, hi, lo)\) \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+      <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+      <span class="ind-3">\(\wedge\;\) \(\kv(i{+}1, hi, lo)\)</span>
     </div>
 
-    <div class="round fragment" data-fragment-index="2">
-      <span class="round-label">round 2</span>
-      <span class="round-goal">\(lo \le i,\; i \le lo,\; i = lo,\; i &lt; hi \;\vdash\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
-      <div class="chips">
-        <span class="chip">\(lo \le z\)</span>
-        <span class="chip dead">\(z \le lo\)</span>
-        <span class="chip dead">\(z = lo\)</span>
+    <div class="rnd-states">
+      <div class="rnd-state">
+          <div class="rnd-ctxs">
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(lo, hi\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(\Int\)</span>
+        </div>
+
+        </div>
+
+          <div class="rnd-bar" aria-hidden="true"></div>
+
+        <div class="rnd-goal">
+          <span class="rnd-name">\(\vdash\)</span>
+          <span class="rnd-conj"><span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="1"></span><span class="cj-body">\(lo \le lo\)</span>
+          <span class="verdict verdict-yes fragment" data-fragment-index="1">\(\checkmark\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="2"></span><span class="cj-body">\(lo \le lo\)</span>
+          <span class="verdict verdict-yes fragment" data-fragment-index="2">\(\checkmark\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="3"></span><span class="cj-body">\(lo \le hi\)</span>
+          <span class="verdict verdict-no fragment" data-fragment-index="3">\(\times\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="4"></span><span class="cj-body">\(lo < hi\)</span>
+          <span class="verdict verdict-no fragment" data-fragment-index="4">\(\times\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="5"></span><span class="cj-body">\(lo = lo\)</span>
+          <span class="verdict verdict-yes fragment" data-fragment-index="5">\(\checkmark\)</span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span></span>
+        </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="round fragment" data-fragment-index="3">
-      <span class="round-label">round 3</span>
-      <span class="round-goal">both heads</span>
-      <div class="chips">
-        <span class="chip">\(lo \le z\)</span>
-        <span class="round-stable">nothing dies — fixpoint</span>
+<!-- Round 2. The difference that matters: the context is no longer just
+     binders. `h` is the *same* assignment substituted at the body occurrence
+     (z := i), which is what the marginal note names — the assignment is one
+     thing, what it says at an occurrence is another. -->
+<section class="round-slide">
+  <h2 class="slide-title"><span class="tac">Fix</span>: weaken until fixpoint</h2>
+  <span class="round-badge">round 2</span>
+
+  <div class="theta-line">
+    <span class="theta-head">\(\kv(z, hi, lo) \;\triangleq\;\)</span>
+    <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="1"></span><span class="cj-body">\(lo \le z\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="2"></span><span class="cj-body">\(z \le lo\)</span>
+        <span class="shade fragment" data-fragment-index="2"></span></span> \(\wedge\) <span class="cj"><span class="cj-body">\(z \le hi\)</span>
+        <span class="shade"></span></span> \(\wedge\) <span class="cj"><span class="cj-body">\(z < hi\)</span>
+        <span class="shade"></span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="3"></span><span class="cj-body">\(z = lo\)</span>
+        <span class="shade fragment" data-fragment-index="3"></span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span>
+  </div>
+
+  <div class="round-body">
+    <div class="flux-chc round-chc">
+      <span class="ind-0"><span class="focus-ctx">\(\forall lo, hi.\)</span></span>
+      <span class="ind-1">\(\kv(lo, hi, lo)\)</span>
+      <span class="ind-1">\(\wedge\;\) <span class="focus-ctx">\(\forall i.\; \kv(i, hi, lo) \;\wedge\; i &lt; hi\)</span> \(\;\Rightarrow\)</span>
+      <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+      <span class="ind-3">\(\wedge\;\) <span class="kv focus-head">\(\kv(i{+}1, hi, lo)\)</span></span>
+    </div>
+
+    <div class="rnd-states">
+      <div class="rnd-state">
+          <div class="rnd-ctxs">
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(lo, hi, i\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(\Int\)</span>
+        </div>
+
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(h_1\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(lo \le i \;\wedge\; i \le lo \;\wedge\; i = lo\) <span class="cj-more">\(\wedge \dots\)</span>
+          </span>
+        </div>
+
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(h_2\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(i &lt; hi\)</span>
+        </div>
+
+        </div>
+
+          <div class="rnd-bar" aria-hidden="true"></div>
+
+        <div class="rnd-goal">
+          <span class="rnd-name">\(\vdash\)</span>
+          <span class="rnd-conj"><span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="1"></span><span class="cj-body">\(lo \le i{+}1\)</span>
+          <span class="verdict verdict-yes fragment" data-fragment-index="1">\(\checkmark\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="2"></span><span class="cj-body">\(i{+}1 \le lo\)</span>
+          <span class="verdict verdict-no fragment" data-fragment-index="2">\(\times\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="3"></span><span class="cj-body">\(i{+}1 = lo\)</span>
+          <span class="verdict verdict-no fragment" data-fragment-index="3">\(\times\)</span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Round 3: one candidate left, both heads checked, nothing struck. That is
+     the fixpoint — and the termination argument, since every earlier round
+     removed at least one conjunct from a finite set. -->
+<section class="round-slide round-last">
+  <h2 class="slide-title"><span class="tac">Fix</span>: weaken until fixpoint</h2>
+  <span class="round-badge">round 3</span>
+
+  <div class="theta-line">
+    <span class="theta-head">\(\kv(z, hi, lo) \;\triangleq\;\)</span>
+    <span class="cj"><span class="cj-body">\(lo \le z\)</span></span> \(\wedge\) <span class="cj"><span class="cj-body">\(z \le lo\)</span>
+        <span class="shade"></span></span> \(\wedge\) <span class="cj"><span class="cj-body">\(z \le hi\)</span>
+        <span class="shade"></span></span> \(\wedge\) <span class="cj"><span class="cj-body">\(z < hi\)</span>
+        <span class="shade"></span></span> \(\wedge\) <span class="cj"><span class="cj-body">\(z = lo\)</span>
+        <span class="shade"></span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span>
+  </div>
+
+  <div class="round-body">
+    <div class="flux-chc round-chc">
+      <span class="ind-0"><span class="focus-ctx">\(\forall lo, hi.\)</span></span>
+      <span class="ind-1"><span class="kv focus-head">\(\kv(lo, hi, lo)\)</span></span>
+      <span class="ind-1">\(\wedge\;\) <span class="focus-ctx">\(\forall i.\; \kv(i, hi, lo) \;\wedge\; i &lt; hi\)</span> \(\;\Rightarrow\)</span>
+      <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+      <span class="ind-3">\(\wedge\;\) <span class="kv focus-head">\(\kv(i{+}1, hi, lo)\)</span></span>
+    </div>
+
+    <div class="rnd-states">
+      <div class="rnd-state fragment" data-fragment-index="1">
+        <div class="rnd-ctxs">
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(lo, hi\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(\Int\)</span>
+        </div>
+
+        </div>
+
+        <div class="rnd-bar" aria-hidden="true"></div>
+
+        <div class="rnd-goal">
+          <span class="rnd-name">\(\vdash\)</span>
+          <span class="rnd-conj"><span class="cj"><span class="cj-body">\(lo \le lo\)</span>
+            <span class="verdict verdict-yes">\(\checkmark\)</span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span></span>
+        </div>
+      </div>
+
+      <div class="rnd-state fragment" data-fragment-index="2">
+        <div class="rnd-ctxs">
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(lo, hi, i\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(\Int\)</span>
+        </div>
+
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(h_1\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(lo \le i\) <span class="cj-more">\(\wedge \dots\)</span>
+          </span>
+        </div>
+
+        <div class="rnd-ctx">
+          <span class="rnd-name">\(h_2\)</span>
+          <span class="rnd-colon">:</span>
+          <span class="rnd-type">\(i &lt; hi\)</span>
+        </div>
+
+        </div>
+
+        <div class="rnd-bar" aria-hidden="true"></div>
+
+        <div class="rnd-goal">
+          <span class="rnd-name">\(\vdash\)</span>
+          <span class="rnd-conj"><span class="cj"><span class="cj-body">\(lo \le i{+}1\)</span>
+            <span class="verdict verdict-yes">\(\checkmark\)</span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span></span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="zap-solution fragment" data-fragment-index="4">
+</section>
+
+<!-- The epigraph the paper itself reaches for (§2): predicate abstraction is
+     elimination, and what survives every head is the invariant. No heading —
+     the slide is a breath between the fixpoint machinery and the rewrite, and
+     a title would make it an argument again.
+
+     The surviving candidate arrives on a click, in the same `solution` chip
+     the zap slides use, so the epigraph lands on something concrete. -->
+<section class="quote-slide">
+  <!-- Quote and attribution share one column so the name can sit flush with
+       the quote's right edge. -->
+  <div class="quote-block">
+    <blockquote class="quote-text">
+      “When you have eliminated the impossible, whatever remains,
+      however improbable, must be the truth.”
+    </blockquote>
+
+    <p class="quote-attrib">— Sherlock Holmes</p>
+  </div>
+
+  <div class="zap-solution">
     <span class="zap-solution-label">solution</span>
     <span class="zap-sub">\(\kv(z, hi, lo) \;\triangleq\; lo \le z\)</span>
   </div>
@@ -633,9 +813,4 @@
     <span class="zap-solution-label">solution</span>
     <span class="zap-sub">\(\kv(z, hi, lo) \;\triangleq\; lo \le z\)</span>
   </div>
-
-  <p class="fix-note fix-cert-note fragment" data-fragment-index="6">
-    certified like <span class="tac">zap</span> — at a head, the oracle's proof
-    stands in for the navigation
-  </p>
 </section>
