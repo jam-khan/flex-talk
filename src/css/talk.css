@@ -2547,7 +2547,8 @@
   background: rgb(255 255 255 / 68%);
 }
 
-.reveal .verdict {
+/* Scoped: `.verdict` is already the SMT slide's sat/unsat chip. */
+.reveal .round-slide .verdict {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -2555,17 +2556,112 @@
   font-size: 0.85em;
 }
 
-.reveal .verdict-yes {
+.reveal .round-slide .verdict-yes {
   color: #2b8a3e;
 }
 
-.reveal .verdict-no {
+.reveal .round-slide .verdict-no {
   color: #c92a2a;
 }
 
 .reveal .round-slide .zap-solution {
   margin: 0 0 0.6em;
 }
+
+/* Brace under the verdict row, naming what decided them. Inset by the width of
+   the turnstile so it spans the conjuncts rather than the whole sequent, and
+   pushed clear of the verdict marks, which hang below the goal line. */
+.reveal .oracle {
+  margin: 1.9em 0 0 1.1em;
+  color: var(--muted);
+}
+
+.reveal .oracle-label {
+  margin: 0.7em 0 0;
+  text-align: center;
+  font-size: 0.6em;
+  line-height: 1.5;
+}
+
+.reveal .oracle-label .tac {
+  font-family: var(--code-font);
+  font-size: 0.94em;
+  color: var(--accent);
+}
+
+.reveal .oracle-sub {
+  display: block;
+  font-size: 0.88em;
+  opacity: 0.85;
+}
+
+/* --- Both kinds in one constraint ---------------------------------------
+   The two Horn variables carry the colours their solvers carry elsewhere in
+   the section: blue for the acyclic one zap eliminates, amber for the cyclic
+   one fix solves. */
+.reveal .mixed-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 620px;
+}
+
+.reveal .mixed-slide.present {
+  display: flex !important;
+}
+
+/* Panel and labels side by side; the labels sit in the gutter the shared Lean
+   panel normally leaves for its callouts. */
+.reveal .mixed-row {
+  display: flex;
+  align-items: center;
+  gap: 2.6em;
+  /* Nearer the title than a centred block would sit: the panel is the whole
+     slide, and centring it in the leftover height leaves a canyon up top. */
+  margin: 1.4em 0 auto;
+}
+
+.reveal .mixed-slide .lean-code {
+  transform: none;
+  margin: 0;
+}
+
+.reveal .mixed-slide .lean-line {
+  font-size: 0.6em;
+}
+
+.reveal .mixed-slide .tac {
+  color: var(--accent);
+}
+
+.reveal .kv-a,
+.reveal .kv-c {
+  border-radius: 3px;
+  padding: 0 0.18em;
+}
+
+.reveal .kv-a {
+  background: #cfe0f7;
+}
+
+.reveal .kv-c {
+  background: #fdf1cf;
+}
+
+.reveal .mixed-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+  color: var(--muted);
+  font-size: 0.62em;
+}
+
+.reveal .legend-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
 
 /* --- The epigraph -------------------------------------------------------
    No heading, so the quote itself has to carry the slide: set large, centred,

@@ -6,7 +6,7 @@
   <h2 class="slide-title">Agenda</h2>
 
   <ol class="agenda-list">
-    <li><span class="agenda-num">01</span><span class="agenda-title">Refinement types + Flux</span></li>
+    <li><span class="agenda-num">01</span><span class="agenda-title">Refinement types (Flux)</span></li>
     <li><span class="agenda-num">02</span><span class="agenda-title">Solving CHCs in Lean</span></li>
     <li><span class="agenda-num">03</span><span class="agenda-title">Verifiers built on Flex</span></li>
     <li><span class="agenda-num">04</span><span class="agenda-title">Experimental results</span></li>
@@ -589,6 +589,25 @@
           <span class="verdict verdict-no fragment" data-fragment-index="4">\(\times\)</span></span> \(\wedge\) <span class="cj"><span class="cur fragment fade-in-then-out" data-fragment-index="5"></span><span class="cj-body">\(lo = lo\)</span>
           <span class="verdict verdict-yes fragment" data-fragment-index="5">\(\checkmark\)</span></span> \(\wedge\) <span class="cj-more">\(\dots\)</span></span>
         </div>
+
+        <!-- The verdicts are not free: each one is a query the oracle either
+             proves or fails to. Same brace component as the verifier slides. -->
+        <div class="oracle fragment" data-fragment-index="6">
+          <svg class="brace" viewBox="0 0 100 10" preserveAspectRatio="none">
+            <path
+              d="M0.5,0.5 Q0.5,6 5,6 L45,6 Q49.5,6 50,9.5 Q50.5,6 55,6 L95,6 Q99.5,6 99.5,0.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+
+          <p class="oracle-label">
+            discharged by <span class="tac">grind</span>
+            <span class="oracle-sub">any Lean tactic can serve as the oracle</span>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -812,5 +831,78 @@
   <div class="zap-solution fragment" data-fragment-index="2">
     <span class="zap-solution-label">solution</span>
     <span class="zap-sub">\(\kv(z, hi, lo) \;\triangleq\; lo \le z\)</span>
+  </div>
+</section>
+
+<!-- The fork again, now that both branches have been walked: the same
+     slide the section forked on, as a callback. -->
+<section class="kinds-slide">
+  <h2 class="slide-title">Cyclic vs. acyclic constraints</h2>
+
+  <div class="kinds-columns">
+    <figure class="kind-panel">
+      <figcaption class="kind-label">acyclic</figcaption>
+
+      <div class="flux-chc">
+        <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
+        <span class="ind-0">\(\forall n.\)</span>
+        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\)</span>
+        <span class="ind-3"><span class="kv">\(\kv(v, n)\)</span></span>
+      </div>
+
+      <div class="kind-tactic">
+        <span class="kind-tactic-label">solved by</span>
+        <span class="tac">zap</span>
+      </div>
+    </figure>
+
+    <figure class="kind-panel">
+      <figcaption class="kind-label">cyclic</figcaption>
+
+      <div class="flux-chc">
+        <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
+        <span class="ind-0">\(\forall lo, hi.\)</span>
+        <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+        <span class="ind-1">\(\wedge\; \forall i.\)</span>
+        <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+        <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+      </div>
+
+      <div class="kind-tactic">
+        <span class="kind-tactic-label">solved by</span>
+        <span class="tac">fix</span>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- The mixed case, shown rather than explained: `dot` with the `foreach` loop
+     inlined, so the closure's acyclic κ₁ and the loop's cyclic κ₂ live in one
+     constraint. The tints are the ones the two solvers carry — blue for what
+     zap eliminates, amber for what fix solves.
+
+     The order in the tactic line is forced: κ₁'s strongest solution mentions
+     κ₂, so the acyclic variable has to go first. Not said on the slide. -->
+<section class="mixed-slide">
+  <h2 class="slide-title">The full pipeline</h2>
+
+  <div class="mixed-row">
+    <div class="lean-code">
+      <span class="lean-line"><span class="hljs-keyword">theorem</span> <span class="hljs-title">c_dot_loop</span> :</span>
+      <span class="lean-line ind-1">∃ <span class="kv-a">κ₁</span> <span class="kv-c">κ₂</span> : <span class="hljs-type">Int</span> → <span class="hljs-type">Int</span> → <span class="hljs-type">Prop</span>,</span>
+      <span class="lean-line ind-2">∀ n : <span class="hljs-type">Int</span>,</span>
+      <span class="lean-line ind-3"><span class="kv-c">κ₂</span> 0 n</span>
+      <span class="lean-line ind-3">∧ (∀ i : <span class="hljs-type">Int</span>, <span class="kv-c">κ₂</span> i n → i &lt; n → <span class="kv-a">κ₁</span> i n ∧ <span class="kv-c">κ₂</span> (i+1) n)</span>
+      <span class="lean-line ind-3">∧ (∀ j : <span class="hljs-type">Int</span>, <span class="kv-a">κ₁</span> j n → j &lt; n)</span>
+
+      <span class="lean-line lean-proof ind-1">:= <span class="hljs-keyword">by</span> <span class="tac">zap</span>; <span class="tac">fix</span>; <span class="tac">grind</span></span>
+    </div>
+
+    <div class="mixed-legend">
+      <span class="legend-item"><span class="kv-a">κ₁</span> acyclic</span>
+      <span class="legend-item"><span class="kv-c">κ₂</span> cyclic</span>
+    </div>
   </div>
 </section>
