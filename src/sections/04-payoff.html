@@ -12,3 +12,109 @@
     <li><span class="agenda-num">04</span><span class="agenda-title">Experimental results</span></li>
   </ol>
 </section>
+
+<!-- Three frontends, one backend. The Lean badge established on the Flex box
+     is the marker for "foundational": Imp and λ_RK carry it, Flux does not. -->
+<section class="flow-slide frontends-slide">
+  <h2 class="slide-title">Three frontends, one backend</h2>
+
+  <div class="frontends-layout">
+    <ul class="frontend-list">
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true">
+          <img src="@assets/lean.png" alt="" />
+        </span>
+        <span class="frontend-name">Imp</span>
+        <span class="frontend-kind">imperative</span>
+      </li>
+
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true">
+          <img src="@assets/lean.png" alt="" />
+        </span>
+        <span class="frontend-name">\(\lambda_{RK}\)</span>
+        <span class="frontend-kind">functional core</span>
+      </li>
+
+      <li class="flow-box frontend">
+        <span class="frontend-name">Flux</span>
+        <span class="frontend-kind">Rust</span>
+      </li>
+    </ul>
+
+    <!-- The verifier slides' brace with the axes swapped — authored vertically
+         rather than rotated, so it stretches to the list height predictably. -->
+    <div class="brace-v" aria-hidden="true">
+      <svg viewBox="0 0 10 100" preserveAspectRatio="none">
+        <path
+          d="M0.5,0.5 Q6,0.5 6,5 L6,45 Q6,49.5 9.5,50 Q6,50.5 6,55 L6,95 Q6,99.5 0.5,99.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <div class="arrow-slot">
+      <div class="flow-arrow flow-arrow-h flow-arrow-long" aria-hidden="true">
+        <span class="flow-label">constrained Horn clauses</span>
+      </div>
+    </div>
+
+    <div class="flow-box flex-solver-box">
+      <span class="lean-badge" aria-hidden="true">
+        <img src="@assets/lean.png" alt="" />
+      </span>
+      <span class="solver-name">Flex</span>
+    </div>
+  </div>
+</section>
+
+<!-- The Imp example from §2 of the paper (Fig. 5): a recursive spec, an
+     imperative loop, and the Hoare triple relating them — discharged by the
+     same tactics §3 just built. The qualifier library and the `@[grind]`
+     attribute on `fib` are left off; they are machinery, not the point. -->
+<section class="imp-slide">
+  <h2 class="slide-title">Imp: <code>fibLoop</code></h2>
+
+  <div class="lean-code">
+    <!-- The specification, boxed on its own click: it is worth a beat before
+         the theorem that uses it. -->
+    <div class="hoare-part hoare-def fragment paint" data-fragment-index="1">
+      <span class="hoare-box" aria-hidden="true"></span>
+      <span class="lean-line"><span class="hljs-keyword">def</span> <span class="hljs-title">fib</span> (n : <span class="hljs-type">Int</span>) : <span class="hljs-type">Int</span> :=</span>
+      <span class="lean-line">  <span class="hljs-keyword">if</span> n ≤ <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-title">fib</span> (n<span class="hljs-number">-1</span>) + <span class="hljs-title">fib</span> (n<span class="hljs-number">-2</span>)</span>
+      <span class="lean-line"><span class="hljs-keyword">termination_by</span> n.toNat</span>
+    </div>
+
+    <span class="lean-line lean-gap"><span class="hljs-keyword">theorem</span> <span class="hljs-title">fibLoop</span> (a : <span class="hljs-type">Int</span>) :</span>
+
+    <!-- The three parts of the triple, boxed on one click. The boxes paint the
+         code that is already on screen rather than revealing it — see the
+         `.paint` fragment rule in talk.css. -->
+    <div class="hoare-part hoare-assert fragment paint" data-fragment-index="2">
+      <span class="hoare-box" aria-hidden="true"></span>
+      <span class="lean-line">  ⊨ (λ s => s <span class="hljs-string">"n"</span> = a ∧ a ≥ <span class="hljs-number">2</span>)</span>
+      <span class="hoare-label">precondition</span>
+    </div>
+
+    <div class="hoare-part hoare-body fragment paint" data-fragment-index="2">
+      <span class="hoare-box" aria-hidden="true"></span>
+      <span class="lean-line">  &lt;| prev := <span class="hljs-number">1</span>; x := <span class="hljs-number">2</span>; i := <span class="hljs-number">2</span>;</span>
+      <span class="lean-line">     <span class="hljs-keyword">while</span> i &lt; n <span class="hljs-keyword">do</span> (</span>
+      <span class="lean-line">       next := prev + x;</span>
+      <span class="lean-line">       prev := x;</span>
+      <span class="lean-line">       x := next;</span>
+      <span class="lean-line">       i := i + <span class="hljs-number">1</span>) |&gt;</span>
+    </div>
+
+    <div class="hoare-part hoare-assert fragment paint" data-fragment-index="2">
+      <span class="hoare-box" aria-hidden="true"></span>
+      <span class="lean-line">  (λ s => s <span class="hljs-string">"x"</span> = <span class="hljs-title">fib</span> a)</span>
+      <span class="hoare-label">postcondition</span>
+    </div>
+
+    <span class="lean-line lean-proof">:= <span class="hljs-keyword">by</span> <span class="tac">generate</span>; <span class="tac">fix</span>; <span class="tac">grind</span></span>
+  </div>
+</section>

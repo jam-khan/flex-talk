@@ -2663,6 +2663,113 @@
 }
 
 
+/* --- Imp: the fibLoop example ------------------------------------------- */
+.reveal .imp-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 620px;
+}
+
+.reveal .imp-slide.present {
+  display: flex !important;
+}
+
+.reveal .imp-slide .lean-code {
+  transform: none;
+  margin: 0.5em auto auto;
+}
+
+.reveal .imp-slide .lean-line {
+  font-size: 0.5em;
+  /* Airier than the other Lean panels: the boxes below hug the line boxes, so
+     the line-height is what gives them their inside margin. */
+  line-height: 1.9;
+}
+
+/* A fragment that paints what is already on screen instead of revealing it:
+   reveal hides unvisited fragments, so both properties are put back and the
+   styling below keys off `.visible` alone. */
+.reveal .imp-slide .fragment.paint {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* The three parts of the Hoare triple. Each is its own flex column so the code
+   lines inside keep stacking — and nothing else: no padding, no margins, so
+   with the boxes unrevealed the panel reads as ordinary contiguous code. */
+.reveal .hoare-part {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+/* The box is drawn behind the lines rather than around them, so revealing it
+   moves nothing. */
+.reveal .hoare-box {
+  position: absolute;
+  /* Inset *inwards* vertically: the parts are adjacent, so a box that bled
+     past its lines would overlap its neighbour's border. The line-height
+     leaves enough air inside the box without any bleed. */
+  inset: 0.02em -0.6em;
+  border-radius: 5px;
+}
+
+.reveal .hoare-part .lean-line {
+  position: relative;
+}
+
+/* Assertions in one tint, the program in another: what is being proved versus
+   what is being run. */
+.reveal .hoare-assert.visible .hoare-box {
+  background: #eef3fb;
+  border: 1px solid #c3d4ec;
+}
+
+.reveal .hoare-body.visible .hoare-box {
+  background: #f2f3f5;
+  border: 1px solid #ccd0d6;
+}
+
+/* The spec's box is keyed to `.current-fragment`, not `.visible`: it is up only
+   while that click is the current one, and clears when the triple is boxed. */
+.reveal .hoare-def.current-fragment .hoare-box {
+  background: #f2f3f5;
+  border: 1px solid #ccd0d6;
+}
+
+/* Labels ride in the gutter to the right of the panel, so the code keeps its
+   own left edge and nothing reflows when they arrive. */
+.reveal .hoare-label {
+  position: absolute;
+  left: calc(100% + 1.4em);
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  color: var(--muted);
+  font-family: var(--r-main-font);
+  font-size: 17px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  white-space: nowrap;
+}
+
+.reveal .hoare-part.visible .hoare-label {
+  opacity: 1;
+}
+
+/* The blank line between the definition and the theorem: the panel is a flex
+   column, so whitespace between the line spans collapses. */
+.reveal .imp-slide .lean-gap {
+  margin-top: 0.9em;
+}
+
+.reveal .imp-slide .tac {
+  color: var(--accent);
+}
+
 /* --- The epigraph -------------------------------------------------------
    No heading, so the quote itself has to carry the slide: set large, centred,
    and given the whole height to breathe in. */
