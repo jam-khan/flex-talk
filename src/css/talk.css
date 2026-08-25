@@ -2834,3 +2834,290 @@
   background: #fff3bf;
   border-radius: 3px;
 }
+
+/* --- λ_RK soundness slide -------------------------------------------------
+   A four-column grid: the Thm 5.4 brace, the "algorithmic / declarative /
+   semantic" gutter, the stack of judgments, and the Flex seam panel.
+
+   Grid rather than a flex column because three things have to line up across
+   the stack's rows without knowing their heights: the gutter labels (rows 1, 3,
+   5), the seam (spanning 1–3), and the brace (spanning all five). Reveal hides
+   unvisited fragments with `visibility`, not `display`, so every cell holds its
+   space from the first click and nothing reflows as the build proceeds. */
+.reveal .rk-sound-slide {
+  --slide-pad-x: 5%;
+
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .rk-grid {
+  display: grid;
+  grid-template-columns: max-content max-content max-content max-content;
+  grid-template-rows: repeat(5, max-content);
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.9em;
+  margin: auto 0;
+}
+
+/* Explicit row placement: the source order is the *build* order in places
+   (the seam is authored next to its arrow), so it cannot be relied on to put
+   cells in the right rows. */
+.reveal .rk-row-1 { grid-row: 1; }
+.reveal .rk-row-2 { grid-row: 2; }
+.reveal .rk-row-3 { grid-row: 3; }
+.reveal .rk-row-4 { grid-row: 4; }
+.reveal .rk-row-5 { grid-row: 5; }
+
+.reveal .rk-kind {
+  grid-column: 2;
+  justify-self: end;
+  color: var(--muted);
+  font-size: 0.5em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: right;
+}
+
+.reveal .rk-box {
+  grid-column: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* The three boxes carry judgments of very different widths; a common width
+     keeps the stack reading as one object and keeps the arrows centred. */
+  min-width: 13.5em;
+  padding: 18px 30px;
+}
+
+.reveal .rk-judgment {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.3em;
+  font-size: 0.95em;
+}
+
+.reveal .rk-judgment mjx-container {
+  margin: 0;
+}
+
+/* The constraint, and the `c` naming it in the gloss beside the row. */
+.reveal .rk-c,
+.reveal .rk-c-mark {
+  color: var(--accent);
+}
+
+.reveal .rk-c-mark {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* Arrows: shorter than the deck default. Five stacked rows plus a title do not
+   fit 620px at the standard 1.9em stem. */
+.reveal .rk-arrow {
+  grid-column: 3;
+  justify-self: center;
+  height: 1.35em;
+  margin: 0.5em 0 0.9em;
+}
+
+/* Theorem numbers go to the *left* of the stem, into the column gap, where the
+   gutter labels are — those sit in rows 1/3/5 and the arrows in 2/4, so the
+   two never meet. On the right the labels would run into the seam panel. */
+.reveal .rk-arrow .flow-label {
+  left: auto;
+  right: 1.1em;
+  font-size: 0.5em;
+}
+
+/* --- The seam ----------------------------------------------------------- */
+
+.reveal .rk-seam {
+  position: relative;
+  grid-column: 4;
+  grid-row: 2;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  max-width: 10.5em;
+  padding: 16px 22px;
+  /* Covers the overshoot of the connector below. */
+  z-index: 1;
+}
+
+/* The side condition on Thm 5.3: taking the step from the algorithmic judgment
+   to the declarative one needs a K under which the constraint holds. It sits on
+   the arrow rather than in the Flex panel, so the panel is left saying only
+   what Flex contributes — that such a K can be found. */
+.reveal .rk-req {
+  position: absolute;
+  left: 1.1em;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: #fff;
+  padding: 0 0.25em;
+  /* Two lines rather than one: at full width this would run under the Flex
+     panel, which is opaque and would swallow it. Absolutely positioned, so the
+     second line costs the arrow's row no height.
+
+     An explicit width, not a max-width: the containing block here is the 6px
+     arrow stem, so shrink-to-fit would collapse the text to the width of its
+     longest word. */
+  width: 8.2em;
+  color: var(--muted);
+  font-size: 0.55em;
+  line-height: 1.35;
+}
+
+.reveal .rk-req mjx-container {
+  margin: 0 0 0 0.15em;
+}
+
+/* Dashed connector from the K in the side condition across to the panel that
+   supplies it. Anchored to that K, so it starts exactly there however MathJax
+   measures the line above it, and run long at the far end — the seam box has a
+   z-index and an opaque fill, so it hides the overshoot.
+
+   It belongs to the arrow but must not appear until the seam does, or it points
+   at nothing for a click. Hence the source order: the seam is authored ahead of
+   the arrow purely so this `~` can reach it. Grid placement is explicit, so
+   moving it changes nothing on screen. */
+.reveal .rk-req-k::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.45em);
+  width: 11em;
+  border-top: 2px dashed var(--arrow);
+  opacity: 0;
+}
+
+.reveal .rk-req-k {
+  position: relative;
+}
+
+.reveal .rk-seam.visible ~ .rk-arrow .rk-req-k::after {
+  opacity: 1;
+}
+
+/* "finds", not "proves": the K is not given to the solver and checked, it is
+   what the solver searches for — the whole point of the backend. */
+.reveal .rk-seam-name em {
+  font-style: italic;
+}
+
+.reveal .rk-seam-name {
+  color: var(--accent);
+  font-size: 0.5em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .rk-seam-note {
+  color: var(--muted);
+  font-size: 0.44em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.reveal .rk-seam-note em {
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* The K-assignment, wherever it occurs — the one thread running through all
+   three rows, so it is the only thing on the slide that carries colour. Every
+   row here is Lean, so colouring boxes differently would signal a difference in
+   trust between them that does not exist.
+
+   MathJax cannot colour part of a formula in this build (see main.js), so the K
+   indices are plain HTML sub/sup set in the display serif to sit convincingly
+   beside the math. */
+.reveal .kmark,
+.reveal .kmark-inline {
+  color: var(--accent);
+  font-family: var(--display-font);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.reveal .kmark {
+  font-size: 0.62em;
+  /* `sub`/`sup` default to `vertical-align: sub/super`, which is relative to
+     the *parent* box — beside an mjx-container that lands too low/high. These
+     put the indices back on the math's own axis. */
+  line-height: 0;
+}
+
+.reveal sup.kmark {
+  vertical-align: 0.5em;
+}
+
+.reveal sub.kmark {
+  vertical-align: -0.28em;
+}
+
+/* Glosses in the right-hand column, each level with the row it explains —
+   unboxed, so they read as annotation rather than as further stages of the
+   diagram. */
+.reveal .rk-side {
+  grid-column: 4;
+  align-self: center;
+  color: var(--muted);
+  /* Matches the side condition on the arrow above: both are annotations on a
+     step of the diagram and should carry the same weight. */
+  font-size: 0.55em;
+  /* One line each: these are definitions, and wrapping them makes each scan as
+     two separate remarks. */
+  white-space: nowrap;
+}
+
+.reveal .rk-cdef {
+  grid-row: 1;
+}
+
+.reveal .rk-kdef {
+  grid-row: 3;
+}
+
+/* --- Thm 5.4 brace ------------------------------------------------------ */
+
+.reveal .rk-brace {
+  grid-column: 1;
+  grid-row: 1 / 6;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-right: 0.4em;
+}
+
+/* Mirrored: the shared brace SVG opens leftwards, to gather a list sitting on
+   its left. Here the stack is on its right. */
+.reveal .rk-brace-svg {
+  transform: scaleX(-1);
+  margin: 0;
+}
+
+/* Set vertically so a full theorem name costs no horizontal room. `rotate(180)`
+   on top of `vertical-rl` makes it read bottom-to-top, the usual direction for
+   a label beside a spanning brace. */
+.reveal .rk-brace-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  color: var(--muted);
+  font-size: 0.5em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}

@@ -118,3 +118,100 @@
     <span class="lean-line lean-proof">:= <span class="hljs-keyword">by</span> <span class="tac">generate</span>; <span class="tac">fix</span>; <span class="tac">grind</span></span>
   </div>
 </section>
+
+<!-- Soundness for λ_RK. Built bottom-up in meaning, not in layout: the
+     declarative judgment lands first and is proved sound semantically, and only
+     then does the algorithmic checker appear above it — the algorithm is
+     justified *relative to* the declarative system, so it cannot be the thing
+     the audience meets first. The stack is drawn top-down anyway, since that is
+     the direction the verifier actually runs.
+
+     The K-assignment is the seam. It is the one object that appears in all
+     three rows (⊢_K, ⟦τ⟧^K, ⟦c⟧^K) and the one object Flex supplies, so every
+     occurrence is set in the accent. Nothing else on this slide is coloured:
+     every row of it is Lean, so a per-box colour would imply a distinction in
+     trust that does not exist. -->
+<section class="rk-sound-slide">
+  <h2 class="slide-title">Soundness for \(\lambda_{RK}\)</h2>
+
+  <div class="rk-grid">
+    <!-- Spans the whole chain. The brace SVG is the one from the frontends
+         slide, mirrored: there it gathered a list on its left, here it points
+         rightwards at the stack it gathers. -->
+    <div class="rk-brace fragment" data-fragment-index="6">
+      <span class="rk-brace-label">Thm 5.4 · verifier soundness</span>
+      <div class="brace-v rk-brace-svg" aria-hidden="true">
+        <svg viewBox="0 0 10 100" preserveAspectRatio="none">
+          <path
+            d="M0.5,0.5 Q6,0.5 6,5 L6,45 Q6,49.5 9.5,50 Q6,50.5 6,55 L6,95 Q6,99.5 0.5,99.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Row 1: the algorithmic system. Third on screen. -->
+    <span class="rk-kind rk-row-1 fragment" data-fragment-index="3">algorithmic</span>
+
+    <div class="flow-box rk-box rk-row-1 fragment" data-fragment-index="3">
+      <span class="rk-judgment">
+        <span class="rk-tok">\(\cdot \vdash\)</span>
+        <span class="rk-tok">\(e\)</span>
+        <span class="rk-tok">\(\Leftarrow\)</span>
+        <span class="rk-tok">\(\tau\)</span>
+        <span class="rk-tok">\(\rightsquigarrow\)</span>
+        <span class="rk-tok rk-c">\(c\)</span>
+      </span>
+    </div>
+
+    <div class="rk-side rk-cdef fragment" data-fragment-index="3">
+      <span class="rk-c-mark">c</span> is a constraint with unknown
+      <span class="kmark-inline">κ</span>'s
+    </div>
+
+    <!-- The answer to the obligation on the arrow, on its own click: the step
+         states what it needs, and only then does Flex supply it. -->
+    <div class="flow-box rk-seam fragment" data-fragment-index="5">
+      <span class="rk-seam-name">Flex <em>finds</em> such a <span class="kmark-inline">K</span></span>
+    </div>
+
+    <div class="flow-arrow rk-arrow rk-row-2 fragment" data-fragment-index="4">
+      <span class="flow-label">Thm 5.3</span>
+      <span class="rk-req">if \(\sem{c}\)<sup class="kmark">K</sup> is valid
+        for some <span class="kmark-inline rk-req-k">K</span></span>
+    </div>
+
+    <!-- Row 3: the declarative system. First on screen. -->
+    <span class="rk-kind rk-row-3 fragment" data-fragment-index="1">declarative</span>
+
+    <div class="flow-box rk-box rk-row-3 fragment" data-fragment-index="1">
+      <span class="rk-judgment">
+        <span class="rk-tok">\(\cdot \vdash\)<sub class="kmark">K</sub></span>
+        <span class="rk-tok">\(e : \tau\)</span>
+      </span>
+    </div>
+
+    <!-- What the index on the turnstile is, arriving on the same click as the
+         judgment that first carries it. -->
+    <div class="rk-side rk-kdef fragment" data-fragment-index="1">
+      <span class="kmark-inline">K</span> maps each
+      <span class="kmark-inline">κ</span> to a Lean Prop
+    </div>
+
+    <div class="flow-arrow rk-arrow rk-row-4 fragment" data-fragment-index="2" aria-hidden="true">
+      <span class="flow-label">Thm 5.2</span>
+    </div>
+
+    <!-- Row 5: the semantic statement. Names no typing judgment at all. -->
+    <span class="rk-kind rk-row-5 fragment" data-fragment-index="2">semantic</span>
+
+    <div class="flow-box rk-box rk-row-5 fragment" data-fragment-index="2">
+      <span class="rk-judgment">
+        <span class="rk-tok">\(\exists v.\; e \Downarrow v \;\wedge\; v \in \sem{\tau}\)<sup class="kmark">K</sup></span>
+      </span>
+    </div>
+  </div>
+</section>

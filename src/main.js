@@ -95,6 +95,11 @@ Reveal.initialize({
         True: '\\top',
         False: '\\bot',
         rt: ['\\{\\, #1 : #2 \\mid #3 \\,\\}', 3],
+        // Semantic brackets. The K-index is deliberately *not* part of this
+        // macro: on the soundness slide the K is coloured to mark it as the
+        // one object the solver supplies, and MathJax can't colour part of a
+        // formula (see above), so the slide sets it as a separate HTML <sup>.
+        sem: ['[\\![ #1 ]\\!]', 1],
       },
     },
   },
