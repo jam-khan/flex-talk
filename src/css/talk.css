@@ -1653,6 +1653,34 @@
   background: #dfeede;
 }
 
+/* --- Cyclic constraints: where the recipe breaks ------------------------
+   The definition line runs longer here than on the acyclic slides — two
+   disjuncts, three parameters — so it is set a size down. */
+.reveal .cyc-slide .def-line {
+  font-size: 0.82em;
+}
+
+/* The κ the definition defines itself in terms of. Deliberately *not* the blue
+   the other occurrences carry: this one is the problem, not the subject. */
+.reveal .cyc-slide .def-line .cyc-self {
+  background: #fadedd;
+  border-radius: 3px;
+  padding: 0 0.18em;
+  box-shadow: inset 0 0 0 1px #eeb9b6;
+}
+
+.reveal .cyc-verdict {
+  margin: 1.5em 0 0;
+  font-size: 0.72em;
+  color: var(--muted);
+}
+
+.reveal .cyc-verdict .tac {
+  font-family: var(--code-font);
+  font-size: 0.92em;
+  color: var(--accent);
+}
+
 /* --- How zap works ------------------------------------------------------
    Paper Fig. 2 as a left-to-right flow: constraint, zap, κ-free VC, grind,
    no goals — with the computed solution below the row. */
@@ -2180,6 +2208,197 @@
   font-family: var(--code-font);
   font-size: 26px;
   color: var(--accent);
+}
+
+/* --- Fix: qualifiers, candidates, fixpoint -------------------------------
+   The three `fix` slides. They borrow the arrow from the zap intuition slides
+   and the flow row from the zap rewrite slide; what is new here is the
+   candidate chip and the round ledger. */
+.reveal .cand-slide,
+.reveal .weaken-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+/* Reveal writes `display: block` inline on whichever slide is showing, which
+   beats the rule above and leaves the auto margins below with nothing to
+   distribute. Scoped to `.present` on purpose: the inline `display: none` on
+   every other slide has to keep winning. */
+.reveal .cand-slide.present,
+.reveal .weaken-slide.present {
+  display: flex !important;
+}
+
+/* The library, in the same math the rest of this stretch is set in. One row —
+   three short definitions read as a single library that way, and the row
+   leaves the height for the assignment below. */
+.reveal .qual-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto 0 0;
+}
+
+.reveal .qual-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2.2em;
+}
+
+.reveal .qual-list-label {
+  margin-bottom: 0.55em;
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .qual-def {
+  font-size: 0.72em;
+  white-space: nowrap;
+}
+
+/* The line under each `fix` slide: prose, not notation, in the deck's small
+   muted voice. */
+.reveal .fix-note {
+  margin: 1.6em 0 auto;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.72em;
+}
+
+.reveal .fix-note .tac {
+  font-family: var(--code-font);
+  font-size: 0.92em;
+  color: var(--accent);
+}
+
+/* The section is a flex column, so the arrow has to centre itself — on the
+   `def-slide`s it inherits centring from the stack it sits in. */
+.reveal .cand-slide .def-arrow {
+  align-self: center;
+  margin: 1.1em 0 1.3em;
+}
+
+/* Last thing on the slide: takes the bottom half of the free space, so the
+   qualifiers-arrow-assignment column centres between title and slide edge. */
+.reveal .cand-def {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  margin-bottom: auto;
+}
+
+.reveal .cand-head {
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+
+/* A candidate: one qualifier instantiated at κ's parameters. Chips wrap into
+   as many rows as they need, which is what makes "start with everything" read
+   as a pile rather than a formula. */
+.reveal .chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45em;
+  max-width: 20em;
+}
+
+.reveal .chip {
+  padding: 0.1em 0.5em;
+  border: 1px solid #c3d4ec;
+  border-radius: 5px;
+  background: #eef3fb;
+  font-size: 0.62em;
+  white-space: nowrap;
+}
+
+.reveal .chip-more {
+  border-color: transparent;
+  background: none;
+  color: var(--muted);
+}
+
+/* A candidate the oracle could not discharge at this round's head. Struck
+   through rather than removed: what died is the content of the slide. */
+.reveal .chip.dead {
+  position: relative;
+  border-color: #e5e7eb;
+  background: #f4f5f7;
+  color: #a8adb7;
+}
+
+/* The strike is drawn rather than set with `text-decoration`: the chip's
+   content is MathJax SVG, which no text decoration reaches. */
+.reveal .chip.dead::after {
+  content: '';
+  position: absolute;
+  left: 0.28em;
+  right: 0.28em;
+  top: 50%;
+  border-top: 1px solid #b9bec8;
+}
+
+/* One row per weakening round: label, the κ-goal it is checking, and the
+   candidate set as it stands going in. */
+.reveal .rounds {
+  display: grid;
+  grid-template-columns: max-content max-content 1fr;
+  align-items: baseline;
+  column-gap: 1.6em;
+  row-gap: 1.5em;
+  margin: auto 0 0;
+}
+
+.reveal .round {
+  display: contents;
+}
+
+.reveal .round-label {
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.reveal .round-goal {
+  font-size: 0.62em;
+  white-space: nowrap;
+}
+
+.reveal .weaken-slide .chips {
+  max-width: none;
+}
+
+.reveal .round-stable {
+  margin-left: 0.6em;
+  color: var(--muted);
+  font-size: 0.62em;
+}
+
+.reveal .weaken-slide .kv,
+.reveal .fix-slide .kv {
+  color: inherit;
+  background: #cfe0f7;
+  border-radius: 3px;
+  padding: 0 0.18em;
+}
+
+.reveal .weaken-slide .zap-solution {
+  margin: 2.2em 0 auto;
+}
+
+/* The rewrite row is one line taller here than zap's — the cyclic constraint
+   has two clauses — so the closing note gets its air from the row instead of
+   adding its own. */
+.reveal .fix-slide .fix-cert-note {
+  margin: 1.4em 0 0;
 }
 
 .muted {
