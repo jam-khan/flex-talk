@@ -9,7 +9,7 @@
     <li><span class="agenda-num">01</span><span class="agenda-title">Refinement types (Flux)</span></li>
     <li><span class="agenda-num">02</span><span class="agenda-title">Solving CHCs in Lean</span></li>
     <li><span class="agenda-num">03</span><span class="agenda-title">Verifiers built on Flex</span></li>
-    <li><span class="agenda-num">04</span><span class="agenda-title">Experimental results</span></li>
+    <li><span class="agenda-num">04</span><span class="agenda-title">Evaluation</span></li>
   </ol>
 </section>
 
@@ -174,28 +174,28 @@
         <span class="syn-rhs">\(\True \mid t_b =_b t_b \mid t_{\Int} \le t_{\Int} \mid \neg\varphi \mid \varphi \wedge \varphi \mid \varphi \to \varphi \mid \forall x{:}b.\, \varphi\)</span>
       </div>
 
-      <div class="syn-row syn-type">
+      <div class="syn-row syn-type grp-top">
         <span class="syn-label">refinement</span>
         <span class="syn-lhs">\(r\)</span>
         <span class="syn-def">::=</span>
         <span class="syn-rhs">\(\varphi \mid\) <span class="kv">\(\kv(t_b)\)</span></span>
       </div>
 
-      <div class="syn-row syn-type">
+      <div class="syn-row syn-type grp-bot">
         <span class="syn-label">type</span>
         <span class="syn-lhs">\(\tau\)</span>
         <span class="syn-def">::=</span>
         <span class="syn-rhs">\(\{\, \nu{:}b \mid r \,\} \mid x{:}\tau \to \tau\)</span>
       </div>
 
-      <div class="syn-row syn-term">
+      <div class="syn-row syn-term grp-top">
         <span class="syn-label">expression</span>
         <span class="syn-lhs">\(e\)</span>
         <span class="syn-def">::=</span>
         <span class="syn-rhs">\(v \mid x \mid \oplus(\overline{e}) \mid e\, e \mid \mathsf{let}\; x = e \;\mathsf{in}\; e \mid \mathsf{if}\; e \;\mathsf{then}\; e \;\mathsf{else}\; e \mid (e : \tau)\)</span>
       </div>
 
-      <div class="syn-row syn-term">
+      <div class="syn-row syn-term grp-bot">
         <span class="syn-label">value</span>
         <span class="syn-lhs">\(v\)</span>
         <span class="syn-def">::=</span>
@@ -228,24 +228,6 @@
   <h2 class="slide-title">\(\lambda_{RK}\): soundness</h2>
 
   <div class="rk-grid">
-    <!-- Spans the whole chain. The brace SVG is the one from the frontends
-         slide, mirrored: there it gathered a list on its left, here it points
-         rightwards at the stack it gathers. -->
-    <div class="rk-brace fragment" data-fragment-index="5">
-      <span class="rk-brace-label">Thm 5.4 · verifier soundness</span>
-      <div class="brace-v rk-brace-svg" aria-hidden="true">
-        <svg viewBox="0 0 10 100" preserveAspectRatio="none">
-          <path
-            d="M0.5,0.5 Q6,0.5 6,5 L6,45 Q6,49.5 9.5,50 Q6,50.5 6,55 L6,95 Q6,99.5 0.5,99.5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1"
-            vector-effect="non-scaling-stroke"
-          />
-        </svg>
-      </div>
-    </div>
-
     <!-- Row 1: the algorithmic system. Third on screen. -->
     <span class="rk-kind rk-row-1 fragment" data-fragment-index="3">algorithmic</span>
 
@@ -364,8 +346,9 @@
       </div>
     </div>
 
-    <div class="case-punch fragment">
-      <span class="case-punch-lead">None of this was expressible in Flux</span>
+    <div class="case-punch fragment" data-fragment-index="1">
+      <span class="case-punch-lead">none of this was expressible in Flux</span>
+      <span class="case-punch-note fragment" data-fragment-index="2">they need manual proofs</span>
     </div>
   </div>
 </section>

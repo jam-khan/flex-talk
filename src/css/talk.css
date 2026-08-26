@@ -2725,6 +2725,9 @@
 
 .reveal .rk-grid {
   display: grid;
+  /* Column 1 is empty: it held the brace spanning the whole chain, and the
+     placements below still count from there. Kept rather than renumbering
+     every `grid-column` on the slide. */
   grid-template-columns: max-content max-content max-content max-content;
   grid-template-rows: repeat(5, max-content);
   align-items: center;
@@ -2962,37 +2965,11 @@
 
 /* --- Thm 5.4 brace ------------------------------------------------------ */
 
-.reveal .rk-brace {
-  grid-column: 1;
-  grid-row: 1 / 6;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin-right: 0.4em;
-}
-
 /* Mirrored: the shared brace SVG opens leftwards, to gather a list sitting on
    its left. Here the stack is on its right. */
-.reveal .rk-brace-svg {
-  transform: scaleX(-1);
-  margin: 0;
-}
-
 /* Set vertically so a full theorem name costs no horizontal room. `rotate(180)`
    on top of `vertical-rl` makes it read bottom-to-top, the usual direction for
    a label beside a spanning brace. */
-.reveal .rk-brace-label {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  color: var(--muted);
-  font-size: 0.5em;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
-}
-
 /* --- Case studies slide --------------------------------------------------
    A 2x2 of cards plus a punchline strip. The cards are on screen from the
    start and only the strip is a fragment: the studies are the setup, and the
@@ -3089,10 +3066,12 @@
   font-weight: 700;
 }
 
+/* Two independent facts about the same four studies, so they are set
+   identically — same size, weight and colour. Making one quieter or larger
+   would subordinate it to the other, and neither is a gloss on the other. */
 .reveal .case-punch-note {
-  max-width: 30em;
-  color: var(--muted);
-  font-size: 0.46em;
+  font-size: 0.72em;
+  font-weight: 700;
   line-height: 1.45;
 }
 
@@ -4272,7 +4251,10 @@ body.laser-on .reveal {
   grid-template-columns: max-content max-content max-content 1fr;
   align-items: baseline;
   column-gap: 0.9em;
-  row-gap: 0.55em;
+  /* No row gap: the spacing is padding *inside* the rows, so the two rows a
+     focus beat lights can share one continuous border instead of showing a
+     seam between two boxes. */
+  row-gap: 0;
 }
 
 .reveal .syn-row {
@@ -4280,6 +4262,11 @@ body.laser-on .reveal {
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
   align-items: baseline;
+  /* The border is there from the start, transparent: colouring it in on focus
+     would otherwise shift every row below it by a pixel. */
+  margin: 0 -0.7em;
+  padding: 0.28em 0.7em;
+  border: 1px solid transparent;
   /* Dimming is the whole interaction, so it gets a transition; the rows never
      move. */
   transition: opacity 200ms ease;
@@ -4317,6 +4304,24 @@ body.laser-on .reveal {
 /* Beat 1: the term language — expressions and the values they evaluate to.
    Beat 2: the type language — types and the refinements inside them. Written
    as "dim everything else" so the focused rows keep their own styling. */
+/* The box round a focused pair: the top row draws three sides, the bottom row
+   the other three, and the transparent 1px borders where they meet keep the
+   two halves flush. */
+.reveal .syn-slide:has(.beat-1.visible):not(:has(.beat-2.visible)) .syn-term,
+.reveal .syn-slide:has(.beat-2.visible) .syn-type {
+  border-color: #111827;
+}
+
+.reveal .syn-row.grp-top {
+  border-bottom-color: transparent !important;
+  border-radius: 6px 6px 0 0;
+}
+
+.reveal .syn-row.grp-bot {
+  border-top-color: transparent !important;
+  border-radius: 0 0 6px 6px;
+}
+
 .reveal .syn-slide:has(.beat-1.visible):not(:has(.beat-2.visible)) .syn-row:not(.syn-term),
 .reveal .syn-slide:has(.beat-1.visible):not(:has(.beat-2.visible)) .syn-meta,
 .reveal .syn-slide:has(.beat-2.visible) .syn-row:not(.syn-type),

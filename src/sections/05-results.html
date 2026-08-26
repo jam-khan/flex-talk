@@ -9,7 +9,7 @@
     <li><span class="agenda-num">01</span><span class="agenda-title">Refinement types (Flux)</span></li>
     <li><span class="agenda-num">02</span><span class="agenda-title">Solving CHCs in Lean</span></li>
     <li><span class="agenda-num">03</span><span class="agenda-title">Verifiers built on Flex</span></li>
-    <li><span class="agenda-num">04</span><span class="agenda-title">Experimental results</span></li>
+    <li><span class="agenda-num">04</span><span class="agenda-title">Evaluation</span></li>
   </ol>
 </section>
 
@@ -111,7 +111,8 @@
      Coverage leads, cost follows. The headline is not "18x slower", it is that
      a search tactic outright fails on a third of the constraints; that is the
      robustness claim, and it is what makes Zap "crucial in practice" rather
-     than merely a nice optimization. Speed is the second beat.
+     than merely a nice optimization. It is on screen from the start — it is
+     what the slide is, not a reveal — and the cost row is the one beat.
 
      Left off deliberately: the appendix result that aesop's proof terms are 10%
      deeper and 50% slower to kernel-check. True, and a fourth metric on a slide
@@ -125,7 +126,7 @@
         <span class="res-name"><span class="tac">Zap</span></span>
         <span class="res-kind">deterministic</span>
 
-        <div class="res-cover fragment" data-fragment-index="1">
+        <div class="res-cover">
           <div class="res-bar">
             <span class="res-bar-fill" style="width: 100%"></span>
           </div>
@@ -142,7 +143,7 @@
         <span class="res-name"><span class="tac">grind</span></span>
         <span class="res-kind">search</span>
 
-        <div class="res-cover fragment" data-fragment-index="1">
+        <div class="res-cover">
           <div class="res-bar">
             <span class="res-bar-fill" style="width: 67%"></span>
           </div>
@@ -159,7 +160,7 @@
         <span class="res-name"><span class="tac">aesop</span></span>
         <span class="res-kind">search</span>
 
-        <div class="res-cover fragment" data-fragment-index="1">
+        <div class="res-cover">
           <div class="res-bar">
             <span class="res-bar-fill" style="width: 90%"></span>
           </div>
@@ -173,10 +174,14 @@
       </div>
     </div>
 
-    <!-- The sample size, under the cards it qualifies rather than beside the
-         title: it is a footing for the three columns, and up in the title row it
-         competed with the question for the top line. -->
-    <div class="res-scope">over 369 constraints</div>
+    <!-- The sample size and what the sample *is*, under the cards it qualifies
+         rather than beside the title: it is a footing for the three columns, and
+         up in the title row it competed with the question for the top line.
+
+         The acyclic part is not a detail: zap only applies to acyclic
+         κ-variables, so this is the population the comparison is over, and
+         leaving it implicit invites the question mid-slide. -->
+    <div class="res-scope">over 369 constraints with acyclic \(\kv\)-variables</div>
   </div>
 </section>
 
@@ -206,7 +211,7 @@
         <span class="rq2-name">LiquidFixpoint</span>
         <span class="rq2-kind">SMT</span>
         <div class="rq2-card-rule" aria-hidden="true"></div>
-        <span class="rq2-how">Z3 · CVC5</span>
+        <span class="rq2-how">Z3</span>
       </div>
 
       <span class="rq-versus-op rq2-op">vs</span>
