@@ -541,6 +541,19 @@
   list-style: none;
 }
 
+/* Marks the row as examples rather than an enumeration. Not a pill: it names
+   what the pills are, so it sits outside their vocabulary. */
+.reveal .flow-chips .chips-eg {
+  align-self: center;
+  margin-right: 0.15em;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.5em;
+  font-style: italic;
+}
+
 .reveal .flow-chips li {
   border: 1px solid #d5dbe2;
   border-radius: 999px;
@@ -660,11 +673,56 @@
   gap: 0.9em;
 }
 
+/* The box plus its examples. `relative` is what the out-of-flow examples hang
+   off; the group itself is what sits in the flow row. */
+.reveal .smt-solver-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Below the box and out of flow, so the row keeps aligning on the box. */
+.reveal .solver-egs {
+  position: absolute;
+  top: calc(100% + 0.7em);
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+.reveal .solver-eg {
+  color: var(--muted);
+  font-size: 0.5em;
+  font-style: italic;
+}
+
+.reveal .solver-egs .logo {
+  display: block;
+  width: auto;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+.reveal .solver-egs .logo-z3 {
+  height: 1.1em;
+}
+
+.reveal .solver-egs .logo-cvc5 {
+  height: 0.62em;
+}
+
 /* On slides 1-2 the solver is the subject of the diagram, so its name carries
    more weight than it does on the CHC slide where SMT is demoted to a callee. */
 .reveal .smt-solver-box .solver-name {
-  font-size: 0.85em;
+  /* Two lines, so the name can be set large without the box growing wider than
+     the boxes either side of it on the row. */
+  font-size: 1.05em;
   font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
 }
 
 /* z3.jpg is a JPEG, so its white background is opaque and shows as a pale
@@ -826,6 +884,109 @@
 
 /* The solution is the point of the slide, so it gets its own line beneath the
    verdict box — out of flow, like the brace, so the row stays centered. */
+/* --- CHC solver and the SMT solver it calls -------------------------------
+   The satellite hangs below the CHC box and out of flow, so the main row still
+   aligns on the four boxes. */
+.reveal .chc-solver-group {
+  position: relative;
+  display: flex;
+  flex: none;
+}
+
+/* Above the box and out of flow, so the row still aligns on the boxes. */
+.reveal .solver-list {
+  position: absolute;
+  bottom: calc(100% + 0.55em);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  color: var(--muted);
+  /* Two lines, so the names can be set big enough to read from the back
+     without the line running into the arrow's label to its left. */
+  font-size: 0.5em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* The marker is part of the same line, so it takes the same size — at its own
+   0.5em it came out half the height of the names beside it. */
+.reveal .solver-list .solver-eg {
+  font-size: inherit;
+}
+
+.reveal .smt-callee {
+  position: absolute;
+  top: calc(100% + 0.45em);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Two arrows side by side, pointing opposite ways: the CHC solver guesses and
+   the SMT solver answers, over and over. Built from the deck's arrow parts
+   rather than a double-headed arrow, which would read as one exchange. */
+.reveal .callee-arrows {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5em;
+  height: 2.6em;
+  margin-bottom: 0.45em;
+}
+
+/* Each arrow spans the same band: the stem is shortened by the head's overhang
+   and pushed to the end the head is *not* on. So the two arrows start and end
+   on the same two lines — each one's tip sits level with the other's tail —
+   instead of the heads hanging past the band at both ends. */
+.reveal .callee-arrow {
+  position: relative;
+  width: 5px;
+  height: calc(100% - 0.52em);
+  background: var(--arrow);
+}
+
+
+
+.reveal .callee-arrow::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 0.42em solid transparent;
+  border-right: 0.42em solid transparent;
+}
+
+.reveal .callee-down {
+  align-self: flex-start;
+  border-radius: 3px 3px 0 0;
+}
+
+.reveal .callee-down::after {
+  top: 100%;
+  border-top: 0.52em solid var(--arrow);
+}
+
+.reveal .callee-up {
+  align-self: flex-end;
+  border-radius: 0 0 3px 3px;
+}
+
+.reveal .callee-up::after {
+  bottom: 100%;
+  border-bottom: 0.52em solid var(--arrow);
+}
+
+/* Smaller than the box on slides 1-2: there the solver is the subject, here it
+   is a callee. */
+.reveal .smt-callee .smt-solver-box {
+  padding: 12px 22px;
+}
+
+.reveal .smt-callee .solver-name {
+  font-size: 0.8em;
+}
+
 .reveal .verdict-group {
   position: relative;
   display: flex;

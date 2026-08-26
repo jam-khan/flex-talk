@@ -47,14 +47,20 @@
 
     <div class="flow-arrow" aria-hidden="true"><span class="flow-label">query</span></div>
 
-    <!-- The box is the *kind* of tool, with the two solvers under it as
-         instances: a logo pair alone reads as "this talk is about Z3", which is
-         a narrower claim than the one being made. Same name-over-sub-logos
-         shape the CHC solver box uses later in the section. -->
-    <div class="flow-box smt-solver-box">
-      <span class="solver-name">SMT solver</span>
+    <!-- The box is the *kind* of tool; the solvers are examples of it and sit
+         outside the box, under it. A logo pair inside the box reads as "this
+         talk is about Z3", which is a narrower claim than the one being made.
 
-      <div class="sub-logos">
+         The examples are positioned out of flow (see `.solver-egs`) so the box
+         stays centred on the row's axis with the formula and the verdict beside
+         it, rather than being pushed up by their height. -->
+    <div class="smt-solver-group">
+      <div class="flow-box smt-solver-box">
+        <span class="solver-name">SMT<br />solver</span>
+      </div>
+
+      <div class="solver-egs">
+        <span class="solver-eg">e.g.</span>
         <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
         <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
       </div>
@@ -122,6 +128,7 @@
         </svg>
 
         <ul class="flow-chips">
+          <li class="chips-eg">e.g.</li>
           <li>Dafny</li>
           <li>Verus</li>
           <li>F*</li>
@@ -130,17 +137,14 @@
       </div>
     </div>
 
-    <!-- The box is the *kind* of tool, with the two solvers under it as
-         instances: a logo pair alone reads as "this talk is about Z3", which is
-         a narrower claim than the one being made. Same name-over-sub-logos
-         shape the CHC solver box uses later in the section. -->
-    <div class="flow-box smt-solver-box">
-      <span class="solver-name">SMT solver</span>
-
-      <div class="sub-logos">
-        <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
-        <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+    <!-- Named, not shown: the solvers were exemplified one slide ago and the
+         examples on this slide are the *verifiers* below, so a second logo pair
+         here would compete with them. -->
+    <div class="smt-solver-group">
+      <div class="flow-box smt-solver-box">
+        <span class="solver-name">SMT<br />solver</span>
       </div>
+
     </div>
 
     <div class="flow-arrow" aria-hidden="true"></div>
@@ -210,6 +214,7 @@
         </svg>
 
         <ul class="flow-chips">
+          <li class="chips-eg">e.g.</li>
           <li>SeaHorn</li>
           <li>Thrust</li>
           <li>Liquid Haskell</li>
@@ -218,14 +223,45 @@
       </div>
     </div>
 
-    <!-- The CHC solver is the subject here; SMT is demoted to something it
-         calls, so the logos sit small beneath the name. -->
-    <div class="flow-box chc-solver-box">
-      <span class="solver-name">CHC solver</span>
+    <!-- The CHC solver is the subject here, and SMT is what it calls: the same
+         box the room met two slides ago, now hanging underneath this one with a
+         pair of arrows between them. Logos inside this box read as "a CHC
+         solver *is* Z3"; a box below it, exchanged with, reads as "it calls
+         one" — which is also what arms the trust slide two slides later.
 
-      <div class="sub-logos">
-        <img src="@assets/z3.jpg" alt="Z3" class="logo logo-z3" />
-        <img src="@assets/cvc5.png" alt="cvc5" class="logo logo-cvc5" />
+         Two arrows rather than one double-headed one: the CHC solver guesses
+         and the SMT solver answers, over and over, and a single arrow between
+         them would blur that into one exchange. They are unlabelled — the
+         picture is the point, the words are yours to say.
+
+         The satellite is out of flow, like `.verdict-solution` on the right, so
+         the row keeps aligning on the four boxes. It is not a fragment: the two
+         solvers are one mechanism and arrive together. -->
+    <div class="chc-solver-group">
+      <!-- Instances above the box, the thing it calls below. Plain text rather
+           than pills: the pill row on the left already means "verifier", and
+           giving solvers pills too would flatten the distinction the slide is
+           built on.
+
+           On its own click, after the verifiers: name the frontends, then name
+           what they all hand the work to. -->
+      <div class="solver-list fragment">
+        <span class="solver-eg">e.g.</span> Spacer · FreqHorn<br />Liquid Fixpoint
+      </div>
+
+      <div class="flow-box chc-solver-box">
+        <span class="solver-name">CHC solver</span>
+      </div>
+
+      <div class="smt-callee">
+        <div class="callee-arrows" aria-hidden="true">
+          <span class="callee-arrow callee-down"></span>
+          <span class="callee-arrow callee-up"></span>
+        </div>
+
+        <div class="flow-box smt-solver-box">
+          <span class="solver-name">SMT<br />solver</span>
+        </div>
       </div>
     </div>
 
