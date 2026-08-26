@@ -1108,6 +1108,20 @@
   margin: auto 0;
 }
 
+/* `dot`'s signature is the widest code line in the deck, so on this slide the
+   row runs to the slide edges. The space comes back off the arrow — its
+   margins and the grid gaps around it — rather than off the code or the
+   constraint, which are the two things being compared. */
+.reveal .dot-slide .flux-columns {
+  gap: 0.9em;
+}
+
+.reveal .dot-slide .flux-arrow {
+  width: 2.5em;
+  margin-left: 0.3em;
+  margin-right: 0.9em;
+}
+
 .reveal .flux-code {
   width: auto;
   margin: 0;
@@ -1276,6 +1290,12 @@
   padding-left: 3.6em;
 }
 
+/* Deepest level in the deck: the loop body, under a `∀` that is itself under
+   the `∃` binder. */
+.reveal .flux-chc .ind-4 {
+  padding-left: 4.8em;
+}
+
 .reveal .flux-chc .kv {
   color: var(--accent);
 }
@@ -1292,6 +1312,15 @@
   font-size: 0.8em;
   line-height: 1.4;
   text-align: right;
+}
+
+/* The name for it, under the thing it names: one step quieter, because the
+   room needs the idea first and the vocabulary second. */
+.reveal .kv-note-alt {
+  display: block;
+  margin-top: 0.25em;
+  color: var(--muted);
+  font-size: 0.8em;
 }
 
 .reveal .chc-solution {
@@ -1451,9 +1480,11 @@
    rather than beside it. */
 .reveal .lean-annot {
   position: absolute;
-  left: calc(100% + 2.4em);
-  top: 50%;
-  transform: translateY(-50%);
+  /* Placed over the word's centre and dropped/raised off it, so the leader is
+     a plain vertical drop onto the text rather than a diagonal coming in from
+     the side. The 1.2em back-shift lines the note's own leader (also at 1.2em)
+     up with that centre. */
+  left: calc(50% - 1.2em);
   /* A set width, not `max-content` or `max-width`: the containing block is the
      anchor, so an auto-width box would be squeezed into the sliver of it left
      over past `left` and wrap to one word a line. */
@@ -1475,44 +1506,37 @@
   line-height: 1.45;
 }
 
-/* Leader from the end of the anchored text to the note's left edge.
-
-   A note is usually raised or lowered off its line, so the leader runs on the
-   diagonal. It is rotated about the end that meets the note, and the numbers
-   Its length and angle are fixed — a 3em line at 36.87°, i.e. 2.4em across by
-   1.8em down — and it rides with the note: raising or lowering a note moves the
-   leader bodily rather than restretching it back to the anchor, so the two keep
-   their shape and the line reads as pointing at the text below it.
-
-   The sign is the opposite of the note's offset: the leader points left, and a
-   clockwise (positive) rotation lifts a leftward-pointing line, so a raised
-   note needs a negative angle to reach back down to its anchor. */
-.reveal .lean-annot::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 2.4em;
-  border-top: 1px solid #c3d4ec;
-  transform-origin: right center;
-}
-
+/* Offsets are on the *edge* facing the text (`bottom` for a note above it,
+   `top` for one below) rather than on its centre. That keeps the gap fixed at
+   1.8em whatever the note's height, which is what lets the leader be a fixed
+   length — anchoring by centre would make the gap depend on how many lines the
+   note happens to wrap to. */
 .reveal .lean-annot.note-up {
-  transform: translateY(calc(-50% - 3.2em));
-}
-
-.reveal .lean-annot.note-up::before {
-  width: 3em;
-  transform: rotate(-36.87deg);
+  bottom: calc(100% + 1.8em);
 }
 
 .reveal .lean-annot.note-down {
-  transform: translateY(calc(-50% + 3.2em));
+  top: calc(100% + 1.8em);
 }
 
-.reveal .lean-annot.note-down::before {
-  width: 3em;
-  transform: rotate(36.87deg);
+/* The leader: a vertical drop from the note's near edge onto the word, so the
+   note reads as pointing down at `Prop` and up at the ellipsis. It belongs to
+   the note, so it reveals and hides with it. */
+.reveal .lean-annot::after {
+  content: '';
+  position: absolute;
+  left: 1.2em;
+  width: 1px;
+  height: 1.8em;
+  background: #c3d4ec;
+}
+
+.reveal .lean-annot.note-up::after {
+  top: 100%;
+}
+
+.reveal .lean-annot.note-down::after {
+  bottom: 100%;
 }
 
 .reveal .lean-annot em {
@@ -1547,6 +1571,48 @@
   font-size: 0.7em;
 }
 
+/* The intuition and the answer share a cell, so the answer lands where the
+   intuition was rather than below it. The cell takes the height of the taller
+   of the two from the start, so neither beat shifts the constraint above. */
+.reveal .def-slot {
+  display: grid;
+}
+
+.reveal .def-slot > * {
+  grid-area: 1 / 1;
+}
+
+.reveal .def-order {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Air between the constraint and what is said about it: without it the chain
+     reads as another line of the constraint. On the chain alone — the arrow
+     brings its own separation and does not need the extra gap. */
+  align-self: start;
+  margin-top: 1.5em;
+  gap: 0.75em;
+}
+
+/* κ keeps the tint it has in the constraint above and the two bounds do not:
+   the eye should see the unknown trapped between two knowns before it is
+   said. */
+.reveal .def-order-chain {
+  font-size: 0.8em;
+  white-space: nowrap;
+}
+
+.reveal .def-order-note {
+  color: var(--muted);
+  font-size: 0.55em;
+}
+
+.reveal .def-answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .reveal .def-arrow {
   margin: 0.85em 0 1.4em;
 }
@@ -1572,6 +1638,7 @@
 .reveal .disj-slide .guard-b {
   background: #dfeede;
 }
+
 
 /* --- Cyclic constraints: where the recipe breaks ------------------------
    The definition line runs longer here than on the acyclic slides — two
@@ -2530,23 +2597,19 @@
 
 /* Assertions in one tint, the program in another: what is being proved versus
    what is being run. */
-.reveal .hoare-assert.visible .hoare-box {
-  background: #eef3fb;
-  border: 1px solid #c3d4ec;
-}
-
-.reveal .hoare-body.visible .hoare-box {
-  background: #f2f3f5;
-  border: 1px solid #ccd0d6;
+/* One colour for every box on this slide. The parts differ in role, not in
+   kind — they are all Lean — so tinting them apart implied a distinction that
+   is not there. Same red wash the risk box in §1 uses. */
+.reveal .hoare-assert.visible .hoare-box,
+.reveal .hoare-body.visible .hoare-box,
+.reveal .hoare-def.current-fragment .hoare-box,
+.reveal .hoare-proof.visible .hoare-box {
+  background: #fdf4f2;
+  border: 1px solid var(--bad);
 }
 
 /* The spec's box is keyed to `.current-fragment`, not `.visible`: it is up only
    while that click is the current one, and clears when the triple is boxed. */
-.reveal .hoare-def.current-fragment .hoare-box {
-  background: #f2f3f5;
-  border: 1px solid #ccd0d6;
-}
-
 /* Labels ride in the gutter to the right of the panel, so the code keeps its
    own left edge and nothing reflows when they arrive. */
 .reveal .hoare-label {
@@ -3389,7 +3452,10 @@
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 0.55em;
+  /* No gap: the space between segments is padding *inside* them, so a run of
+     highlighted segments tints as one continuous band instead of three
+     separate boxes. */
+  gap: 0;
   min-height: 1.6em;
   margin: 0;
   padding: 0;
@@ -3403,6 +3469,7 @@
    and backwards does not. */
 .reveal .fold-slide .path-seg {
   opacity: 0;
+  padding: 0.08em 0.3em;
   color: var(--muted);
   font-size: 0.68em;
   transition: none;
@@ -3411,9 +3478,12 @@
 /* The separator hangs off the following segment rather than sitting between
    two of them, so a segment that has not landed yet takes its own separator
    with it. */
-.reveal .fold-slide .path-seg + .path-seg::before {
+/* The separator belongs to the segment *before* it, so the band around a run
+   of segments contains the arrows inside the run and not the one leading into
+   it. */
+.reveal .fold-slide .path-seg:not(:last-child)::after {
   content: '▸';
-  margin-right: 0.65em;
+  margin-left: 0.6em;
   color: var(--arrow);
 }
 
@@ -3448,6 +3518,30 @@
 .reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seg-3,
 .reveal .fold-slide:has(.state-5.visible):not(:has(.state-6.visible)) .seg-4 {
   color: var(--accent);
+}
+
+/* The unfold beat lights `h` and the left disjunct together; this lights the
+   run of the path that produced that disjunct — the branch and the two binders
+   under it. It stays lit through the closing `exact`, like the marks in the
+   states themselves: the term on that arrow is built out of exactly these
+   binders, so the run is still the thing being talked about. Same tint as the marks in the states, so the strip and the goal
+   are visibly saying one thing. Background only, no padding: a padded pill
+   would shift the segments sideways as it came and went. */
+.reveal .fold-slide:has(.beat-7.visible) .seg-2,
+.reveal .fold-slide:has(.beat-7.visible) .seg-3,
+.reveal .fold-slide:has(.beat-7.visible) .seg-4 {
+  color: var(--accent);
+  background: #cfe0f7;
+}
+
+/* Round only the ends of the run, so the three tinted segments read as one
+   box rather than as three sitting flush. */
+.reveal .fold-slide:has(.beat-7.visible) .seg-2 {
+  border-radius: 3px 0 0 3px;
+}
+
+.reveal .fold-slide:has(.beat-7.visible) .seg-4 {
+  border-radius: 0 3px 3px 0;
 }
 
 /* --- Source note ----------------------------------------------------------
@@ -3502,11 +3596,6 @@
 /* The proof line's box. Green rather than the assertion blue or the program
    grey: this is the one part that is discharged, and green is what the deck
    already uses for a goal that closes. */
-.reveal .hoare-proof.visible .hoare-box {
-  background: #eef6f0;
-  border: 1px solid #bfd9c8;
-}
-
 /* The gap that sets the proof off from the triple moves to the wrapper, or the
    box would be drawn around the line's top margin too and sit with dead space
    above the text. */
@@ -4090,4 +4179,55 @@
   margin-bottom: 0.15em;
   color: var(--muted);
   font-weight: 400;
+}
+
+/* --- Laser pointer --------------------------------------------------------
+   Toggled with `l` (see src/main.js). A canvas for the tail and an element for
+   the head, both above the deck and taking no events, so clicking through them
+   still advances the slides. */
+.laser-canvas,
+.laser-head {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  /* Only the toggle fades. Position is animated frame by frame in JS, and a
+     transition on `transform` would fight it and lag the head behind the
+     cursor. */
+  transition: opacity 120ms ease;
+}
+
+.laser-canvas {
+  width: 100vw;
+  height: 100vh;
+}
+
+.laser-head {
+  width: 11px;
+  height: 11px;
+  /* Centres the dot on the pointer: the JS only translates to the cursor. */
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 50%;
+  /* Hot white core, red body, and a soft halo — a flat red disc reads as a
+     UI element, the falloff is what makes it read as light on the screen. */
+  background: radial-gradient(
+    circle at 50% 50%,
+    #fff 0%,
+    #ff4d4d 35%,
+    #e02020 60%,
+    rgba(224, 32, 32, 0) 72%
+  );
+  box-shadow: 0 0 10px 3px rgba(224, 32, 32, 0.45);
+}
+
+.laser-visible {
+  opacity: 1;
+}
+
+/* One pointer at a time. */
+body.laser-on,
+body.laser-on .reveal {
+  cursor: none;
 }

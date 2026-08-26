@@ -28,13 +28,15 @@
   <div class="lean-code">
     <span class="lean-line"><span class="hljs-keyword">theorem</span> <span class="hljs-title">c_dot</span> :</span>
 
-    <!-- Notes hang off `.note-anchor`, which wraps the exact text they are
-         about: the leader then starts where that text ends, whatever its
-         length. Nothing may separate the anchor from the note — a newline
-         inside a `white-space: pre` line would show up as a line break. -->
-    <span class="lean-line ind-1"><span class="note-anchor">∃ <span class="kv">κ</span> : <span class="hljs-type">Int</span> → <span class="hljs-type">Int</span> → <span class="hljs-type">Prop</span>,<span class="lean-annot note-up fragment">
+    <!-- Notes hang off `.note-anchor`, which wraps the exact word they point
+         at — `Prop` here, the ellipsis below — and not the whole line: the
+         leader starts where the anchor ends, so anchoring the line would aim
+         it at the trailing comma instead of at the thing being talked about.
+         Nothing may separate the anchor from the note — a newline inside a
+         `white-space: pre` line would show up as a line break. -->
+    <span class="lean-line ind-1">∃ <span class="kv">κ</span> : <span class="hljs-type">Int</span> → <span class="hljs-type">Int</span> → <span class="hljs-type note-anchor">Prop<span class="lean-annot note-up fragment">
       the unknown refinement is an <em>existentially quantified predicate</em>
-    </span></span></span>
+    </span></span>,</span>
 
     <span class="lean-line ind-2">∀ n : <span class="hljs-type">Int</span>,</span>
     <span class="lean-line ind-3">(∀ j : <span class="hljs-type">Int</span>, <span class="kv">κ</span> j n → j &lt; n)</span>
@@ -42,7 +44,7 @@
 
     <!-- The proof is left open on purpose: what goes in place of the ellipsis
          is the rest of the section. -->
-    <span class="lean-line lean-proof ind-1"><span class="note-anchor">:= <span class="hljs-keyword">by</span> <span class="lean-todo">...</span><span class="lean-annot note-down fragment">
+    <span class="lean-line lean-proof ind-1">:= <span class="hljs-keyword">by</span> <span class="lean-todo note-anchor">...<span class="lean-annot note-down fragment">
       two tactics: <span class="tac">zap</span> and <span class="tac">fix</span>
     </span></span></span>
   </div>
@@ -64,9 +66,9 @@
 
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall n.\)</span>
-        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+        <span class="ind-1">\(\forall n.\)</span>
+        <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
       </div>
 
       <div class="kind-tactic">
@@ -80,12 +82,12 @@
 
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall lo, hi.\)</span>
-        <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-        <span class="ind-1">\(\wedge\; \forall i.\)</span>
-        <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-        <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+        <span class="ind-1">\(\forall lo, hi.\)</span>
+        <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+        <span class="ind-2">\(\wedge\; \forall i.\)</span>
+        <span class="ind-3"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+        <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+        <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
       </div>
 
       <div class="kind-tactic">
@@ -103,27 +105,53 @@
      The whole constraint stays at full strength; which conjunct the definition
      is read off is said aloud, not marked.
 
+     Two beats below the constraint, in one slot. First the intuition: the two
+     clauses pin κ from both sides, so implication orders the candidates and κ
+     may be anything between them. Then the answer, which is the bottom of that
+     range — the word "strongest" on the arrow is the one the intuition just
+     earned.
+
      One beat, one idea. The general recipe — ∃-bind the clause's binders and
      equate them to the head's arguments — is not shown here: this head's
      argument *is* the binder, so the ∃ would collapse straight back and look
      like ceremony. It appears on the next slide, as what zap computes. -->
 <section class="def-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span>: finding the strongest solution</h2>
+  <h2 class="slide-title"><span class="tac">Zap</span>: find the strongest solution</h2>
 
   <div class="def-stack">
     <div class="flux-chc def-constraint">
       <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-      <span class="ind-0">\(\forall n.\)</span>
-      <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-      <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+      <span class="ind-1">\(\forall n.\)</span>
+      <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+      <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
     </div>
 
-    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
-      <span class="flow-label">strongest solution</span>
-    </div>
+    <!-- Both beats live in one grid cell (see `.def-slot`), so the answer
+         arrives exactly where the intuition was and nothing on the slide
+         moves. The chain is `fade-in-then-out`: it comes on click one and
+         clears on click two. -->
+    <div class="def-slot">
+      <div class="def-order fragment fade-in-then-out" data-fragment-index="1">
+        <div class="def-order-chain">
+          \((0 \le x \;\wedge\; x &lt; y) \;\preceq\;\)
+          <span class="kv">\(\kv(x, y)\)</span>
+          \(\;\preceq\; x &lt; y\)
+        </div>
 
-    <div class="def-line fragment" data-fragment-index="1">
-      <span class="kv">\(\kv(x, y)\)</span> \(\;\triangleq\; 0 \le x \;\wedge\; x &lt; y\)
+        <div class="def-order-note">
+          any <span class="kv">\(\kv\)</span> in between satisfies the constraint
+        </div>
+      </div>
+
+      <div class="def-answer">
+        <div class="flow-arrow def-arrow fragment" data-fragment-index="2">
+          <span class="flow-label">strongest solution</span>
+        </div>
+
+        <div class="def-line fragment" data-fragment-index="2">
+          \(\kv(x, y)\) \(\;\triangleq\; 0 \le x \;\wedge\; x &lt; y\)
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -142,9 +170,9 @@
     <div class="flow-box zap-box">
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall n.\)</span>
-        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+        <span class="ind-1">\(\forall n.\)</span>
+        <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
       </div>
     </div>
 
@@ -192,9 +220,9 @@
       <div class="flow-box zap-box">
         <div class="flux-chc">
           <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-          <span class="ind-0">\(\forall n.\)</span>
-          <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-          <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+          <span class="ind-1">\(\forall n.\)</span>
+          <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+          <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
         </div>
       </div>
     </figure>
@@ -227,18 +255,21 @@
      a disjunction, one disjunct per head occurrence. The guards are tinted and
      the tints repeat in the definition, so the pairing needs no explaining.
 
-     The last conjunct has κ in the hypothesis, and contributes nothing: only
-     heads make κ true. -->
+     A clause with κ in the head is boxed whole — hypothesis and head together —
+     so what produces a disjunct is one visible unit, and the box's tint
+     reappears on the disjunct it produces. The last conjunct is unmarked: it
+     has κ in the hypothesis, so it constrains κ from above and contributes
+     nothing. Only heads make κ true. -->
 <section class="def-slide disj-slide">
   <h2 class="slide-title"><span class="tac">Zap</span>: solution is a disjunction in general</h2>
 
   <div class="def-stack">
     <div class="flux-chc def-constraint">
       <span class="ind-0">\(\exists\) \(\kv\)\(.\)</span>
-      <span class="ind-0">\(\forall n.\)</span>
-      <span class="ind-1">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n)\)</span> \(\Rightarrow\) \(\kv(v, n)\)</span>
-      <span class="ind-1">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n)\)</span> \(\Rightarrow\) \(\kv(w, n)\)</span>
-      <span class="ind-1">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
+      <span class="ind-1">\(\forall n.\)</span>
+      <span class="ind-2">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n) \Rightarrow \kv(v, n)\)</span></span>
+      <span class="ind-2">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n) \Rightarrow \kv(w, n)\)</span></span>
+      <span class="ind-2">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
     </div>
 
     <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
@@ -273,10 +304,10 @@
   <div class="def-stack">
     <div class="flux-chc def-constraint">
       <span class="ind-0">\(\exists\) \(\kv\)\(.\)</span>
-      <span class="ind-0">\(\forall n.\)</span>
-      <span class="ind-1">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n)\)</span> \(\Rightarrow\) \(\kv(v, n)\)</span>
-      <span class="ind-1">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n)\)</span> \(\Rightarrow\) \(\kv(w, n)\)</span>
-      <span class="ind-1">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
+      <span class="ind-1">\(\forall n.\)</span>
+      <span class="ind-2">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n) \Rightarrow \kv(v, n)\)</span></span>
+      <span class="ind-2">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n) \Rightarrow \kv(w, n)\)</span></span>
+      <span class="ind-2">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
     </div>
 
     <div class="flow-arrow def-arrow">
@@ -320,7 +351,7 @@
      the marks are this slide's own classes, so none of the shared `seq-slide`
      highlight rules, which are keyed to states, can fire alongside them. -->
 <section class="seq-slide fold-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span>: the solution stays folded</h2>
+  <h2 class="slide-title"><span class="tac">Zap</span>: building the certificate</h2>
 
   <div class="beats" aria-hidden="true">
     <span class="beat beat-2 fragment" data-fragment-index="1"></span>
@@ -361,10 +392,10 @@
         <div class="flow-box zap-box">
           <div class="flux-chc">
             <span class="ind-0"><span class="mk m-2l">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span></span>
-            <span class="ind-0">\(\forall n.\)</span>
-            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(v, n)\)</span></span>
-            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(w, n)\)</span></span>
-            <span class="ind-1">\(\wedge\; \forall j.\;\) <span class="kv mk m-2l">\(\kv(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
+            <span class="ind-1">\(\forall n.\)</span>
+            <span class="ind-2">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(v, n)\)</span></span>
+            <span class="ind-2">\(\wedge\; \forall w.\; (w = n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(w, n)\)</span></span>
+            <span class="ind-2">\(\wedge\; \forall j.\;\) <span class="kv mk m-2l">\(\kv(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
           </div>
         </div>
       </div>
@@ -626,9 +657,9 @@
 
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall n.\)</span>
-        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+        <span class="ind-1">\(\forall n.\)</span>
+        <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
       </div>
 
       <div class="kind-tactic">
@@ -642,12 +673,12 @@
 
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall lo, hi.\)</span>
-        <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-        <span class="ind-1">\(\wedge\; \forall i.\)</span>
-        <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-        <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+        <span class="ind-1">\(\forall lo, hi.\)</span>
+        <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+        <span class="ind-2">\(\wedge\; \forall i.\)</span>
+        <span class="ind-3"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+        <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+        <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
       </div>
 
       <div class="kind-tactic">
@@ -673,11 +704,11 @@
   <div class="def-stack">
     <div class="flux-chc def-constraint">
       <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-      <span class="ind-0">\(\forall lo, hi.\)</span>
-      <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-      <span class="ind-1">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-      <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-      <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+      <span class="ind-1">\(\forall lo, hi.\)</span>
+      <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+      <span class="ind-2">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+      <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+      <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
     </div>
 
     <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
@@ -1008,11 +1039,11 @@
     <div class="flow-box zap-box">
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall lo, hi.\)</span>
-        <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-        <span class="ind-1">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-        <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+        <span class="ind-1">\(\forall lo, hi.\)</span>
+        <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+        <span class="ind-2">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+        <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+        <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
       </div>
     </div>
 
@@ -1056,9 +1087,9 @@
 
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall n.\)</span>
-        <span class="ind-1">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+        <span class="ind-1">\(\forall n.\)</span>
+        <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+        <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
       </div>
 
       <div class="kind-tactic">
@@ -1072,12 +1103,12 @@
 
       <div class="flux-chc">
         <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-0">\(\forall lo, hi.\)</span>
-        <span class="ind-1"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-        <span class="ind-1">\(\wedge\; \forall i.\)</span>
-        <span class="ind-2"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-        <span class="ind-3">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+        <span class="ind-1">\(\forall lo, hi.\)</span>
+        <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+        <span class="ind-2">\(\wedge\; \forall i.\)</span>
+        <span class="ind-3"><span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+        <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+        <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
       </div>
 
       <div class="kind-tactic">
