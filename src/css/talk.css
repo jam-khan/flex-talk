@@ -4231,3 +4231,95 @@ body.laser-on,
 body.laser-on .reveal {
   cursor: none;
 }
+
+/* --- λ_RK syntax ----------------------------------------------------------
+   The whole grammar, then two focus beats. Nothing is revealed row by row: the
+   claim is that this is an ordinary little language with one unusual thing in
+   it, and that only reads if all of it is on screen at once. */
+.reveal .syn-slide {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+}
+
+.reveal .syn-body {
+  margin: auto 0;
+}
+
+/* The metavariables, above the productions that use them. κ is tinted here as
+   well as in the refinement row, so the second beat has something to land on
+   at both ends of the grammar. */
+/* The metavariables, above the productions that use them — and dimmed with
+   everything else when a beat focuses, since they are scaffolding for the whole
+   grammar rather than part of either half of it. */
+.reveal .syn-meta {
+  display: flex;
+  justify-content: center;
+  gap: 2.6em;
+  margin-bottom: 1.4em;
+  font-size: 0.62em;
+  transition: opacity 200ms ease;
+}
+
+.reveal .syn-grid {
+  display: grid;
+  /* Shrink-wrapped and centred, so the block of productions sits under the
+     centred metavariable line rather than starting at the slide margin. */
+  width: max-content;
+  margin-inline: auto;
+  /* Four columns so every `::=` lines up under the last, whatever the width of
+     the label and the non-terminal beside it. */
+  grid-template-columns: max-content max-content max-content 1fr;
+  align-items: baseline;
+  column-gap: 0.9em;
+  row-gap: 0.55em;
+}
+
+.reveal .syn-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  /* Dimming is the whole interaction, so it gets a transition; the rows never
+     move. */
+  transition: opacity 200ms ease;
+}
+
+.reveal .syn-label {
+  color: var(--muted);
+  font-size: 0.42em;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.reveal .syn-lhs,
+.reveal .syn-rhs {
+  font-size: 0.62em;
+}
+
+.reveal .syn-def {
+  color: var(--muted);
+  font-family: var(--code-font);
+  font-size: 0.5em;
+}
+
+/* Only on the beat that is about it: κ is the one production here that is not
+   standard, and lighting it earlier would answer the slide before it is
+   asked. */
+.reveal .syn-slide:has(.beat-2.visible) .kv {
+  color: inherit;
+  background: #cfe0f7;
+  border-radius: 3px;
+  padding: 0 0.18em;
+}
+
+/* Beat 1: the term language — expressions and the values they evaluate to.
+   Beat 2: the type language — types and the refinements inside them. Written
+   as "dim everything else" so the focused rows keep their own styling. */
+.reveal .syn-slide:has(.beat-1.visible):not(:has(.beat-2.visible)) .syn-row:not(.syn-term),
+.reveal .syn-slide:has(.beat-1.visible):not(:has(.beat-2.visible)) .syn-meta,
+.reveal .syn-slide:has(.beat-2.visible) .syn-row:not(.syn-type),
+.reveal .syn-slide:has(.beat-2.visible) .syn-meta {
+  opacity: 0.18;
+}

@@ -125,6 +125,93 @@
   </div>
 </section>
 
+<!-- The grammar of λ_RK (paper Fig. 15), whole, before anything is said about
+     it. Two focus beats follow, each dimming everything it is not about: the
+     term language first (expressions and the values they evaluate to), then
+     the type language (types and the refinements that sit inside them).
+
+     Dimming rather than revealing row by row: the point of the slide is that
+     this is a small, ordinary language with one unusual thing in it, and that
+     only reads if the whole grammar is on screen at once.
+
+     κ is tinted only on the second beat, in the refinement production: it is
+     what that beat is about, and marking it from the start would answer the
+     slide before it has been asked. -->
+<section class="syn-slide">
+  <h2 class="slide-title">\(\lambda_{RK}\): syntax</h2>
+
+  <div class="beats" aria-hidden="true">
+    <span class="beat beat-1 fragment" data-fragment-index="1"></span>
+    <span class="beat beat-2 fragment" data-fragment-index="2"></span>
+  </div>
+
+  <div class="syn-body">
+    <div class="syn-meta">
+      \(x, y, \nu \in \mathsf{Var}\)
+      \(\kv \in \mathsf{Kvar}\)
+      \(z \in \mathsf{Int}\)
+    </div>
+
+    <div class="syn-grid">
+      <div class="syn-row">
+        <span class="syn-label">base sort</span>
+        <span class="syn-lhs">\(b\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(\Int \mid \Bool\)</span>
+      </div>
+
+      <div class="syn-row">
+        <span class="syn-label">term</span>
+        <span class="syn-lhs">\(t_b\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(x_b \mid z \mid \mathsf{true} \mid \mathsf{false} \mid t_{\Int} + t_{\Int}\)</span>
+      </div>
+
+      <div class="syn-row">
+        <span class="syn-label">formula</span>
+        <span class="syn-lhs">\(\varphi\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(\True \mid t_b =_b t_b \mid t_{\Int} \le t_{\Int} \mid \neg\varphi \mid \varphi \wedge \varphi \mid \varphi \to \varphi \mid \forall x{:}b.\, \varphi\)</span>
+      </div>
+
+      <div class="syn-row syn-type">
+        <span class="syn-label">refinement</span>
+        <span class="syn-lhs">\(r\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(\varphi \mid\) <span class="kv">\(\kv(t_b)\)</span></span>
+      </div>
+
+      <div class="syn-row syn-type">
+        <span class="syn-label">type</span>
+        <span class="syn-lhs">\(\tau\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(\{\, \nu{:}b \mid r \,\} \mid x{:}\tau \to \tau\)</span>
+      </div>
+
+      <div class="syn-row syn-term">
+        <span class="syn-label">expression</span>
+        <span class="syn-lhs">\(e\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(v \mid x \mid \oplus(\overline{e}) \mid e\, e \mid \mathsf{let}\; x = e \;\mathsf{in}\; e \mid \mathsf{if}\; e \;\mathsf{then}\; e \;\mathsf{else}\; e \mid (e : \tau)\)</span>
+      </div>
+
+      <div class="syn-row syn-term">
+        <span class="syn-label">value</span>
+        <span class="syn-lhs">\(v\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(z \mid \mathsf{true} \mid \mathsf{false} \mid \lambda x.\, e\)</span>
+      </div>
+
+      <div class="syn-row">
+        <span class="syn-label">type env.</span>
+        <span class="syn-lhs">\(\Gamma\)</span>
+        <span class="syn-def">::=</span>
+        <span class="syn-rhs">\(\cdot \mid \Gamma, x{:}\tau\)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Soundness for λ_RK. Built bottom-up in meaning, not in layout: the
      declarative judgment lands first and is proved sound semantically, and only
      then does the algorithmic checker appear above it — the algorithm is
