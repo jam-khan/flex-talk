@@ -360,6 +360,11 @@
     <span class="beat beat-5 fragment" data-fragment-index="7"></span>
     <span class="beat beat-6 fragment" data-fragment-index="9"></span>
     <span class="beat beat-7 fragment" data-fragment-index="11"></span>
+    <!-- A beat of its own for the path band, between the marks on `h` and the
+         left disjunct and the closing step. Deliberately not `beat-8`: that
+         name is what the generic mark rules use to *clear* the beat-7 marks,
+         and those have to stay lit while the path lights up. -->
+    <span class="beat beat-path fragment" data-fragment-index="12"></span>
   </div>
 
   <div class="seq-flow">
@@ -621,10 +626,10 @@
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-6 fragment" data-fragment-index="12" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-6 fragment" data-fragment-index="13" aria-hidden="true">
       <span class="flow-label">exact<br /><span class="tac">inl \(\langle v, h, \mathsf{rfl}\rangle\)</span></span>
     </div>
-    <div class="goal-state state-7 fragment" data-fragment-index="12">
+    <div class="goal-state state-7 fragment" data-fragment-index="13">
       <span class="seq-done verdict-ok">no goals</span>
     </div>
   </div>

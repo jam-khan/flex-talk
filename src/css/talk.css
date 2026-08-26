@@ -516,7 +516,10 @@
   position: absolute;
   top: calc(100% + 1.5em);
   left: 0;
-  right: 0;
+  /* Ends at the arrow's tip, not at the group's edge. The arrow carries a
+     1.15em right margin and its head overhangs the stem by 0.58em, so the
+     difference is what the brace has to give back. */
+  right: 0.57em;
 }
 
 /* Stroked SVG rather than a rotated `}` glyph: a brace character distorts when
@@ -1198,9 +1201,11 @@
 }
 
 .reveal .rt-reading {
-  /* Clears the absolutely-positioned labels above. */
-  margin: 2.6em 0 0;
-  font-size: 0.95em;
+  /* Clears the absolutely-positioned labels above — and then some, so the
+     sentence reads as a separate statement about the type rather than as one
+     more annotation hanging off it. */
+  margin: 3.4em 0 0;
+  font-size: 1.15em;
   line-height: 1.5;
 }
 
@@ -2710,9 +2715,15 @@
   display: flex !important;
 }
 
+/* The panel is tall, so it sits close under the title rather than at the
+   deck's usual title gap — `auto` on the bottom keeps it top-aligned. */
+.reveal .imp-slide .slide-title {
+  margin-bottom: 0.5em;
+}
+
 .reveal .imp-slide .lean-code {
   transform: none;
-  margin: 0.5em auto auto;
+  margin: 0 auto auto;
 }
 
 .reveal .imp-slide .lean-line {
@@ -3660,27 +3671,28 @@
   color: var(--accent);
 }
 
-/* The unfold beat lights `h` and the left disjunct together; this lights the
-   run of the path that produced that disjunct — the branch and the two binders
-   under it. It stays lit through the closing `exact`, like the marks in the
-   states themselves: the term on that arrow is built out of exactly these
-   binders, so the run is still the thing being talked about. Same tint as the marks in the states, so the strip and the goal
+/* One beat later than the marks on `h` and the left disjunct: those say which
+   disjunct is being proved, and *then* this says which run of the path built
+   it. Lighting both at once made the room read two things at the same time.
+   It gets a beat to itself, before the strip scrolls to the closing step: the
+   run is read on the state that produced it, not on the way past. It stays lit
+   to the end of the slide. Same tint as the marks in the states, so the strip and the goal
    are visibly saying one thing. Background only, no padding: a padded pill
    would shift the segments sideways as it came and went. */
-.reveal .fold-slide:has(.beat-7.visible) .seg-2,
-.reveal .fold-slide:has(.beat-7.visible) .seg-3,
-.reveal .fold-slide:has(.beat-7.visible) .seg-4 {
+.reveal .fold-slide:has(.beat-path.visible) .seg-2,
+.reveal .fold-slide:has(.beat-path.visible) .seg-3,
+.reveal .fold-slide:has(.beat-path.visible) .seg-4 {
   color: var(--accent);
   background: #cfe0f7;
 }
 
 /* Round only the ends of the run, so the three tinted segments read as one
    box rather than as three sitting flush. */
-.reveal .fold-slide:has(.beat-7.visible) .seg-2 {
+.reveal .fold-slide:has(.beat-path.visible) .seg-2 {
   border-radius: 3px 0 0 3px;
 }
 
-.reveal .fold-slide:has(.beat-7.visible) .seg-4 {
+.reveal .fold-slide:has(.beat-path.visible) .seg-4 {
   border-radius: 0 3px 3px 0;
 }
 
