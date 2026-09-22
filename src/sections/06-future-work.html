@@ -1,0 +1,93 @@
+<!-- §6 · Ongoing / Future Work
+     Begin with the original three frontends. Each click adds one direction:
+     Spacer, LiquidHaskell, MVCGen/LOOM + CHCs, then LiquidLean. -->
+<section class="flow-slide frontends-slide future-work-slide" id="future-work">
+  <h2 class="slide-title">Ongoing / Future Work</h2>
+
+  <div class="frontends-layout">
+    <ul class="frontend-list">
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true"><img src="@assets/lean.png" alt="" /></span>
+        <span class="frontend-name">Imp</span>
+        <span class="frontend-kind">imperative</span>
+      </li>
+      <li class="flow-box frontend foundational">
+        <span class="lean-badge" aria-hidden="true"><img src="@assets/lean.png" alt="" /></span>
+        <span class="frontend-name">\(\lambda_{RK}\)</span>
+        <span class="frontend-kind">functional core</span>
+      </li>
+      <li class="flow-box frontend">
+        <span class="frontend-name">Flux</span>
+        <span class="frontend-kind">Rust</span>
+      </li>
+      <li class="future-entry fragment" data-fragment-index="2" aria-label="LiquidHaskell, in progress">
+        <div class="future-entry-content">
+          <div class="flow-box frontend in-progress">
+            <span class="frontend-name">LiquidHaskell</span>
+            <span class="frontend-kind">Haskell</span>
+          </div>
+        </div>
+      </li>
+      <li class="future-entry fragment" data-fragment-index="3" aria-label="MVCGen/LOOM + CHCs, in progress">
+        <div class="future-entry-content">
+          <div class="flow-box frontend foundational in-progress">
+            <span class="lean-badge" aria-hidden="true"><img src="@assets/lean.png" alt="" /></span>
+            <span class="frontend-name">MVCGen/LOOM</span>
+            <span class="frontend-kind future-chc-kind">+ CHCs</span>
+          </div>
+        </div>
+      </li>
+      <li class="future-entry fragment" data-fragment-index="4" aria-label="LiquidLean, in progress">
+        <div class="future-entry-content">
+          <div class="flow-box frontend foundational in-progress">
+            <span class="lean-badge" aria-hidden="true"><img src="@assets/lean.png" alt="" /></span>
+            <span class="frontend-name">LiquidLean</span>
+            <span class="frontend-kind">Lean</span>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="brace-v" aria-hidden="true">
+      <svg viewBox="0 0 10 100" preserveAspectRatio="none">
+        <path
+          d="M0.5,0.5 Q6,0.5 6,5 L6,45 Q6,49.5 9.5,50 Q6,50.5 6,55 L6,95 Q6,99.5 0.5,99.5"
+          fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <div class="arrow-slot">
+      <div class="flow-arrow flow-arrow-h flow-arrow-long" aria-hidden="true">
+        <span class="flow-label">constrained Horn clauses</span>
+      </div>
+    </div>
+
+    <div class="future-backend">
+      <div class="flow-box flex-solver-box">
+        <span class="lean-badge" aria-hidden="true"><img src="@assets/lean.png" alt="" /></span>
+        <span class="solver-name">Flex</span>
+      </div>
+      <div class="future-spacer fragment" data-fragment-index="1">
+        <div class="callee-arrows" aria-label="Direct connection between Flex and Spacer">
+          <div class="callee-arrow callee-down" aria-hidden="true"></div>
+          <div class="callee-arrow callee-up" aria-hidden="true"></div>
+        </div>
+        <div class="flow-box frontend in-progress" aria-label="Spacer oracle integration, in progress">
+          <span class="frontend-name">Spacer</span>
+          <span class="frontend-kind">oracle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="future-legend fragment" data-fragment-index="1"><span class="future-dotted-key" aria-hidden="true"></span>Dotted border: in progress</p>
+
+  <aside class="notes">
+    Start with Imp, lambda RK, and Flux connected to Flex. Click once for
+    Spacer as a directly connected oracle; again for LiquidHaskell; again for
+    MVCGen/LOOM + CHCs; and once more for LiquidLean. All additions use dotted
+    borders to mark work in progress. MVCGen/LOOM + CHCs and LiquidLean retain
+    the green foundational style and Lean badge. Reserve two minutes.
+  </aside>
+</section>

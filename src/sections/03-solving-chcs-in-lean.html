@@ -10,6 +10,7 @@
     <li><span class="agenda-num">02</span><span class="agenda-title">Solving CHCs in Lean</span></li>
     <li><span class="agenda-num">03</span><span class="agenda-title">Verifiers built on Flex</span></li>
     <li><span class="agenda-num">04</span><span class="agenda-title">Evaluation</span></li>
+    <li><span class="agenda-num">05</span><span class="agenda-title">Ongoing / Future Work</span></li>
   </ol>
 </section>
 
@@ -98,121 +99,52 @@
   </div>
 </section>
 
-<!-- The intuition behind the solution zap computes, before the mechanics.
-     The head occurrence is the only thing that can make κ true, so the guard
-     above it is not a constraint on κ — it is a definition of it.
-
-     The whole constraint stays at full strength; which conjunct the definition
-     is read off is said aloud, not marked.
-
-     Two beats below the constraint, in one slot. First the intuition: the two
-     clauses pin κ from both sides, so implication orders the candidates and κ
-     may be anything between them. Then the answer, which is the bottom of that
-     range — the word "strongest" on the arrow is the one the intuition just
-     earned.
-
-     One beat, one idea. The general recipe — ∃-bind the clause's binders and
-     equate them to the head's arguments — is not shown here: this head's
-     argument *is* the binder, so the ∃ would collapse straight back and look
-     like ceremony. It appears on the next slide, as what zap computes. -->
-<section class="def-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span>: find the strongest solution</h2>
+<!-- Construct the strongest predicate once, then show its simpler equivalent.
+     The existential form is retained for the certified rewrite and proof. -->
+<section class="def-slide disj-slide strongest-slide" id="zap-strongest-solution">
+  <h2 class="slide-title"><span class="tac">Zap</span>: constructing the strongest solution</h2>
 
   <div class="def-stack">
     <div class="flux-chc def-constraint">
-      <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
+      <span class="ind-0">\(\exists\) \(\kv\)\(.\)</span>
       <span class="ind-1">\(\forall n.\)</span>
-      <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-      <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+      <span class="ind-2">\(\forall j.\; \kv(j, n) \Rightarrow\; j &lt; n\)</span>
+      <span class="ind-2">\(\wedge\; \forall v.\;\) <span class="guard-a head-source">\((0 \le v \;\wedge\; v &lt; n) \Rightarrow \kv(v, n)\)</span></span>
     </div>
 
-    <!-- Both beats live in one grid cell (see `.def-slot`), so the answer
-         arrives exactly where the intuition was and nothing on the slide
-         moves. The chain is `fade-in-then-out`: it comes on click one and
-         clears on click two. -->
-    <div class="def-slot">
-      <div class="def-order fragment fade-in-then-out" data-fragment-index="1">
-        <div class="def-order-chain">
-          \((0 \le x \;\wedge\; x &lt; y) \;\preceq\;\)
-          <span class="kv">\(\kv(x, y)\)</span>
-          \(\;\preceq\; x &lt; y\)
-        </div>
-
-        <div class="def-order-note">
-          any <span class="kv">\(\kv\)</span> in between satisfies the constraint
-        </div>
-      </div>
-
-      <div class="def-answer">
-        <div class="flow-arrow def-arrow fragment" data-fragment-index="2">
-          <span class="flow-label">strongest solution</span>
-        </div>
-
-        <div class="def-line fragment" data-fragment-index="2">
-          \(\kv(x, y)\) \(\;\triangleq\; 0 \le x \;\wedge\; x &lt; y\)
-        </div>
-      </div>
+    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
+      <span class="flow-label">strongest solution</span>
     </div>
+    <div class="def-line strongest-computed fragment" data-fragment-index="1">
+      \(\kv_{\mathsf{sol}}(x, y) \;\triangleq\;\)
+      <span class="guard-a">\(\exists v.\; (0 \le v \;\wedge\; v &lt; y) \;\wedge\; x = v\)</span>
+    </div>
+    <div class="strongest-simple fragment" data-fragment-index="2">
+      <span class="strongest-simple-label">simplifies to</span>
+      \(0 \le x \;\wedge\; x &lt; y\)
+    </div>
+    <p class="strongest-note fragment" data-fragment-index="2">
+      Every solution must include these values; the strongest includes exactly these values.
+    </p>
   </div>
+
+  <p class="strongest-general">In general: bind local variables existentially; disjoin contributions from head clauses.</p>
+  <p class="slide-cite">
+    Cosman &amp; Jhala,
+    <a href="https://doi.org/10.1145/3110270" target="_blank" rel="noopener noreferrer"><cite>Local Refinement Typing</cite></a>, ICFP 2017
+  </p>
 </section>
 
-<!-- Fig. 2 of the paper: what `zap` does to the acyclic constraint from the
-     previous slide. Left to right, in the deck's flow vocabulary — the arrows
-     are the same component the SMT and Flux slides use.
-
-     Three beats: the constraint, then everything zap does to it — the arrow,
-     the solution it computes and the rewrite that substitutes it, which are one
-     act and land together — then grind and the verdict. -->
-<section class="zap-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span>: rewriting the constraint</h2>
-
-  <div class="zap-flow">
-    <div class="flow-box zap-box">
-      <div class="flux-chc">
-        <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-1">\(\forall n.\)</span>
-        <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-        <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
-      </div>
-    </div>
-
-    <div class="flow-arrow flow-arrow-h fragment" data-fragment-index="1" aria-hidden="true">
-      <span class="flow-label">zap</span>
-    </div>
-
-    <div class="flow-box zap-box fragment" data-fragment-index="1">
-      <div class="flux-chc">
-        <span class="ind-0">\(\forall n.\)</span>
-        <span class="ind-1">\(\forall j.\;\) <span class="zap-sub">\(0 \le j \;\wedge\; j &lt; n\)</span> \(\Rightarrow\; j &lt; n\)</span>
-        <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="zap-sub">\(\True\)</span></span>
-      </div>
-    </div>
-
-    <div class="flow-arrow flow-arrow-h fragment" data-fragment-index="2" aria-hidden="true">
-      <span class="flow-label">grind</span>
-    </div>
-
-    <div class="verdict-box zap-verdict fragment" data-fragment-index="2">
-      <span class="verdict-ok">no goals</span>
-    </div>
-  </div>
-
-  <!-- What zap computes; the rewrite in the box above is just substituting it,
-       so the two arrive on the same click. -->
-  <div class="zap-solution fragment" data-fragment-index="1">
-    <span class="zap-solution-label">solution</span>
-    <span class="zap-sub">\(\kv(x, y) \;\triangleq\; 0 \le x \;\wedge\; x &lt; y\)</span>
-  </div>
-</section>
-
-<!-- The kernel takes no rewrite on faith. Same two boxes as the slide before,
-     minus the grind stage, which is not what is at stake here.
-
-     The certificate stays a black box; how it is built (§4.3) is not on the
-     slide. All the talk needs is that it exists and that the kernel checks it
-     like any other term. -->
-<section class="cert-slide">
+<!-- The rewrite and its certificate arrive together. The final reveal shows
+     how a proof of the residual constraint becomes a proof of the original.
+     Keep the unsimplified substitution so c' matches the next slide exactly. -->
+<section class="cert-slide certified-zap-slide" id="zap-certified-rewrite">
   <h2 class="slide-title"><span class="tac">Zap</span>: certified rewrite</h2>
+
+  <div class="zap-solution">
+    <span class="zap-solution-label">solution</span>
+    <span class="zap-sub">\(\kv_{\mathsf{sol}}(x, y) \;\triangleq\; \exists v.\; (0 \le v \wedge v &lt; y) \wedge x = v\)</span>
+  </div>
 
   <div class="cert-flow">
     <figure class="cert-panel">
@@ -222,168 +154,78 @@
           <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
           <span class="ind-1">\(\forall n.\)</span>
           <span class="ind-2">\(\forall j.\;\) <span class="kv">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
-          <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
+          <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \wedge v &lt; n) \Rightarrow\) <span class="kv">\(\kv(v, n)\)</span></span>
         </div>
       </div>
     </figure>
 
-    <div class="flow-arrow flow-arrow-h cert-arrow" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h cert-arrow fragment" data-fragment-index="1" aria-hidden="true">
       <span class="flow-label">zap</span>
     </div>
 
-    <figure class="cert-panel">
+    <figure class="cert-panel fragment" data-fragment-index="1">
       <figcaption class="cert-tag">\(c'\)</figcaption>
       <div class="flow-box zap-box">
         <div class="flux-chc">
           <span class="ind-0">\(\forall n.\)</span>
-          <span class="ind-1">\(\forall j.\;\) <span class="zap-sub">\(0 \le j \;\wedge\; j &lt; n\)</span> \(\Rightarrow\; j &lt; n\)</span>
-          <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="zap-sub">\(\True\)</span></span>
+          <span class="ind-1">\(\forall j.\)</span>
+          <span class="ind-2"><span class="zap-sub">\((\exists v.\; (0 \le v \wedge v &lt; n) \wedge j = v)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+          <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \wedge v &lt; n) \Rightarrow\) <span class="zap-sub">\(\True\)</span></span>
         </div>
       </div>
     </figure>
   </div>
 
-  <div class="cert-type">
+  <p class="cert-rewrite-rule fragment" data-fragment-index="1">
+    Substitute the solution in assumptions; replace head occurrences with \(\True\).
+  </p>
+  <div class="cert-type fragment" data-fragment-index="1">
     <span class="cert-type-label">certificate</span>
     <span class="tac">cert</span> \(\;:\; c' \to c\)
     <span class="cert-note">checked by the kernel</span>
   </div>
-</section>
-
-<!-- The general case, in the same shape as the slide before it: two clauses
-     now put κ in the head, so the strongest κ is what either of them gives —
-     a disjunction, one disjunct per head occurrence. The guards are tinted and
-     the tints repeat in the definition, so the pairing needs no explaining.
-
-     A clause with κ in the head is boxed whole — hypothesis and head together —
-     so what produces a disjunct is one visible unit, and the box's tint
-     reappears on the disjunct it produces. The last conjunct is unmarked: it
-     has κ in the hypothesis, so it constrains κ from above and contributes
-     nothing. Only heads make κ true. -->
-<section class="def-slide disj-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span>: solution is a disjunction in general</h2>
-
-  <div class="def-stack">
-    <div class="flux-chc def-constraint">
-      <span class="ind-0">\(\exists\) \(\kv\)\(.\)</span>
-      <span class="ind-1">\(\forall n.\)</span>
-      <span class="ind-2">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n) \Rightarrow \kv(v, n)\)</span></span>
-      <span class="ind-2">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n) \Rightarrow \kv(w, n)\)</span></span>
-      <span class="ind-2">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
-    </div>
-
-    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
-      <span class="flow-label">strongest solution</span>
-    </div>
-
-    <div class="def-line fragment" data-fragment-index="1">
-      \(\kv(x, y)\) \(\;\triangleq\;\)
-      <span class="guard-a">\((0 \le x \;\wedge\; x &lt; y)\)</span>
-      \(\;\vee\;\)
-      <span class="guard-b">\((x = y)\)</span>
-    </div>
+  <div class="cert-discharge fragment" data-fragment-index="2">
+    <span><span class="tac">grind</span> produces \(q : c'\)</span>
+    <div class="flow-arrow flow-arrow-h" aria-hidden="true"><span class="flow-label">cert</span></div>
+    <span class="verdict-ok">\(\mathsf{cert}\;q : c\)</span>
   </div>
 </section>
 
-<!-- The same constraint and the same disjunction, but before simplification:
-     what Zap actually builds is, per head occurrence, an existential over the
-     variables bound on the path to that head, conjoined with equations pinning
-     kappa's parameters to the head's arguments.
-
-     No `exists n`: n is a parameter of kappa, so both heads pass it directly
-     and it is already in scope as y. Only v and w — bound on the path but not
-     arguments of the head — need binding.
-
-     The disjuncts here collapse to the previous slide's line: every existential
-     is pinned by an equation, so each substitutes away. That only happens
-     because each head argument is a distinct bound variable; a head like
-     kappa(i + 1, hi, lo) leaves a genuine existential behind. -->
-<section class="def-slide disj-slide exi-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span>: solutions contain existentials</h2>
-
-  <div class="def-stack">
-    <div class="flux-chc def-constraint">
-      <span class="ind-0">\(\exists\) \(\kv\)\(.\)</span>
-      <span class="ind-1">\(\forall n.\)</span>
-      <span class="ind-2">\(\forall v.\;\) <span class="guard-a">\((0 \le v \;\wedge\; v &lt; n) \Rightarrow \kv(v, n)\)</span></span>
-      <span class="ind-2">\(\wedge\; \forall w.\;\) <span class="guard-b">\((w = n) \Rightarrow \kv(w, n)\)</span></span>
-      <span class="ind-2">\(\wedge\; \forall j.\;\) \(\kv(j, n)\) \(\Rightarrow\; j \le n\)</span>
-    </div>
-
-    <div class="flow-arrow def-arrow">
-      <span class="flow-label">strongest solution</span>
-    </div>
-
-    <div class="def-line">
-      \(\kv(x, y)\) \(\;\triangleq\;\)
-      <span class="guard-a">\((\exists v.\; 0 \le v \;\wedge\; v &lt; y \;\wedge\; x = v)\)</span>
-      \(\;\vee\;\)
-      <span class="guard-b">\((\exists w.\; w = y \;\wedge\; x = w)\)</span>
-    </div>
-  </div>
-
-  <!-- Where this comes from: the existential form is Fusion's, and the paper
-       works it out properly. Sits at the foot of the slide, out of the way of
-       the definition it credits. -->
-  <p class="slide-cite fragment">
-    more detail in Cosman &amp; Jhala,
-    <cite>Local Refinement Typing</cite>, ICFP 2017
-  </p>
-</section>
-
-<!-- The same walk as the slide before, against the *unsimplified* solution --
-     same film strip, same states, same arrows -- with the difference that the
-     solution is named kappa_sol and bound in the context from the first state,
-     so it is never spelled out inside a hypothesis or a goal. It is applied,
-     carried along, and unfolded exactly once, at the leaf, which is why
-     `unfold` earns a step of its own and the states either side of it differ
-     only below the bar.
-
-     Every transition takes two clicks. The first lights what the step is about
-     on the state already on screen and drops the previous step's marks; the
-     second brings the resulting state in and scrolls the strip. Splitting them
-     means the room reads the argument for a step before seeing its result,
-     rather than both landing at once.
-
-     That split is why the marks key off the `.beat-N` spans rather than off
-     state visibility: a beat fires a click ahead of its state. The beats are
-     empty and zero-sized -- they exist only to be counted as fragments -- and
-     the marks are this slide's own classes, so none of the shared `seq-slide`
-     highlight rules, which are keyed to states, can fire alongside them. -->
-<section class="seq-slide fold-slide">
+<!-- Seven proof states, six transitions. Each click highlights the source
+     and result while the strip moves. The solution stays fixed above it. -->
+<section class="seq-slide fold-slide" id="zap-certificate">
   <h2 class="slide-title"><span class="tac">Zap</span>: building the certificate</h2>
+
+  <div class="proof-solution">
+    <span class="mk m-6l">\(\kv_{\mathsf{sol}}(x,y) \;\triangleq\; \exists v.\; (0 \le v \wedge v &lt; y) \wedge x = v\)</span>
+  </div>
+  <div class="proof-notes">
+    <span class="proof-step-note proof-start">Given \(q : c'\), construct a proof of \(c\).</span>
+    <span class="proof-step-note proof-branch">The unchanged conjunct follows from \(q.1\); continue with the right conjunct.</span>
+    <span class="proof-step-note proof-witness">\(v\): witness &nbsp;·&nbsp; \(h\): guard &nbsp;·&nbsp; \(\mathsf{rfl}\): argument equality</span>
+  </div>
 
   <div class="beats" aria-hidden="true">
     <span class="beat beat-2 fragment" data-fragment-index="1"></span>
-    <span class="beat beat-3 fragment" data-fragment-index="3"></span>
-    <span class="beat beat-4 fragment" data-fragment-index="5"></span>
-    <span class="beat beat-5 fragment" data-fragment-index="7"></span>
-    <span class="beat beat-6 fragment" data-fragment-index="9"></span>
-    <span class="beat beat-7 fragment" data-fragment-index="11"></span>
-    <!-- A beat of its own for the path band, between the marks on `h` and the
-         left disjunct and the closing step. Deliberately not `beat-8`: that
-         name is what the generic mark rules use to *clear* the beat-7 marks,
-         and those have to stay lit while the path lights up. -->
-    <span class="beat beat-path fragment" data-fragment-index="12"></span>
+    <span class="beat beat-3 fragment" data-fragment-index="2"></span>
+    <span class="beat beat-4 fragment" data-fragment-index="3"></span>
+    <span class="beat beat-5 fragment" data-fragment-index="4"></span>
+    <span class="beat beat-6 fragment" data-fragment-index="5"></span>
+    <span class="beat beat-7 fragment" data-fragment-index="6"></span>
+    <span class="beat beat-path fragment" data-fragment-index="6"></span>
   </div>
 
   <div class="seq-flow">
     <div class="goal-state state-1">
       <div class="state-ctx">
-      <div class="ctx-line ctx-def">
-        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
-        <span class="ctx-colon">:=</span>
-        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
-      </div>
       <div class="ctx-line">
         <span class="ctx-name">\(q\)</span>
         <span class="ctx-colon">:</span>
         <div class="flow-box zap-box">
           <div class="flux-chc">
             <span class="ind-0">\(\forall n.\)</span>
-            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
-            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \True\)</span>
-            <span class="ind-1">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+            <span class="ind-1">\(\forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j &lt; n\)</span>
+            <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
           </div>
         </div>
       </div>
@@ -398,33 +240,26 @@
           <div class="flux-chc">
             <span class="ind-0"><span class="mk m-2l">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span></span>
             <span class="ind-1">\(\forall n.\)</span>
-            <span class="ind-2">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(v, n)\)</span></span>
-            <span class="ind-2">\(\wedge\; \forall w.\; (w = n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(w, n)\)</span></span>
-            <span class="ind-2">\(\wedge\; \forall j.\;\) <span class="kv mk m-2l">\(\kv(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
+            <span class="ind-2">\(\forall j.\;\) <span class="kv mk m-2l">\(\kv(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+            <span class="ind-2">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="kv mk m-2l">\(\kv(v, n)\)</span></span>
           </div>
         </div>
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-1 fragment" data-fragment-index="2" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-1 fragment" data-fragment-index="1" aria-hidden="true">
       <span class="flow-label">\(\exists\) intro \(\kv_{\mathsf{sol}}\)</span>
     </div>
-    <div class="goal-state state-2 fragment" data-fragment-index="2">
+    <div class="goal-state state-2 fragment" data-fragment-index="1">
       <div class="state-ctx">
-      <div class="ctx-line ctx-def">
-        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
-        <span class="ctx-colon">:=</span>
-        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
-      </div>
       <div class="ctx-line">
         <span class="ctx-name">\(q\)</span>
         <span class="ctx-colon">:</span>
         <div class="flow-box zap-box">
           <div class="flux-chc">
             <span class="ind-0"><span class="mk m-3l">\(\forall n.\)</span></span>
-            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
-            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \True\)</span>
-            <span class="ind-1">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+            <span class="ind-1">\(\forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j &lt; n\)</span>
+            <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
           </div>
         </div>
       </div>
@@ -438,24 +273,18 @@
         <div class="flow-box zap-box">
           <div class="flux-chc">
             <span class="ind-0"><span class="mk m-3l">\(\forall n.\)</span></span>
-            <span class="ind-1">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(v, n)\)</span></span>
-            <span class="ind-1">\(\wedge\; \forall w.\; (w = n) \Rightarrow\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(w, n)\)</span></span>
-            <span class="ind-1">\(\wedge\; \forall j.\;\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(j, n)\)</span> \(\Rightarrow\; j \le n\)</span>
+            <span class="ind-1">\(\forall j.\;\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(j, n)\)</span> \(\Rightarrow\; j &lt; n\)</span>
+            <span class="ind-1">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\) <span class="mk m-2r">\(\kv_{\mathsf{sol}}(v, n)\)</span></span>
           </div>
         </div>
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-2 fragment" data-fragment-index="4" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-2 fragment" data-fragment-index="2" aria-hidden="true">
       <span class="flow-label">intro \(n\);<br />specialize \(q\,n\)</span>
     </div>
-    <div class="goal-state state-3 fragment" data-fragment-index="4">
+    <div class="goal-state state-3 fragment" data-fragment-index="2">
       <div class="state-ctx">
-      <div class="ctx-line ctx-def">
-        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
-        <span class="ctx-colon">:=</span>
-        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
-      </div>
       <div class="ctx-line ctx-binder mk-row m-3r">
         <span class="ctx-name">\(n\)</span>
         <span class="ctx-colon">:</span>
@@ -466,9 +295,8 @@
         <span class="ctx-colon">:</span>
         <div class="flow-box zap-box">
           <div class="flux-chc">
-            <span class="ind-0 line mk m-4l">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
-            <span class="ind-0">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \True\)</span>
-            <span class="ind-0">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+            <span class="ind-0">\(\forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j &lt; n\)</span>
+            <span class="ind-0 line mk m-4l">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \True\)</span>
           </div>
         </div>
       </div>
@@ -481,24 +309,18 @@
         <span class="ctx-name">\(\vdash\)</span>
         <div class="flow-box zap-box">
           <div class="flux-chc">
-            <span class="ind-0 line mk m-4l">\(\forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \kv_{\mathsf{sol}}(v, n)\)</span>
-            <span class="ind-0">\(\wedge\; \forall w.\; (w = n) \Rightarrow\; \kv_{\mathsf{sol}}(w, n)\)</span>
-            <span class="ind-0">\(\wedge\; \forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j \le n\)</span>
+            <span class="ind-0">\(\forall j.\; \kv_{\mathsf{sol}}(j, n) \Rightarrow\; j &lt; n\)</span>
+            <span class="ind-0 line mk m-4l">\(\wedge\; \forall v.\; (0 \le v \;\wedge\; v &lt; n) \Rightarrow\; \kv_{\mathsf{sol}}(v, n)\)</span>
           </div>
         </div>
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-3 fragment" data-fragment-index="6" aria-hidden="true">
-      <span class="flow-label">\(\wedge\) intro-left;<br />specialize \(q.1\)</span>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-3 fragment" data-fragment-index="3" aria-hidden="true">
+      <span class="flow-label">left: \(q.1\);<br />right: use \(q.2\)</span>
     </div>
-    <div class="goal-state state-4 fragment" data-fragment-index="6">
+    <div class="goal-state state-4 fragment" data-fragment-index="3">
       <div class="state-ctx">
-      <div class="ctx-line ctx-def">
-        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
-        <span class="ctx-colon">:=</span>
-        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
-      </div>
       <div class="ctx-line ctx-binder">
         <span class="ctx-name">\(n\)</span>
         <span class="ctx-colon">:</span>
@@ -528,16 +350,11 @@
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-4 fragment" data-fragment-index="8" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-4 fragment" data-fragment-index="4" aria-hidden="true">
       <span class="flow-label">intro \(v\) \(h\);<br />specialize \(q\,v\,h\)</span>
     </div>
-    <div class="goal-state state-5 fragment" data-fragment-index="8">
+    <div class="goal-state state-5 fragment" data-fragment-index="4">
       <div class="state-ctx">
-      <div class="ctx-line ctx-def mk-row m-6l">
-        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
-        <span class="ctx-colon">:=</span>
-        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
-      </div>
       <div class="ctx-line ctx-binder">
         <span class="ctx-name">\(n\)</span>
         <span class="ctx-colon">:</span>
@@ -577,16 +394,11 @@
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-5 fragment" data-fragment-index="10" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-5 fragment" data-fragment-index="5" aria-hidden="true">
       <span class="flow-label">unfold \(\kv_{\mathsf{sol}}\)</span>
     </div>
-    <div class="goal-state state-6 fragment" data-fragment-index="10">
+    <div class="goal-state state-6 fragment" data-fragment-index="5">
       <div class="state-ctx">
-      <div class="ctx-line ctx-def">
-        <span class="ctx-name"><span>\(\kv_{\mathsf{sol}}(x, y)\)</span></span>
-        <span class="ctx-colon">:=</span>
-        <span class="ctx-sort ctx-def-body">\((\exists v.\, 0 \le v \wedge v &lt; y \wedge x = v) \;\vee\; (\exists w.\, w = y \wedge x = w)\)</span>
-      </div>
       <div class="ctx-line ctx-binder">
         <span class="ctx-name">\(n\)</span>
         <span class="ctx-colon">:</span>
@@ -620,31 +432,24 @@
         <span class="ctx-name">\(\vdash\)</span>
         <div class="flow-box zap-box">
           <div class="flux-chc">
-            <span class="ind-0"><span class="mk m-6r"><span class="mk m-7l">\((\exists v'.\, 0 \le v' \wedge v' &lt; n \wedge v = v')\)</span> \(\;\vee\; (\exists w.\, w = n \wedge v = w)\)</span></span>
+            <span class="ind-0"><span class="mk m-6r"><span class="mk m-7l">\(\exists v'.\, (0 \le v' \wedge v' &lt; n) \wedge v = v'\)</span></span></span>
           </div>
         </div>
       </div>
       </div>
     </div>
-    <div class="flow-arrow flow-arrow-h seq-arrow arrow-6 fragment" data-fragment-index="13" aria-hidden="true">
-      <span class="flow-label">exact<br /><span class="tac">inl \(\langle v, h, \mathsf{rfl}\rangle\)</span></span>
+    <div class="flow-arrow flow-arrow-h seq-arrow arrow-6 fragment" data-fragment-index="6" aria-hidden="true">
+      <span class="flow-label">exact<br /><span class="tac">\(\langle v, h, \mathsf{rfl}\rangle\)</span></span>
     </div>
-    <div class="goal-state state-7 fragment" data-fragment-index="13">
+    <div class="goal-state state-7 fragment" data-fragment-index="6">
       <span class="seq-done verdict-ok">no goals</span>
     </div>
   </div>
 
-  <!-- The route taken through the constraint, one segment per step, laid down
-       at the foot of the slide as the walk goes on. It is the same path Zap
-       walks to build a disjunct: these binders are the witnesses the
-       certificate supplies, and this hypothesis is what proves it.
-
-       Driven off the beats rather than being fragments of its own, so it costs
-       no extra clicks and each segment lands with the highlight for the step
-       that made it. -->
+  <!-- The path advances with the states and highlights with the final witness. -->
   <ol class="path" aria-label="path through the constraint">
     <li class="path-seg seg-1"><span class="tac">intro n</span></li>
-    <li class="path-seg seg-2"><span class="tac">left</span></li>
+    <li class="path-seg seg-2"><span class="tac">right</span></li>
     <li class="path-seg seg-3"><span class="tac">intro v</span></li>
     <li class="path-seg seg-4"><span class="tac">intro h</span></li>
   </ol>
@@ -694,44 +499,6 @@
   </div>
 </section>
 
-<!-- The turn from zap to fix. Same shape as the two `def-slide`s that opened
-     the zap chain — constraint, `strongest solution` arrow, the definition it
-     produces — run once more on the cyclic constraint, where it breaks: the
-     inductive clause assumes the very κ it defines, so the disjunct it
-     contributes mentions κ again. The recursive occurrence carries a warning
-     wash instead of the blue, which is the whole point of the slide.
-
-     It ends on the failure; `fix` is the answer, and the next slide's title
-     carries it. -->
-<section class="def-slide cyc-slide">
-  <h2 class="slide-title"><span class="tac">Zap</span> would loop</h2>
-
-  <div class="def-stack">
-    <div class="flux-chc def-constraint">
-      <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-      <span class="ind-1">\(\forall lo, hi.\)</span>
-      <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-      <span class="ind-2">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-      <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-      <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
-    </div>
-
-    <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
-      <span class="flow-label">strongest solution</span>
-    </div>
-
-    <div class="def-line fragment" data-fragment-index="1">
-      \(\kv(z_0, z_1, z_2)\) \(\;\triangleq\; (z_0 = z_2) \;\vee\; (\)
-      <span class="cyc-self">\(\kv(z_0{-}1, z_1, z_2)\)</span>
-      \(\;\wedge\; z_0{-}1 &lt; z_1)\)
-    </div>
-
-    <p class="cyc-verdict fragment" data-fragment-index="2">
-      the definition refers to itself — <span class="tac">zap</span> would loop
-    </p>
-  </div>
-</section>
-
 <!-- `fix`, in three beats mirroring the zap chain: the guess it starts with,
      how it whittles that guess down, and the same rewrite pipeline the
      audience has already seen zap drive.
@@ -740,8 +507,8 @@
      the templates above, the arrow that instantiates them, and the candidate
      set they induce below. The set is deliberately too strong; that is what
      makes the weakening on the next slide the obvious move. -->
-<section class="cand-slide">
-  <h2 class="slide-title"><span class="tac">Fix</span>: start strong, then iteratively weaken it</h2>
+<section class="cand-slide" id="predicate-abstraction">
+  <h2 class="slide-title">Predicate abstraction</h2>
 
   <div class="qual-list">
     <span class="qual-list-label">qualifiers (a.k.a. templates)</span>
@@ -751,13 +518,20 @@
       <span class="qual-def">\(q_{<}(a, b) \;\triangleq\; a &lt; b\)</span>
       <span class="qual-def">\(q_{=}(a, b) \;\triangleq\; a = b\)</span>
     </div>
+
+    <span class="qual-lean-label fragment" data-fragment-index="1">Qualifiers are Lean 4 predicates, tagged with <code>@[qual]</code></span>
+    <div class="lean-code qual-code fragment" data-fragment-index="1">
+      <span class="lean-line"><span class="hljs-meta">@[qual]</span> <span class="hljs-keyword">def</span> <span class="hljs-title">q_le</span> (a b : <span class="hljs-type">Int</span>) : <span class="hljs-type">Prop</span> := a ≤ b</span>
+      <span class="lean-line"><span class="hljs-meta">@[qual]</span> <span class="hljs-keyword">def</span> <span class="hljs-title">q_lt</span> (a b : <span class="hljs-type">Int</span>) : <span class="hljs-type">Prop</span> := a &lt; b</span>
+      <span class="lean-line"><span class="hljs-meta">@[qual]</span> <span class="hljs-keyword">def</span> <span class="hljs-title">q_eq</span> (a b : <span class="hljs-type">Int</span>) : <span class="hljs-type">Prop</span> := a = b</span>
+    </div>
   </div>
 
-  <div class="flow-arrow def-arrow fragment" data-fragment-index="1">
+  <div class="flow-arrow def-arrow fragment" data-fragment-index="2">
     <span class="flow-label">generate all combinations</span>
   </div>
 
-  <div class="cand-def fragment" data-fragment-index="1">
+  <div class="cand-def fragment" data-fragment-index="2">
     <span class="cand-head">\(\kv(z, hi, lo) \;\triangleq\; \bigwedge\)</span>
 
     <div class="chips">
@@ -773,6 +547,15 @@
     </div>
   </div>
 
+  <p class="fix-note fragment" data-fragment-index="2">Start strong, then iteratively weaken it.</p>
+
+  <aside class="notes">
+    The mathematical templates above are the Lean predicates below, in the
+    same order. The qual attribute registers a predicate as a qualifier.
+    Fix instantiates these templates with well-typed combinations of the
+    Horn variable's parameters, then weakens the conjunction until inductive.
+    Qualifiers can use arbitrary Lean predicates, not just these comparisons.
+  </aside>
 </section>
 
 <!-- Beat 3: the fixpoint loop, one slide per round in a shared layout —
@@ -848,7 +631,7 @@
 
           <p class="oracle-label">
             discharged by <span class="tac">grind</span> + <span class="tac">aesop</span>
-            <span class="oracle-sub">any Lean tactic can serve as the oracle</span>
+            <span class="oracle-sub">or <span class="tac">lean-smt</span>: SMT as an untrusted oracle</span>
           </p>
         </div>
       </div>
@@ -923,7 +706,7 @@
 <!-- Round 3: one candidate left, both heads checked, nothing struck. That is
      the fixpoint — and the termination argument, since every earlier round
      removed at least one conjunct from a finite set. -->
-<section class="round-slide round-last">
+<section class="round-slide round-last" id="fix-solution">
   <h2 class="slide-title"><span class="tac">Fix</span>: weaken until fixpoint</h2>
   <span class="round-badge">round 3</span>
 
@@ -999,87 +782,74 @@
     </div>
   </div>
 
+  <div class="zap-solution fragment" data-fragment-index="3">
+    <span class="zap-solution-label">solution</span>
+    <span class="zap-sub">\(\kv(z, hi, lo) \;\triangleq\; lo \le z\)</span>
+  </div>
 </section>
 
-<!-- The epigraph the paper itself reaches for (§2): predicate abstraction is
-     elimination, and what survives every head is the invariant. No heading —
-     the slide is a breath between the fixpoint machinery and the rewrite, and
-     a title would make it an argument again.
-
-     The surviving candidate arrives on a click, in the same `solution` chip
-     the zap slides use, so the epigraph lands on something concrete. -->
-<section class="quote-slide">
-  <!-- Quote and attribution share one column so the name can sit flush with
-       the quote's right edge. -->
-  <div class="quote-block">
-    <blockquote class="quote-text">
-      “When you have eliminated the impossible, whatever remains,
-      however improbable, must be the truth.”
-    </blockquote>
-
-    <p class="quote-attrib">— Sherlock Holmes</p>
-  </div>
+<!-- The inferred solution carries over from the last fixpoint round.
+     Keep both constraints visible together; the final click discharges the VC. -->
+<section class="zap-slide fix-slide fix-compare-slide" id="fix-rewrite">
+  <h2 class="slide-title"><span class="tac">Fix</span>: rewriting the constraint</h2>
 
   <div class="zap-solution">
     <span class="zap-solution-label">solution</span>
     <span class="zap-sub">\(\kv(z, hi, lo) \;\triangleq\; lo \le z\)</span>
   </div>
-</section>
 
-<!-- Beat 4: paper Fig. 3, in the very component that carried zap's Fig. 2 —
-     the point being that the two solvers differ only in how the solution is
-     found. Heads go to ⊤, bodies to the solution, grind takes the rest.
-
-     Certification is a closing line rather than its own slide: the Cert story
-     was told for zap, and fix's only difference is that at a head it hands the
-     oracle's proof over instead of navigating a disjunction.
-
-     Three beats, the same as zap's slide: the constraint, then everything the
-     solver does to it — arrow, solution and rewrite together — then grind and
-     the verdict. -->
-<section class="zap-slide fix-slide">
-  <h2 class="slide-title"><span class="tac">Fix</span>: rewriting the constraint</h2>
-
-  <div class="zap-flow">
-    <div class="flow-box zap-box">
-      <div class="flux-chc">
-        <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
-        <span class="ind-1">\(\forall lo, hi.\)</span>
-        <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
-        <span class="ind-2">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-        <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-        <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+  <div class="fix-compare">
+    <figure class="cert-panel">
+      <figcaption class="cert-tag">Original CHC</figcaption>
+      <div class="flow-box zap-box">
+        <div class="flux-chc">
+          <span class="ind-0">\(\exists\) <span class="kv">\(\kv\)</span>\(.\)</span>
+          <span class="ind-1">\(\forall lo, hi.\)</span>
+          <span class="ind-2"><span class="kv">\(\kv(lo, hi, lo)\)</span></span>
+          <span class="ind-2">\(\wedge\; \forall i.\;\) <span class="kv">\(\kv(i, hi, lo)\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+          <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+          <span class="ind-4">\(\wedge\;\) <span class="kv">\(\kv(i{+}1, hi, lo)\)</span></span>
+        </div>
       </div>
-    </div>
+    </figure>
 
-    <div class="flow-arrow flow-arrow-h fragment" data-fragment-index="1" aria-hidden="true">
+    <div class="flow-arrow flow-arrow-h" aria-hidden="true">
       <span class="flow-label">fix</span>
     </div>
 
-    <div class="flow-box zap-box fragment" data-fragment-index="1">
-      <div class="flux-chc">
-        <span class="ind-0">\(\forall lo, hi.\)</span>
-        <span class="ind-1"><span class="zap-sub">\(\True\)</span></span>
-        <span class="ind-1">\(\wedge\; \forall i.\;\) <span class="zap-sub">\(lo \le i\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
-        <span class="ind-3">\(lo \le i \;\wedge\; i &lt; hi\)</span>
-        <span class="ind-3">\(\wedge\;\) <span class="zap-sub">\(\True\)</span></span>
+    <figure class="cert-panel">
+      <figcaption class="cert-tag">Rewritten constraint</figcaption>
+      <div class="flow-box zap-box">
+        <div class="flux-chc">
+          <!-- The existential is eliminated; reserve its row to align clauses. -->
+          <span class="rewrite-binder-space" aria-hidden="true">\(\exists \kv.\)</span>
+          <span class="ind-1">\(\forall lo, hi.\)</span>
+          <span class="ind-2"><span class="zap-sub">\(\True\)</span></span>
+          <span class="ind-2">\(\wedge\; \forall i.\;\) <span class="zap-sub">\(lo \le i\)</span> \(\;\wedge\; i &lt; hi \;\Rightarrow\)</span>
+          <span class="ind-4">\(lo \le i \;\wedge\; i &lt; hi\)</span>
+          <span class="ind-4">\(\wedge\;\) <span class="zap-sub">\(\True\)</span></span>
+        </div>
       </div>
-    </div>
-
-    <div class="flow-arrow flow-arrow-h fragment" data-fragment-index="2" aria-hidden="true">
-      <span class="flow-label">grind</span>
-    </div>
-
-    <div class="verdict-box zap-verdict fragment" data-fragment-index="2">
-      <span class="verdict-ok">no goals</span>
-    </div>
+    </figure>
   </div>
 
-  <div class="zap-solution fragment" data-fragment-index="1">
-    <span class="zap-solution-label">solution</span>
-    <span class="zap-sub">\(\kv(z, hi, lo) \;\triangleq\; lo \le z\)</span>
+  <p class="fix-rewrite-note">Replace assumptions with the solution; certified heads become \(\True\).</p>
+
+  <div class="fix-discharge fragment" data-fragment-index="1">
+    <span class="tac">grind</span>
+    <div class="flow-arrow flow-arrow-h" aria-hidden="true"></div>
+    <span class="verdict-ok">no goals</span>
   </div>
+
+  <aside class="notes">
+    The solution was established on the previous slide. Both constraints are
+    visible here from the start. The invariant assumption becomes lo ≤ i;
+    entry and preservation heads become True because Fix has certified them.
+    The remaining callback obligation follows from the invariant and guard.
+    Advance once to show grind closing the residual goal.
+  </aside>
 </section>
+
 
 <!-- The fork again, now that both branches have been walked: the same
      slide the section forked on, as a callback. -->

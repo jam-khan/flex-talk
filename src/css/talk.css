@@ -162,10 +162,8 @@
 }
 
 /* --- Title slide -------------------------------------------------------
-   Editorial/academic: flush-left, a serif title set large against a quiet
-   two-column author list. The presenter is marked by a rule in the left
-   gutter rather than a badge — the emphasis is structural, so it stays
-   legible from the back of a room without shouting. */
+   A prominent presenter under the title, followed by one row of collaborators.
+   The accent rule and larger name distinguish the speaker from joint authors. */
 
 /* Reveal vertically centers the section itself (config `center: true`), so only
    horizontal flow is handled here — no height/justify-content, which would fight it.
@@ -186,7 +184,7 @@
   line-height: 1.16;
   letter-spacing: -0.018em;
   text-wrap: balance;
-  margin: 0 0 1.25em;
+  margin: 0 0 0.85em;
   /* em, so it tracks the font-size above. Raising the font-size without
      lowering this would push the block past the slide edge. */
   max-width: 15em;
@@ -199,43 +197,59 @@
   color: var(--muted);
 }
 
-.reveal .title-slide .authors {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55em 2.5em;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-width: 24em;
-  font-size: 0.72em;
+.reveal .title-slide .presenter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  padding-left: 0.65em;
+  border-left: 3px solid var(--accent);
+  line-height: 1.3;
   animation: title-in 700ms cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
 }
 
-.reveal .title-slide .authors li {
+.reveal .title-slide .presenter .who {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.reveal .title-slide .presenter .where {
+  color: var(--muted);
+  font-size: 0.62em;
+}
+
+.reveal .title-slide .collaborators-label {
+  margin: 1.5em 0 0.65em;
+  color: var(--muted);
+  font-size: 0.55em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reveal .title-slide .collaborators {
+  display: flex;
+  gap: 1.8em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.68em;
+  animation: title-in 700ms cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
+}
+
+.reveal .title-slide .collaborators li {
   display: flex;
   flex-direction: column;
   line-height: 1.3;
-  padding-left: 0.85em;
-  border-left: 2px solid transparent;
 }
 
-.reveal .title-slide .authors .who {
+.reveal .title-slide .collaborators .who {
   font-weight: 500;
 }
 
-.reveal .title-slide .authors .where {
+.reveal .title-slide .collaborators .where {
   color: var(--muted);
   font-size: 0.82em;
   font-variant-numeric: oldstyle-nums;
-}
-
-.reveal .title-slide .presenter {
-  border-left-color: var(--accent) !important;
-}
-
-.reveal .title-slide .presenter .who {
-  font-weight: 700;
-  color: var(--accent);
 }
 
 @keyframes title-in {
@@ -247,7 +261,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .reveal .title-slide .title,
-  .reveal .title-slide .authors {
+  .reveal .title-slide .presenter,
+  .reveal .title-slide .collaborators {
     animation: none;
   }
 }
@@ -883,6 +898,125 @@
 .reveal .frontends-layout .arrow-slot,
 .reveal .frontends-layout .flex-solver-box {
   align-self: center;
+}
+
+/* The final diagram extends the same frontend/brace/backend layout. Green
+   denotes foundational verification; dotted outlines denote ongoing work. */
+.reveal .future-work-slide .slide-title {
+  margin-bottom: 0.35em;
+}
+
+.reveal .future-work-slide .frontend-list {
+  gap: 0;
+}
+
+.reveal .future-work-slide .frontend-list > .frontend + .frontend {
+  margin-top: 0.5em;
+}
+
+/* Unrevealed additions occupy no rows. The brace grows with the list, while
+   the centered arrow and Flex remain on the same horizontal axis. */
+.reveal .future-entry.fragment {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  transition: grid-template-rows 350ms ease, margin-top 350ms ease,
+    opacity 350ms ease, visibility 350ms ease;
+}
+
+.reveal .future-entry.fragment.visible {
+  grid-template-rows: 1fr;
+  margin-top: 0.5em;
+}
+
+.reveal .future-entry-content {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.reveal .future-entry.visible .future-entry-content {
+  overflow: visible;
+}
+
+.reveal .future-work-slide .frontend {
+  padding: 6px 26px;
+  gap: 0.08em;
+}
+
+.reveal .future-work-slide .lean-badge {
+  width: 1.1em;
+  height: 1.1em;
+  top: -0.48em;
+  left: -0.48em;
+}
+
+.reveal .future-work-slide .frontend-name {
+  font-size: 0.75em;
+}
+
+.reveal .future-work-slide .frontend-kind {
+  font-size: 0.44em;
+  line-height: 1.2;
+}
+
+.reveal .future-work-slide .future-chc-kind {
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
+
+.reveal .future-work-slide .in-progress {
+  border: 3px dotted var(--arrow);
+}
+
+.reveal .future-work-slide .foundational.in-progress {
+  border-color: var(--ok);
+}
+
+.reveal .future-backend {
+  position: relative;
+  align-self: center;
+}
+
+.reveal .future-spacer {
+  position: absolute;
+  top: calc(100% + 0.5em);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reveal .future-spacer .callee-arrows {
+  height: 1.7em;
+}
+
+.reveal .future-spacer .frontend {
+  min-width: 6em;
+  align-items: center;
+}
+
+.reveal .future-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65em;
+  margin: 0.3em 0 0;
+  font-size: 0.5em;
+  color: var(--muted);
+}
+
+.reveal .future-dotted-key {
+  width: 1.5em;
+  height: 0.85em;
+  border: 3px dotted var(--arrow);
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .future-entry.fragment {
+    transition: none;
+  }
 }
 
 /* The solution is the point of the slide, so it gets its own line beneath the
@@ -2268,6 +2402,10 @@
   display: flex !important;
 }
 
+.reveal .cand-slide .slide-title {
+  margin-bottom: 0.65em;
+}
+
 /* The library, in the same math the rest of this stretch is set in. One row —
    three short definitions read as a single library that way, and the row
    leaves the height for the assignment below. */
@@ -2299,6 +2437,24 @@
   white-space: nowrap;
 }
 
+/* Keep the mathematical templates, then show their concrete Lean definitions. */
+.reveal .qual-lean-label {
+  margin: 0.85em 0 0.5em;
+  color: var(--muted);
+  font-size: 0.62em;
+}
+
+.reveal .qual-code {
+  margin: 0;
+  padding: 0.45em 0.85em;
+  transform: none;
+}
+
+.reveal .qual-code .lean-line {
+  font-size: 0.54em;
+  line-height: 1.55;
+}
+
 /* The line under each `fix` slide: prose, not notation, in the deck's small
    muted voice. */
 .reveal .fix-note {
@@ -2318,7 +2474,8 @@
    `def-slide`s it inherits centring from the stack it sits in. */
 .reveal .cand-slide .def-arrow {
   align-self: center;
-  margin: 1.1em 0 1.3em;
+  height: 1.1em;
+  margin: 0.6em 0 0.9em;
 }
 
 /* Last thing on the slide: takes the bottom half of the free space, so the
@@ -2334,6 +2491,14 @@
 .reveal .cand-head {
   font-size: 0.82em;
   white-space: nowrap;
+}
+
+.reveal .cand-slide .cand-def {
+  margin-bottom: 0;
+}
+
+.reveal .cand-slide .fix-note {
+  margin: 0.85em 0 auto;
 }
 
 /* A candidate: one qualifier instantiated at κ's parameters. Chips wrap into
@@ -2606,6 +2771,75 @@
 
 .reveal .round-slide .zap-solution {
   margin: 0 0 0.6em;
+}
+
+/* Finish the last round with the inferred solution, above the round label. */
+.reveal .round-last .zap-solution {
+  margin-bottom: 0.9em;
+}
+
+/* The same solution stays visible while old and rewritten clauses are compared.
+   The final discharge sits below, leaving the two constraints the full row. */
+.reveal .fix-compare-slide.present {
+  display: flex !important;
+}
+
+.reveal .fix-compare-slide .slide-title {
+  margin-bottom: 0.8em;
+}
+
+.reveal .fix-compare-slide .zap-solution {
+  margin: 0 0 1em;
+}
+
+.reveal .fix-compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  margin: auto 0 0;
+}
+
+.reveal .fix-compare > .flow-arrow {
+  align-self: center;
+  width: 1.6em;
+}
+
+.reveal .fix-compare .cert-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.reveal .fix-compare .zap-box {
+  flex: 1;
+  padding: 20px 16px;
+}
+
+.reveal .fix-compare .flux-chc {
+  font-size: 0.68em;
+}
+
+.reveal .rewrite-binder-space {
+  visibility: hidden;
+}
+
+.reveal .fix-rewrite-note {
+  margin: 1em 0 0;
+  color: var(--muted);
+  font-size: 0.62em;
+  text-align: center;
+}
+
+.reveal .fix-discharge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.9em 0 auto;
+  font-size: 0.8em;
+}
+
+.reveal .fix-discharge .tac {
+  font-family: var(--code-font);
+  color: var(--accent);
 }
 
 /* Brace under the verdict row, naming what decided them. Inset by the width of
@@ -3276,11 +3510,235 @@
   color: var(--accent);
 }
 
-/* --- The unsimplified solution ------------------------------------------
-   Same shape as the disjunction slide, but the definition line carries two
-   existentials and their equations, so it needs the size back. */
-.reveal .exi-slide .def-line {
-  font-size: 0.74em;
+/* Evaluation keeps the questions on screen while their answers unfold below.
+   A fixed slide height keeps Reveal from recentering the title on each click.
+   The cards, bars, and cost row reuse the original detailed results styling. */
+.reveal .evaluation-slide {
+  --slide-pad-x: 7%;
+  height: 640px;
+}
+
+.reveal .evaluation-slide .slide-title {
+  margin-bottom: 0.7em;
+}
+
+.reveal .evaluation-slide .rq-list {
+  gap: 0.75em;
+}
+
+.reveal .evaluation-slide .rq-list > li {
+  display: grid;
+  grid-template-columns: 2.7em minmax(0, 1fr);
+  column-gap: 0.6em;
+  align-items: baseline;
+}
+
+.reveal .evaluation-slide .agenda-num {
+  font-size: 0.75em;
+}
+
+.reveal .evaluation-slide .rq-q {
+  font-size: 0.85em;
+}
+
+.reveal .evaluation-slide .eval-answer.fragment {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 380ms ease, opacity 300ms ease,
+    visibility 380ms;
+}
+
+.reveal .evaluation-slide .eval-answer.fragment.visible {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+}
+
+.reveal .eval-answer-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.reveal .evaluation-slide .eval-scope {
+  margin: 0.65em 0 0.6em;
+  color: var(--muted);
+  font-size: 0.54em;
+  line-height: 1.3;
+}
+
+.reveal .evaluation-slide .eval-compare {
+  gap: 0.45em;
+}
+
+.reveal .evaluation-slide .res-card {
+  padding: 10px 16px;
+  gap: 0.15em;
+}
+
+.reveal .evaluation-slide .res-name {
+  font-size: 0.66em;
+}
+
+.reveal .evaluation-slide .res-cover {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4em;
+  margin-top: 0.2em;
+}
+
+.reveal .evaluation-slide .res-cover-pct {
+  font-size: 0.68em;
+}
+
+.reveal .evaluation-slide .res-cost {
+  margin-top: 0.2em;
+  padding-top: 0.3em;
+}
+
+.reveal .evaluation-slide .res-cost-big {
+  font-size: 0.59em;
+}
+
+.reveal .evaluation-slide .eval-caption {
+  margin: 0.45em 0 0;
+  color: var(--muted);
+  font-size: 0.48em;
+  line-height: 1.3;
+}
+
+.reveal .evaluation-slide .rq2-rows {
+  row-gap: 0.3em;
+}
+
+.reveal .evaluation-slide .rq2-cost-row {
+  margin-top: 0.55em;
+  padding-top: 0.5em;
+  border-top: 1px solid #e3e7ec;
+  font-size: 0.63em;
+}
+
+.reveal .evaluation-slide .res-bar-fill {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms ease 120ms;
+}
+
+.reveal .evaluation-slide .eval-answer.visible .res-bar-fill {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .evaluation-slide .eval-answer.fragment,
+  .reveal .evaluation-slide .res-bar-fill {
+    transition: none;
+  }
+}
+
+/* --- Constructing the strongest solution --------------------------------
+   Derivation, simplification, and intuition share one slide. The general
+   recipe and source stay at the foot of the slide. */
+.reveal .strongest-slide .def-line {
+  font-size: 0.8em;
+}
+
+.reveal .strongest-slide .def-stack {
+  margin-bottom: 3.1em;
+}
+
+.reveal .strongest-slide .slide-title {
+  margin-bottom: 0.55em;
+}
+
+.reveal .strongest-slide .def-arrow {
+  height: 1.1em;
+  margin: 0.6em 0 0.9em;
+}
+
+.reveal .strongest-slide .head-source {
+  background: none;
+  transition: background 250ms ease;
+}
+
+.reveal .strongest-slide:has(.strongest-computed.visible) .head-source {
+  background: #fdf1cf;
+}
+
+.reveal .strongest-simple {
+  margin-top: 0.6em;
+  font-size: 0.75em;
+}
+
+.reveal .strongest-simple-label {
+  margin-right: 0.7em;
+  font-size: 0.7em;
+  color: var(--muted);
+}
+
+.reveal .strongest-note {
+  margin: 0.8em 0 0;
+  color: var(--muted);
+  font-size: 0.55em;
+}
+
+.reveal .strongest-general {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.48em;
+  text-align: center;
+}
+
+.reveal .strongest-slide .slide-cite a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* The rewrite and its certificate share one slide; the last reveal applies
+   that certificate to the proof produced by grind. */
+.reveal .certified-zap-slide .slide-title {
+  margin-bottom: 0.55em;
+}
+
+.reveal .certified-zap-slide .zap-solution {
+  margin: 0 0 0.6em;
+  font-size: 0.7em;
+}
+
+.reveal .certified-zap-slide .cert-flow {
+  margin: 0.6em 0 0;
+}
+
+.reveal .cert-rewrite-rule {
+  margin: 0.9em 0 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.55em;
+}
+
+.reveal .certified-zap-slide .cert-type {
+  margin: 0.8em 0 0;
+  font-size: 0.78em;
+}
+
+.reveal .cert-discharge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2em;
+  margin: 1.5em 0 0;
+  font-size: 0.75em;
+}
+
+.reveal .cert-discharge .tac {
+  font-family: var(--code-font);
+  color: var(--accent);
 }
 
 /* --- The certificate with the solution folded ----------------------------
@@ -3343,6 +3801,44 @@
   grid-auto-columns: max-content;
   grid-template-rows: auto auto auto;
   justify-content: center;
+}
+
+.reveal .fold-slide .slide-title {
+  margin-bottom: 0.45em;
+}
+
+.reveal .proof-solution {
+  text-align: center;
+  font-size: 0.72em;
+}
+
+.reveal .proof-notes {
+  display: grid;
+  margin-top: 0.7em;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.53em;
+}
+
+.reveal .proof-step-note {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.reveal .fold-slide:not(:has(.state-2.visible)) .proof-start,
+.reveal .fold-slide:has(.state-4.visible):not(:has(.state-5.visible)) .proof-branch,
+.reveal .fold-slide:has(.state-7.visible) .proof-witness {
+  visibility: visible;
+}
+
+.reveal .fold-slide .flux-chc {
+  font-size: 0.54em;
+}
+
+.reveal .fold-slide .ctx-name,
+.reveal .fold-slide .ctx-colon,
+.reveal .fold-slide .ctx-sort {
+  font-size: 0.58em;
 }
 
 .reveal .fold-slide .goal-state {
@@ -3416,11 +3912,8 @@
 /* --- Marking the steps ---------------------------------------------------
    Each step lights what it is about on the state already on screen, and where
    it ended up on the state that follows. The left marks fire on the step's
-   beat — a click before its state exists — and the right marks fire with the
-   state itself; both go out on the next beat, so exactly one step is lit.
-
-   Own classes rather than the shared `hl-*`/`step-*` ones: those are keyed to
-   state visibility, and on a two-click strip they would fire a beat late. */
+   beat, on the same click as the resulting state. Both sides go out on the
+   next beat, so exactly one transition is lit. */
 .reveal .fold-slide .beats {
   position: absolute;
   width: 0;
@@ -3643,11 +4136,7 @@
   color: inherit;
 }
 
-/* Keyed to the states, not the beats: a segment names the tactic written on an
-   arrow, so it should arrive with that arrow — on the second click of a step,
-   not the first. On the beat the step is only being pointed at; it has not been
-   taken yet, and the path records steps taken.
-
+/* A segment arrives with the arrow that takes the corresponding step.
    `intro v` and `intro h` land together: the strip does both in one step. */
 .reveal .fold-slide:has(.state-3.visible) .seg-1,
 .reveal .fold-slide:has(.state-4.visible) .seg-2,
@@ -3671,14 +4160,8 @@
   color: var(--accent);
 }
 
-/* One beat later than the marks on `h` and the left disjunct: those say which
-   disjunct is being proved, and *then* this says which run of the path built
-   it. Lighting both at once made the room read two things at the same time.
-   It gets a beat to itself, before the strip scrolls to the closing step: the
-   run is read on the state that produced it, not on the way past. It stays lit
-   to the end of the slide. Same tint as the marks in the states, so the strip and the goal
-   are visibly saying one thing. Background only, no padding: a padded pill
-   would shift the segments sideways as it came and went. */
+/* Highlight the path together with the closing witness. Background only,
+   so the segments keep their positions as the highlight arrives. */
 .reveal .fold-slide:has(.beat-path.visible) .seg-2,
 .reveal .fold-slide:has(.beat-path.visible) .seg-3,
 .reveal .fold-slide:has(.beat-path.visible) .seg-4 {
