@@ -1,5 +1,6 @@
 name: Deploy slides to GitHub Pages
 
+# Publish the slides on every push to main, or run manually from Actions.
 on:
   push:
     branches: [main]
