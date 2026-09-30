@@ -906,6 +906,37 @@
   margin-bottom: 0.35em;
 }
 
+.reveal .future-qr {
+  position: absolute;
+  top: 210px;
+  right: 1.5%;
+  margin: 0;
+  text-align: center;
+}
+
+.reveal .future-qr img {
+  display: block;
+  width: 180px;
+  height: 180px;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 20px;
+  background: white;
+  border: 0;
+  box-shadow: none;
+}
+
+.reveal .future-qr figcaption {
+  color: var(--muted);
+  font-size: 0.48em;
+  line-height: 1.2;
+}
+
+.reveal .future-work-slide .frontends-layout {
+  margin-right: 220px;
+}
+
 .reveal .future-work-slide .frontend-list {
   gap: 0;
 }
